@@ -1,12 +1,10 @@
 {
   "name": "university_bot",
   "version": "1.0.0",
-  "description": "Telegram University Bot",
-  "main": "index.js",
+  "main": "telegram.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node telegram.js"
   },
-  "type": "commonjs",
   "dependencies": {
     "node-telegram-bot-api": "^0.67.0"
   }
