@@ -7,6 +7,30 @@ const bot = new TelegramBot(token, { polling: true });
 // تخزين حالة المستخدم
 const userState = {}; // chatId: {year, semester}
 
+// بيانات التواصل مع أزرار واتساب
+const contacts = {
+  "شؤون الطلبة": [
+    { name: "رقم 1", phone: "+972595630401" },
+    { name: "رقم 2", phone: "+972598923793" },
+    { name: "رقم 3", phone: "+972599332109" }
+  ],
+  "الدائرة المالية": [
+    { name: "أ. إبراهيم فرحات", phone: "+970594702230" },
+    { name: "أ. خالد طبش", phone: "+972599834582" },
+    { name: "أ. هاني مطر", phone: "+972599261992" }
+  ],
+  "القبول والتسجيل": [
+    { name: "د. زهير الكردي", phone: "+970599332109" },
+    { name: "أ. توفيق حرز الله", phone: "+972599167405" },
+    { name: "أ. ألفت أبو صفية", phone: "+970599942975" },
+    { name: "أ. إيمان علي", phone: "+972599623259" }
+  ],
+  "التعليم الإلكتروني": [
+    { name: "أ. محمد حرز الله", phone: "+970599051274" },
+    { name: "م. محمد الحلو", phone: "+97059806664" }
+  ]
+};
+
 // /start
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -19,7 +43,8 @@ bot.onText(/\/start/, (msg) => {
     {
       reply_markup: {
         inline_keyboard: [
-          [{ text: "عرض كل السنوات", callback_data: "show_years" }]
+          [{ text: "عرض كل السنوات", callback_data: "show_years" }],
+          [{ text: "جهات التواصل المهمة", callback_data: "show_contacts" }]
         ]
       }
     }
@@ -38,10 +63,25 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // عرض الجهات
+  if (data === "show_contacts") {
+    const contactButtons = Object.keys(contacts).map((c) => [{ text: c, callback_data: "contact_" + c }]);
+    bot.sendMessage(chatId, "اختر الجهة التي تريد التواصل معها:", { reply_markup: { inline_keyboard: contactButtons } });
+    return;
+  }
+
+  // اختيار جهة
+  if (data.startsWith("contact_")) {
+    const contactName = data.replace("contact_", "");
+    const buttons = contacts[contactName].map((c) => [{ text: c.name, url: "https://wa.me/" + c.phone.replace(/\D/g, "") }]);
+    bot.sendMessage(chatId, "📌 " + contactName + ":\nاضغط على الاسم للتواصل عبر واتساب:", { reply_markup: { inline_keyboard: buttons } });
+    return;
+  }
+
   // اختيار سنة
   if (data.startsWith("year_")) {
     const year = data.replace("year_", "");
-    userState[chatId] = { year };
+    userState[chatId] = { year: year };
     const semesters = Object.keys(courses[year]).map((s) => [{ text: s, callback_data: "semester_" + s }]);
     bot.sendMessage(chatId, "اختر الفصل:", { reply_markup: { inline_keyboard: semesters } });
     return;
