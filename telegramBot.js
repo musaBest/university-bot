@@ -1,99 +1,145 @@
-const TelegramBot = require('node-telegram-bot-api');
-const { courses } = require('./courses'); // ربط ملف المواد
+const TelegramBot = require("node-telegram-bot-api");
+const { courses } = require("./courses"); // ملف المواد
 
-const token = '8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o';
+const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
 
-// تنظيف النص للبحث (غير حساس لحالة الأحرف)
-function cleanText(text) {
-    return text.replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
-}
+// ---- استقبال /start ----
+bot.onText(/\/start/, (msg) => {
+    const chatId = msg.chat.id;
+    const studentName = msg.from.first_name || "طالب";
 
-// البحث عن المواد
-function searchCourse(query) {
-    const q = cleanText(query);
-    return Object.keys(courses).filter(name => cleanText(name).includes(q));
-}
-
-// عرض روابط المادة بشكل مرتب
-function formatCourse(course) {
-    let text = "إليك روابط المادة:\n\n";
-    for (const [key, value] of Object.entries(course)) {
-        if (typeof value === 'object') {
-            text += key + ":\n";
-            for (const [subKey, subValue] of Object.entries(value)) {
-                text += "   - " + subKey + ": " + subValue + "\n";
+    bot.sendMessage(chatId, 
+        "مرحباً " + studentName + "!\nيمكنك اختيار سنة، فصل، ومادة للحصول على روابطها.", 
+        {
+            reply_markup: {
+                keyboard: [["عرض كل السنوات"]],
+                resize_keyboard: true,
+                one_time_keyboard: true
             }
-        } else {
-            text += key + ": " + value + "\n";
         }
-    }
-    return text;
+    );
+});
+
+// ---- توليد أزرار السنة ----
+function generateYearButtons() {
+    return Object.keys(courses).map(year => [{ text: year }]);
 }
 
-// استقبال الرسائل
-bot.on('message', (msg) => {
+// ---- توليد أزرار الفصول ----
+function generateSemesterButtons(year) {
+    const semesters = Object.keys(courses[year]);
+    return semesters.map(s => [{ text: s }]);
+}
+
+// ---- توليد أزرار المواد ----
+function generateCourseButtons(year, semester) {
+    const materials = Object.keys(courses[year][semester]);
+    return materials.map(m => [{ text: m }]);
+}
+
+// ---- عرض روابط المادة ----
+function displayCourseLinks(courseObj) {
+    let output = "روابط المادة:\n\n";
+    for (const key in courseObj) {
+        output += key + ": " + courseObj[key] + "\n";
+    }
+    return output;
+}
+
+// ---- حفظ الحالة لكل مستخدم ----
+const userState = {}; // chatId -> { year, semester }
+
+// ---- استقبال الرسائل ----
+bot.on("message", (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
-    const studentName = msg.from.first_name || "طالب";
 
     if (!text) return;
 
-    // /start
-    if (text === "/start") {
-        bot.sendMessage(chatId, "مرحباً " + studentName + "! أتمنى يومك يكون رائع! يمكنك طلب روابط أي مادة وسأعرضها لك بشكل مرتب.\n\nاختر ما تريد:", {
-            reply_markup: {
-                keyboard: [
-                    ["عرض كل المواد"],
-                    ["بحث عن مادة معينة"]
-                ],
-                resize_keyboard: true,
-                one_time_keyboard: false
-            }
+    // بداية: عرض كل السنوات
+    if (text === "عرض كل السنوات") {
+        bot.sendMessage(chatId, "اختر السنة:", {
+            reply_markup: { inline_keyboard: generateYearButtons() }
         });
         return;
     }
 
-    // عرض كل المواد
-    if (text === "عرض كل المواد") {
-        const buttons = Object.keys(courses).map(name => [{ text: name }]);
-        bot.sendMessage(chatId, "اختر المادة من القائمة:", {
-            reply_markup: {
-                keyboard: buttons,
-                resize_keyboard: true,
-                one_time_keyboard: true
-            }
-        });
-        return;
+    // إذا المستخدم مختار سنة مسبقاً
+    if (userState[chatId] && !userState[chatId].semester) {
+        if (courses[text]) {
+            userState[chatId].year = text;
+            bot.sendMessage(chatId, "اختر الفصل:", {
+                reply_markup: { inline_keyboard: generateSemesterButtons(text) }
+            });
+            return;
+        }
     }
 
-    // البحث عن مادة معينة
-    if (text === "بحث عن مادة معينة") {
-        bot.sendMessage(chatId, "اكتب اسم المادة التي تريد البحث عنها:");
-        return;
+    // إذا المستخدم مختار سنة وفصل
+    if (userState[chatId] && userState[chatId].year && !userState[chatId].course) {
+        const year = userState[chatId].year;
+        if (courses[year][text]) {
+            userState[chatId].semester = text;
+            bot.sendMessage(chatId, "اختر المادة:", {
+                reply_markup: { inline_keyboard: generateCourseButtons(year, text) }
+            });
+            return;
+        }
     }
 
-    // التفاعل مع اختيار مادة
-    const matched = searchCourse(text);
-    if (matched.length === 0) {
-        bot.sendMessage(chatId, "لا توجد مادة مطابقة، حاول كتابة الاسم بشكل أوضح.");
-    } else if (matched.length === 1) {
-        const course = courses[matched[0]];
-        bot.sendMessage(chatId, "روابط مادة " + matched[0] + ":\n\n" + formatCourse(course));
-    } else {
-        // أكثر من نتيجة
-        const buttons = matched.map(name => [{ text: name }]);
-        bot.sendMessage(chatId, "وجدت أكثر من مادة مطابقة، اختر من القائمة:", {
-            reply_markup: {
-                keyboard: buttons,
-                resize_keyboard: true,
-                one_time_keyboard: true
-            }
-        });
+    // إذا المستخدم يكتب اسم المادة مباشرة
+    if (userState[chatId] && userState[chatId].year && userState[chatId].semester) {
+        const year = userState[chatId].year;
+        const semester = userState[chatId].semester;
+        if (courses[year][semester][text]) {
+            const course = courses[year][semester][text];
+            bot.sendMessage(chatId, displayCourseLinks(course));
+            userState[chatId] = {}; // إعادة الحالة بعد عرض المادة
+            return;
+        }
     }
 });
 
-// معالجة أي أخطاء polling
-bot.on('polling_error', (err) => {
+// ---- التعامل مع الضغط على الأزرار ----
+bot.on("callback_query", (callbackQuery) => {
+    const chatId = callbackQuery.message.chat.id;
+    const data = callbackQuery.data;
+
+    // إذا المستخدم لم يختار سنة بعد
+    if (!userState[chatId]) userState[chatId] = {};
+
+    // اختيار السنة
+    if (courses[data]) {
+        userState[chatId].year = data;
+        bot.sendMessage(chatId, "اختر الفصل:", {
+            reply_markup: { inline_keyboard: generateSemesterButtons(data) }
+        });
+        return;
+    }
+
+    // اختيار الفصل
+    const year = userState[chatId].year;
+    if (year && courses[year][data]) {
+        userState[chatId].semester = data;
+        bot.sendMessage(chatId, "اختر المادة:", {
+            reply_markup: { inline_keyboard: generateCourseButtons(year, data) }
+        });
+        return;
+    }
+    // اختيار المادة
+    const semester = userState[chatId].semester;
+    if (year && semester && courses[year][semester][data]) {
+        const course = courses[year][semester][data];
+        bot.sendMessage(chatId, displayCourseLinks(course));
+        userState[chatId] = {}; // إعادة الحالة
+        return;
+    }
+
+    bot.sendMessage(chatId, "اختيار غير صالح، حاول مرة أخرى.");
+});
+
+// ---- معالجة أي أخطاء ----
+bot.on("polling_error", (err) => {
     console.error("Polling error:", err.code, err.message);
 });
