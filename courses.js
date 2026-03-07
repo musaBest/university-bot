@@ -4,40 +4,91 @@ const courses = {
       "Scientific Research Methodology": {
         "Lab": "https://drive.google.com/drive/folders/1STKIgYA-LP21Sq83t1hF_Sra-77r8-Jx?usp=sharing",
         "Recorded Videos": "https://drive.google.com/drive/folders/1ILQazmvS9dK7uXJnVnn-fHM7Pb_-I4T1?usp=sharing",
-        "Tips": ""
+        "Tips": "الدراسة من السلايد كافية مع حل النماذج"
       },
       "Introduction to Engineering": {
         "Lab": "https://drive.google.com/file/d/1X8bBSJPwOIjPW2v_vtP346qg6V2GPUHu/view?usp=drivesdk",
         "Recorded Videos": "https://drive.google.com/drive/folders/1csAdjg1956N653D2ojmiXHK8376KTjRf",
-        "Tips": ""
+        "Tips": "الدراسة من السلايد كافية مع حل النماذج"
       },
       "Engineering Drawing": {
         "Lab": "https://drive.google.com/drive/folders/1YB1cel9cPP4S7uTk3LT9eYOLMrHwIq17",
         "Recorded Videos": "https://drive.google.com/drive/folders/12LWdtyHsIi0lGayQMoW5H2nFq4DhSENd",
-        "Tips": ""
+        "Tips": "مادة لا حول ولا قوة الا بالله ملكاش الا الدعاء"
       },
       "Calculus A": {
-        "Slides": "CalculusA_slides.html",
+        "Slides":{
+            "Dr. Raed Salha":"https://drive.google.com/drive/folders/1qj8N97enxcP7IqADqbl3a9B-BqNiE6eJ?usp=sharing",
+            "Dr. Ismail al-Astal":"https://drive.google.com/drive/folders/1pMf3WkDzaJDiNlXqBiYP9DU7CsW0sOM3?usp=sharing",
+            "Dr. Safjan Al-Shami":"https://drive.google.com/drive/folders/1QTr-fVPPm1K4I29J7bRAaVfZi2ptYikt?usp=sharing",
+            "Dr. Ayman Al-Sakka ":"https://drive.google.com/drive/folders/1YD7NbCD5Vkq4t7Jl833SOtYTu0d7sCF1?usp=sharing",
+            "Dr. Hisham Mahdi":"https://drive.google.com/drive/folders/1rgLGffi4guHP42LQhuAFWK6E7kxSbh65?usp=sharing",
+        }, 
+ 
+
+
+
+
         "Book & Solutions": "https://drive.google.com/drive/folders/1cjCMhjvsrMCHfC4Dz7iklUAD7LsF0MUx?usp=sharing",
-        "Lectures": "CalculusA_lec.html",
-        "Chapters": "CalculusA_chapters.html",
+        "Lectures":{
+           "Dr. Raed Salha":"https://youtube.com/playlist?list=PL9fwy3NUQKwZAHEaly9oqmOkB8vwNPGLo&si=9vQ-fYK2SHqlmIyQ",
+            "Dr. Ismail al-Astal":"https://youtube.com/playlist?list=PL9fwy3NUQKwY6bGFmuJGxU8kL7vx3U133&si=fw2QX_BVgQQX8Ph1",
+            "Dr. Safjan Al-Shami":"https://youtube.com/playlist?list=PL9fwy3NUQKwbkz7c05A0E3XDG16FHIGwi&si=XpUI_l82MrKoiWLq",
+            "Dr. Ayman Al-Sakka ":"https://youtube.com/playlist?list=PL9fwy3NUQKwbKKNNVOuWoVSUWl_4Kz_p5&si=2FnrPFls9JSfo1NE",
+        }, 
+        
+
+
+        "Chapters":{
+            "Dr. Raed Salha":"https://drive.google.com/drive/folders/1qj8N97enxcP7IqADqbl3a9B-BqNiE6eJ",
+            "Dr. Ismail al-Astal":"https://drive.google.com/drive/folders/1pMf3WkDzaJDiNlXqBiYP9DU7CsW0sOM3",
+            "Dr. Safjan Al-Shami":"https://drive.google.com/drive/folders/1QTr-fVPPm1K4I29J7bRAaVfZi2ptYikt",
+            "Dr. Ayman Al-Sakka ":"https://drive.google.com/drive/folders/1YD7NbCD5Vkq4t7Jl833SOtYTu0d7sCF1",
+            "Dr. Hisham Mahdi":"https://drive.google.com/drive/folders/1rgLGffi4guHP42LQhuAFWK6E7kxSbh65",
+        }, 
         "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/15Yt2rb-pVzZfkSfw7gp_wKByxKpxzLX2",
         "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1CQNxFWJ8Oudsw5MTjzJTihUjB0w0V9mg",
-        "Tips": ""
+        "Tips": "ممكن تحضر للدكتور اسماعيل الاسطل مع حل النماذج ومساىل الكتاب"
       },
       "General Physics Lab A": {
-        "Lab": "General Physics Lab A_dis.html",
+        "Lab":{
+          "تقارير محلولة ومصلحة Homework":"ttps://drive.google.com/drive/folders/1EKoqbru633VBMLr09PLyv0wuM5Oi4c3r",
+          "Exam":"https://drive.google.com/drive/folders/1ZWxNCAh7wyJmKbWU_xnGVmd1z0-OHZrw",
+          "Book":"https://drive.google.com/file/d/1XKRcdt0Qndk5EJzx8VswcRLcinVDV5A5/view?usp=drivesdk",
+          "simple summary":"https://drive.google.com/file/d/1XVgb9MwurjBqAqbCmZgFcUB9OiCBvHDE/view?usp=drivesdk",
+          "نموذج تقرير فارغ":"https://drive.google.com/file/d/1Xh2Gd91zAJ2wHvQPXTdlVNX-fjzpF67N/view?usp=drivesdk",
+          "Experiments photos":"https://drive.google.com/drive/folders/1XNc1opYMUSecTGrCdYvV4ORA5Q-psQpv",
+          "All files":"https://drive.google.com/drive/folders/1XFzukgDTJE_6YP1Fq-5IKMdNiOtPgi5s",
+
+         }, 
         "Recorded Videos": "https://youtube.com/@islamicuniversityphysics8361?feature=shared",
-        "Tips": ""
+        "Tips": "الفهم الجيد للتجارب العملية وطريقة ايجاد مطاليبها"
       },
       "General Physics A": {
-        "Slides": "General_Physics_A_slides.html",
+        "Slides & Chapters":{
+          "chapter(1)":"https://drive.google.com/file/d/1YnqI16cAG_GQvfZeJavTMRi2ELJzWA3h/view?usp=drive_link",
+          "chapter(2)":"https://drive.google.com/file/d/1RGodxmATo10GU29V5sWL-sWmj6pbdP8I/view?usp=drive_link",
+          "chapter(3)":"https://drive.google.com/file/d/1XfQZ1RcqmQ7bgRnK0I5WgJ2cGtjf2eXf/view?usp=drive_link",
+          "chapter(4)":"https://drive.google.com/file/d/10uxb3MVBI_-SB0zBcQqjLv-yHFPlFZGh/view?usp=drive_link",
+          "chapter(5)":"https://drive.google.com/file/d/1LIVI5GBIreL4lb7uRZ3QW_213jh5v7nd/view?usp=drive_link",
+          "chapter(6)":"https://drive.google.com/file/d/1vsTvbFuBA_z1dKp5dzrujaqjbrgyxLhk/view?usp=drive_link",
+          "chapter(7)":"https://drive.google.com/file/d/17WAvm1-o8rQiKsq4cHeVyD2FnJYGJ_xa/view?usp=drive_link",
+          "chapter(8)":"https://drive.google.com/file/d/1gwMCIwIrCNMUb4YSk1811aq4bBLTKBnj/view?usp=drive_link",
+          "chapter(9)":"https://drive.google.com/file/d/1JYLMCd3qxBqaVZKNHv2Z_vvlzmXJr-78/view?usp=drive_link",
+          "chapter(10)":"https://drive.google.com/file/d/1-iApnnD20YgJIlqcvQUogX7ur8IJdrQT/view?usp=drive_link",
+          "chapter(11)":"https://drive.google.com/file/d/1fgQ5uzKbb4TdBWk_DZd4QiCmnNc6ypJO/view?usp=drive_link",
+          "chapter(12)":"https://drive.google.com/file/d/1bdc0ypUOU4g8UVrL0Dn4bPMdKBfe-Cp9/view?usp=drive_link",
+           }, 
+      
+
         "Book & Solutions": "https://drive.google.com/drive/folders/1qR3Mdf6umHXyTxR_x0IIDhkaArvQZ1H1?usp=sharing",
-        "Lectures": "General_Physics_A_lec.html",
-        "Chapters": "General_Physics_A_chapters.html",
+        "Lectures":{
+          "Dr. Bassam Al-Sakka":"https://youtube.com/playlist?list=PL9fwy3NUQKwZHlADSeSNkkdfab74bMaUJ&si=W7klh-6_29a_OJEU",
+          "Dr. Wael Tabaza":"https://youtube.com/playlist?list=PL9fwy3NUQKwbUNqCxT0_7khjHVW3QJ0z-&si=X1anxITxHL-HPsEO",
+          }, 
         "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1rDXiV2IjZHitR6wpJDiT-kQbBpOX7UMt",
         "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1CEBf8YsAUe7X9W33Sm3y4X7UguzIUEId",
-        "Tips": ""
+        "Tips": "التركيز على مساىل recommended problem ومساىل الكويزات"
       }
     },
     semester2: {
