@@ -5,6 +5,7 @@ const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
 
 const userState = {};
+const processedCallbacks = new Set();
 
 // جهات التواصل
 const contacts = {
@@ -14,42 +15,34 @@ const contacts = {
     { name: "أ. ألفت أبو صفية", phone: "+970599946275" },
     { name: "أ. إيمان علي", phone: "+972599623259" }
   ],
-
   "شؤون الطلبة": [
     { name: "رقم 1", phone: "+972595630401" },
     { name: "رقم 2", phone: "+972598923793" },
     { name: "رقم 3", phone: "+972599332109" }
   ],
-
   "الشؤون الأكاديمية": [
     { name: "أ. مصطفى بروخ", phone: "+972597246896" }
   ],
-
   "الشؤون المالية": [
     { name: "أ. إبراهيم فرحات", phone: "+970594702230" },
     { name: "أ. خالد طبش", phone: "+972599834582" },
     { name: "أ. هاني مطر", phone: "+972599261992" }
   ],
-
   "المنح": [
     { name: "أ. محمد أبو قضامة", phone: "+972592628297" },
     { name: "م. علاء الهاشيم", phone: "+970599403090" },
     { name: "رقم إضافي", phone: "+972599489703" }
   ],
-
   "الدعم الفني": [
     { name: "أ. محمد حرز الله", phone: "+970599051274" },
     { name: "م. محمد الحلو", phone: "+970598066646" }
   ],
-
   "سكرتير كلية الهندسة": [
     { name: "أ. بسام نصار", phone: "+972599465605" }
   ],
-
   "رقم الجامعة تركيا": [
     { name: "الجامعة", phone: "+905014613767" }
   ],
-
   "التدريب الميداني": [
     { name: "م. رنا عبده", phone: "+972599630429" }
   ]
@@ -65,7 +58,7 @@ bot.onText(/\/start/, (msg) => {
 
   bot.sendMessage(
     chatId,
-    "مرحباً " + name + "!\nيمكنك اختيار سنة وفصل ومادة للحصول على روابطها وكل ملفاتها .",
+    "مرحباً " + name + "!\nيمكنك اختيار سنة وفصل ومادة للحصول على روابطها وكل ملفاتها.",
     {
       reply_markup: {
         inline_keyboard: [
@@ -84,7 +77,46 @@ bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
 
+  // منع التكرار
+  if (processedCallbacks.has(query.id)) return;
+  processedCallbacks.add(query.id);
+
   bot.answerCallbackQuery(query.id);
+
+  setTimeout(() => {
+    processedCallbacks.delete(query.id);
+  }, 5000);
+
+  // الرجوع للسنوات
+  if (data === "back_years") {
+
+    const yearsButtons = Object.keys(courses).map((y) => {
+      return [{ text: y, callback_data: "year_" + y }];
+    });
+
+    bot.sendMessage(chatId, "اختر السنة:", {
+      reply_markup: { inline_keyboard: yearsButtons }
+    });
+
+    return;
+  }
+
+  // الرجوع للفصول
+  if (data === "back_semesters") {
+
+    const year = userState[chatId]?.year;
+    if (!year) return;
+
+    const semesters = Object.keys(courses[year]).map((s) => {
+      return [{ text: s, callback_data: "semester_" + s }];
+    });
+
+    bot.sendMessage(chatId, "اختر الفصل:", {
+      reply_markup: { inline_keyboard: semesters }
+    });
+
+    return;
+  }
 
   // عرض السنوات
   if (data === "show_years") {
@@ -120,12 +152,10 @@ bot.on("callback_query", (query) => {
     const name = data.replace("contact_", "");
 
     const buttons = contacts[name].map((c) => {
-      return [
-        {
-          text: c.name,
-          url: "https://wa.me/" + c.phone.replace(/\D/g, "")
-        }
-      ];
+      return [{
+        text: c.name,
+        url: "https://wa.me/" + c.phone.replace(/\D/g, "")
+      }];
     });
 
     bot.sendMessage(chatId, "📞 " + name + "\nاضغط على الاسم للتواصل:", {
@@ -134,7 +164,6 @@ bot.on("callback_query", (query) => {
 
     return;
   }
-
   // اختيار سنة
   if (data.startsWith("year_")) {
 
@@ -146,7 +175,12 @@ bot.on("callback_query", (query) => {
     });
 
     bot.sendMessage(chatId, "اختر الفصل:", {
-      reply_markup: { inline_keyboard: semesters }
+      reply_markup: {
+        inline_keyboard: [
+          ...semesters,
+          [{ text: "🔙 رجوع للسنوات", callback_data: "back_years" }]
+        ]
+      }
     });
 
     return;
@@ -168,8 +202,14 @@ bot.on("callback_query", (query) => {
     const subjects = Object.keys(courses[year][semester]).map((sub) => {
       return [{ text: sub, callback_data: "subject_" + sub }];
     });
+
     bot.sendMessage(chatId, "اختر المادة:", {
-      reply_markup: { inline_keyboard: subjects }
+      reply_markup: {
+        inline_keyboard: [
+          ...subjects,
+          [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }]
+        ]
+      }
     });
 
     return;
@@ -191,42 +231,32 @@ bot.on("callback_query", (query) => {
     let reply = "📚 " + subject + "\n";
     reply += "━━━━━━━━━━━━━━\n\n";
 
-  for (const key in links) {
+    for (const key in links) {
 
-  const value = links[key];
+      const value = links[key];
 
-  if (!value || value === "لا توجد روابط") {
+      if (!value || value === "لا توجد روابط") {
+        reply += "⚠️ " + key + "\n";
+        reply += "لا توجد روابط\n\n";
+        continue;
+      }
 
-    reply += "⚠️ " + key + "\n";
-    reply += "لا توجد روابط\n\n";
-    continue;
+      reply += "🔗 " + key + "\n";
 
-  }
+      if (typeof value === "string") {
+        reply += value + "\n\n";
+      }
 
-  reply += "🔗 " + key + "\n";
+      else if (typeof value === "object") {
 
-  // لو الرابط نص عادي
-  if (typeof value === "string") {
+        for (const sub in value) {
+          reply += "• " + sub + "\n";
+          reply += value[sub] + "\n";
+        }
 
-    reply += value + "\n\n";
-
-  }
-
-  // لو فيه عدة روابط (مثل السلايد أو المحاضرات)
-  else if (typeof value === "object") {
-
-    for (const sub in value) {
-
-      reply += "• " + sub + "\n";
-      reply += value[sub] + "\n";
-
+        reply += "\n";
+      }
     }
-
-    reply += "\n";
-
-  }
-
-}
 
     bot.sendMessage(chatId, reply);
 

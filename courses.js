@@ -411,11 +411,14 @@ const courses = {
       },
 
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/17OMK75pTTbJeWgYmbHnPHibsLOQGQZll",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/17P9scKBxXXnBPDycaiKQ_X2f_bCD6-fb"
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/17P9scKBxXXnBPDycaiKQ_X2f_bCD6-fb",
+      "Tips":"ادعي معي اللهم بردا وسلاما تمر ما بتضر يارب"
+
     },
      "Electronics Lab 1": {
       "Lab": "https://drive.google.com/drive/folders/15xgy7lDnHt28g7MG8JFhxrX-y7d6PnH9",
-      "Recorded Videos": "https://youtube.com/playlist?list=PLDG4OdepPTCGTx2U6QGsFz_pBdXkWQbp9&si=90xvkbypQiMrxYDJ"
+      "Recorded Videos": "https://youtube.com/playlist?list=PLDG4OdepPTCGTx2U6QGsFz_pBdXkWQbp9&si=90xvkbypQiMrxYDJ",
+      "Tips":"نفهم النظري ان شاء الله بتمر وما بتضر"
     },
 
     "Ordinary Differential Equations": {
@@ -439,12 +442,15 @@ const courses = {
     },
 
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/18Mg15_PD97L1NywvyAJyq8BWieKYF8Nt",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/18ICQIRy_saOtiix4Ww_vuPvlj9-5b8X8"
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/18ICQIRy_saOtiix4Ww_vuPvlj9-5b8X8",
+      "Tips":"حل نماذج وافهم الواجبات وخلص"
+
     },
 
     "Computer Programming Lab 2": {
       "Lab": "https://drive.google.com/drive/folders/165HNsOPYUxBIEuuJcWyKQ5On7Vr5cvId",
-      "Recorded Videos": "https://youtube.com/playlist?list=PLq5FW85cJhv7QyI_bq1dQ1rIoLy_7S9pq&feature=shared"
+      "Recorded Videos": "https://youtube.com/playlist?list=PLq5FW85cJhv7QyI_bq1dQ1rIoLy_7S9pq&feature=shared",
+      "Tips":"وين في برمجة لازم التطلبق العملي يكون حاضر"
     },
 
     "Digital Design Lab 2": {
@@ -453,6 +459,7 @@ const courses = {
       "Eng.Nour Abu Hasira ":"https://youtube.com/playlist?list=PL9sO-b9ucJeG7Oysv85u9AiemYzUFtNLg&feature=shared",
       "Eng.Hashem Hijazi":"https://youtu.be/YQ9Ta518fBA?feature=shared",
       },
+      "Tips":"المعيدين شرحهم ممتاز"
 
     },
 
@@ -463,113 +470,209 @@ const courses = {
    year3: {
   semester1: {
     "Discrete mathematics": {
-      "Slides": "Discrete_mathematics_slides.html",
+      "Slides & Chapters ":{
+      "CH(1)":"https://drive.google.com/drive/folders/1EPN_zC4U3rtNfaRh6QqPel5e-mDJlcTi",
+      "CH(2)":"https://drive.google.com/drive/folders/1ExLBDK4IeTSoCIpWKmPWgknvObAh5NRH",
+      "CH(3)":"https://drive.google.com/drive/folders/1Fu0_RstN8SLpZxeVJZb5Qfm5ApePRNAG",
+      "CH(4)":"https://drive.google.com/drive/folders/1GEy9q6rjJXG2tL5cAwWSY6bhsithuYsE",
+      "CH(5)":"https://drive.google.com/drive/folders/1Gdvd5uPPkHsfNw3NhRj5QqpxVIuJUabk",
+      "CH(6)":"https://drive.google.com/drive/folders/1Gwnnn3WXbFkWyRz32qN_gNF7-xaeT7U5",
+      "CH(8)":"https://drive.google.com/drive/folders/1H8mO9nehaH-7MAfjXazWqJhcJ0-aRuC-",
+      "CH(9)":"https://drive.google.com/drive/folders/1HI3ChWxTqZ2e1y_zLsmS8bZlTEcwM-Od",
+      "CH(10)":"https://drive.google.com/drive/folders/1HbNjhhhB9XwZxclx-Np4mxLP7Z99rh8v",
+      "CH(11)":"https://drive.google.com/drive/folders/1HibK2-058_Kb9oz6vriPHQLSdFeJntv0",
+     },
+
       "Book & Solutions": "https://drive.google.com/drive/folders/1E812CItKxtYU_LkAQV2dwoOQb4Lhae1C",
-      "Lectures": "Discrete_mathematics_lec.html",
-      "Chapters": "Discrete_mathematics_chapters.html",
+      "Lectures": {
+      "Dr.Mohammed Al-Hanjouri ":"https://youtube.com/playlist?list=PL9fwy3NUQKwZhC2eomQhHTffLApa8bETi&feature=shared",
+      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1I1kSt_SjfJfBLh0_Qz0uNEGRWMWfd-mc",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1KH0rGtKF6F1Fg_rpveo1D3B3uJhU_kvM",
-      "Tips": ""
+      "Tips": "حل نماذج سابقة بيجي كثير على نمطها"
     },
     "Discrete mathematics Lab": {
       "Lab": "https://drive.google.com/drive/folders/1MZ-TnhsQGLjuHuGYOk1C5cMoHMdFQ10P",
-      "Recorded Videos": "Discrete_mathematics lab_lec.html",
-      "Tips": ""
+      "Recorded Videos": {
+      "Eng.Hashem Hijazi":"https://youtube.com/playlist?list=PLxCpArjcC_RhRDUQ24Dh1PhhQjP9SF5Sj&feature=shared",
+      "Eng.Nour Abu Hasira":"https://youtube.com/playlist?list=PL9sO-b9ucJeGU6s_F5tIr1iBIayePTXba&feature=shared",
+      },
+      "Tips": "المعيدين بوضحوا المادة بشكل كويس"
     },
     "Data structures and algorithms": {
-      "Slides": "Data_structures_and_algorithms_slides.html",
+      "Slides & Chapters ": {
+      "All Slides & Chapters":"https://drive.google.com/file/d/1A0qw480ZDOfqVq44LzeY6Luhs5ou7gkz/view?usp=drivesdk", 
+      },
       "Book & Solutions": "https://drive.google.com/drive/folders/XYZ123", 
-      "Lectures": "Data_structures_and_algorithms_lec.html",
-      "Chapters": "Data_structures_and_algorithms_chapters.html",
+      "Lectures": {
+      "Dr. Ahmed Mahdi":"https://drive.google.com/drive/folders/1Xz1aLytDZu_Gq7ZRXKxWrxQNR70JcEpU",
+      "Adel Nasem":"https://youtube.com/playlist?list=PLCInYL3l2AajqOUW_2SwjWeMwf4vL4RSp&feature=shared",
+      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/ABC456",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/DEF789",
-      "Tips": ""
+      "Tips": "اهم مادة معنا تقريبا اهتم انك تفهمها فهم كويس"
     },
     "Data structures and algorithms Lab": {
       "Lab": "https://drive.google.com/drive/folders/1d2z4I4xHzQKUvUWjcMBjMug0x9XhWTBm",
-      "Recorded Videos": "Data structures and algorithms Lab lec.html",
-      "Tips": ""
+      "Recorded Videos":  {
+      "Eng.Waseem Alfram ":"https://youtube.com/playlist?list=PLVl2wY_uRKfrLHkSPnZAiQNEPBbXtxiZl&feature=shared",
+      "Eng.Ahmed Al-Barasi":"https://youtube.com/playlist?list=PL176SGPALes8OU18-Scx-wW0g4wnoi2-6&si=bNHCJfebfm-OG5JZ",
+      },
+      "Tips": "حل المسائل الي في موقع leet code"
     },
     "Linear signals and systems": {
-      "Slides": "Linear_signals_and_systems_slides.html",
+      "Slides & Chapters ": {
+      "Ch (1)":"https://drive.google.com/drive/folders/1w7eu2PzOyuYHzhWPsEZ2MO7zSjqoHpRg",
+      "Ch (2)":"https://drive.google.com/drive/folders/1w8VRQW4dMLHt7_2xwmQmeEdtdCpH6JD3",
+      "Ch (3)":"https://drive.google.com/drive/folders/1wGxOGFfHttuISTOs8kuKP9aOyXcHliNh",
+      "Ch (4)":"https://drive.google.com/drive/folders/1wIjhfBu_lVyUrh4iyoxdIp_LtKbrMYEq",
+      "Ch (5)":"https://drive.google.com/drive/folders/1wK4AIleB-y8GIPFNTwQASB-nZniOZOrA",
+      "Ch (6)":"https://drive.google.com/drive/folders/1wPwD8-q-dmu0w2wMSdqXINlRJJ96ffWl",
+      "Ch (7)":"https://drive.google.com/drive/folders/1wQF6luMvNBIZ5Tsh8ZQZPfm19CGDsv8l",
+
+    },
       "Book & Solutions": "https://drive.google.com/drive/folders/1seCBz1ov8qR2LE8RidIDUc1ywBRcFlbs",
-      "Lectures": "Linear_signals_and_systems_lec.html",
-      "Chapters": "Linear_signals_and_systems_chapters.html",
+      "Lectures": {
+      "Dr. Basil Hamad ":"https://youtube.com/playlist?list=PLDG4OdepPTCFJcxizGTon2D6yNP__-W_g&feature=shared",
+      "Discussion المعيدة ":"https://youtube.com/playlist?list=PLDG4OdepPTCHa_s-vfwtUhfcVGJbZ63ox&feature=shared",
+      "Discussion Eng. Mohammed Abu Faris ":"https://youtube.com/playlist?list=PLMiM7CPo0dNm1FbMKJm7re4W0Y_OQHWXl&feature=shared",
+      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1t4tnxm19bG1uepP1NY-udGHSTRG6VLTh",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1sri9eeFPfbNSu607gJ-AlTasMsplU8cL",
-      "Tips": ""
+      "Tips": "احضر للمعيدين وحل النماذج لانه الاختبارات تاتي منها او على نمطها"
     },
     "Practical linear signals and systems": {
-      "Lab": "Practical linear signals and systems Lab.html",
+      "Lab": {
+      "Lab file ":"https://drive.google.com/drive/folders/1-iFeUD7Kqd6tCmfEfHl_g9JGl7FctWc6",
+      "midterm Exam (Solutions)":"https://drive.google.com/drive/folders/1-iJ7jlr6AtDXnvu2vYMYCt8ZIZXOULCA",
+      "Final Exam ":"https://drive.google.com/drive/folders/1-qX_T0mwaUdw76dHt5NcPICRqPIRmZ-m",
+      "Final Exam (practically)":"https://drive.google.com/drive/folders/1kzW5Y_rxMMr34blVxFPaaGSlVaLbScS2",
+      "Homework Solutions(Report) ":"https://drive.google.com/drive/folders/1DpcE2PxTOsr_ssa1hlwrjZ951RnMIbiK",
+      },
       "Recorded Videos": "https://youtube.com/playlist?list=PLO6WLrSKBViFXiEfV_aFovAusiq43p5BT&feature=shared",
-      "Tips": ""
+      "Tips": "المادة سهلة شرح المهندس كافي"
     },
     "Probability and Statistics Theory": {
-      "Slides": "Probability_and_Statistics_Theory_slides.html",
+      "Slides & Chapters": {
+      "Ch (1)":"https://drive.google.com/drive/folders/1m1ZAd8KiFvoaX5UKkG6QednoDitMppg0",
+      "Ch (2)":"https://drive.google.com/drive/folders/1m37Sg_htLJPWqy07ncZLN08A1vq4UShc",
+      "Ch (3)":"https://drive.google.com/drive/folders/1mL7vVHgop2SoKUMi1EMaMICdhtA-Cq3i",
+      "Ch (4)":"https://drive.google.com/drive/folders/1mtEMwq98fR_ydeUV83zmqR-cL1uvBdRR",
+      "Ch (5)":"https://drive.google.com/drive/folders/1nD7lp1q6VXhd7KEkEfNdsHX0pZ569F8K",
+      "Ch (7)":"https://drive.google.com/drive/folders/1nJEZR3JTj_ARFBKoSbeYVhBCjQvigjf1",
+      "Ch (9)":"https://drive.google.com/drive/folders/1nncBAQF2Eh5RCwu2jhZcVVzxOhikJSoG",
+      "Ch (13)":"https://drive.google.com/drive/folders/1nxbH9wLr2a8sm8JTkiN4V6_o3tk8sMpL",
+      },
+     
       "Book & Solutions": "https://drive.google.com/drive/folders/1lvG1EdmdV_ZcTbQCekvemaGL8v5p17kk",
-      "Lectures": "Probability_and_Statistics_Theory_lec.html",
-      "Chapters": "Probability_and_Statistics_Theory_chapters.html",
+      "Lectures": {
+      "Dr. Mohammed Al-Absi":"https://youtube.com/playlist?list=PLDG4OdepPTCGeXYKtoyasGjFlt18qGuDg&feature=shared",
+      "Discussion المعيدة ":"https://youtube.com/playlist?list=PLDG4OdepPTCGEeDXx0qRgMowTdFBVy3rM&feature=shared",
+       },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1lrGWBpkT_TrPJ-FFAyx2skdJr0-xp9tM",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1llvHCYdehHAsCvpMg0BTwsKuI1NLXk-n",
-      "Tips": ""
+      "Tips": "البوش داون يلوح بالاقق"
     }
   },
   semester2: {
     "Computer architecture": {
-      "Slides": "Computer_architecture_slides.html",
+      "Slides & Chapters": {
+      " All slides   ":"https://drive.google.com/drive/folders/16p-CJjiUE-Or5IuiZCBOy4UUS6zPQe4D",
+      "Slide 2023  ":"https://drive.google.com/drive/folders/1NK7GJl2wZWb5tp-14f82AFJnykUUbqXK",
+    },
       "Book & Solutions": "https://drive.google.com/drive/folders/1AwD72iRKmMC4s3zHh7soIlkOY3F8d5tT",
-      "Lectures": "Computer_architecture_lec.html",
-      "Chapters": "Computer_architecture_chapters.html",
+      "Lectures": {
+      "Dr. Wissam Ashour":"https://youtube.com/playlist?list=PL9czOgVE8oVd0uexbs75zZcVxa6YwwJVt&feature=shared",
+      "Dr. Mohamed Mekki":"https://youtube.com/playlist?list=PL9fwy3NUQKwYwa_mCwGHM-DvI0RlVg1yN&feature=shared",
+      "Dr. Wissam Ashour (list 2)":"https://youtube.com/playlist?list=PL3mDEAb0jyXq4SyL1bbbEcU1jz8tTVFvi&si=0jyw6mfD9uYJgivw",
+      "Al-Hussaini Akidmi(مصر)":"https://youtube.com/playlist?list=PL-cKUB-e2KiswAkwZLJYlTzI69FpSJa50&feature=shared",
+      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1NJq9OlVylwl4RmQaLniUcqJhWEhxtPzX",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1NGeYkgnu4VjJcx1SSj7MIXmIxW7WjFFg",
-      "Tips": ""
+      "Tips": "احنا اخذناها بس ما اخذناها فاهم علي"
     },
     "Computer architecture Lab": {
-      "Lab": "Computer architecture Lab.html",
-      "Recorded Videos": "Computer_architecture lab_lec.html",
-      "Tips": ""
+      "Lab": {
+      "All files ":"https://drive.google.com/drive/folders/1RYv1lJY5jfFkVWW2b7cWsq0du4Z7k20M",
+      },
+      "Recorded Videos":{
+      "Eng.Rasha Sammour":"https://youtube.com/playlist?list=PL7FZVP8rUtKt4DruVeDQ6lt0MCrpxdTcF&feature=shared",
+      "Eng.Hashem Hijazi":"https://youtube.com/playlist?list=PLxCpArjcC_RgAOWc3c4d6xaf3C01ygiOy&feature=shared",
+     },
+      "Tips": "ابحث على النت ههههههههههه"
     },
     "database systems": {
-      "Slides": "database_systems_slides.html",
+      "Slides & Chapters": {
+      "All Slides &Chapters ":"https://drive.google.com/drive/folders/1raKtey9kplvv70_8pHnyqSZBqOLmIdmL",
+    },
       "Book & Solutions": "https://drive.google.com/drive/folders/1ZzfKgokCLhxS39TlujxEA89FkLTLSKH0",
-      "Lectures": "database_systems_lec.html",
-      "Chapters": "database_systems_chapters.html",
+      "Lectures": {
+      "Dr. Ahmed Mahdi":"https://t.me/+sNLIlAHeZCRjYjYy",
+      "Dr. Osama Radwan ":"https://youtube.com/playlist?list=PLjAUiTpbDWsjPKXagqmJG90Kawp6hYIlj&feature=shared",
+      "Amani Adel(مصر)":"https://youtube.com/playlist?list=PLBcOV2jq_2hLcMj22ISRsrgBNnaVxfi23&feature=shared",
+      "Concept of Database":"https://youtube.com/playlist?list=PLPn4eVPZKtrI-AIET96mSMcPsKOevYnqm&feature=shared",
+    },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1sZrKD6ixbC1vr9ZUOpWNtRvyidrVYLG4",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1mzRp6nJ57CGfAeaeUMyPHrzeRE19vPL0",
-      "Tips": ""
+      "Tips": "الدكتور احمد مهدي امتحناته من شرحه"
     },
     "database systems Lab": {
       "Lab": "https://drive.google.com/drive/folders/1_oBNr-6JD4xZ5eAyHbWbZIxuTBKveQjr",
-      "Recorded Videos": "database systems Lab_lec.html",
-      "Tips": ""
+      "Recorded Videos":  {
+      "Eng.Ahmed Abu Shawish":"https://youtube.com/playlist?list=PL5oMcvTwk7_Hy_2EFGuhtmo5idj-_cjY7&si=CXROds6CcIzwkO1T",
+      "Eng.Nour Abu Hasira":"https://youtube.com/playlist?list=PL9sO-b9ucJeEgNSTS8OYzZjCrlLdT0kvc&feature=shared",
+      "Eng.Lama Nafei(SQL Server)":"https://youtube.com/playlist?list=PLxD4M5utghGt8ymdFfQr6GMbG86KHFQJp&feature=shared",
+      "lecture Lab ":"https://youtube.com/playlist?list=PLGqhbs3HqjBagRW4Bp12z14zOaKcpKaLG&feature=shared",
+      "lecture Lab 2":"https://youtube.com/playlist?list=PLGqhbs3HqjBYu743MKL0WfhG4ChQjLo8m&feature=shared",
+      },
+      "Tips": "طبق الي تعلمته"
     },
     "digital electronics": {
-      "Slides": "digital_electronics_slides.html",
+      "Slides & Chapters": {
+      "All Slides & Chapters ":"https://drive.google.com/drive/folders/1yAomvA5o1-q1PnRBiKl6w1hJAy1L5Ccz",
+      }, 
       "Book & Solutions": "https://drive.google.com/drive/folders/10F24slGyeF1ZxzESPatFcPHSA9bCVFzA",
-      "Lectures": "digital_electronics_lec.html",
-      "Chapters": "digital_electronics_chapters.html",
+      "Lectures": {
+      "Dr. Hatem AlAydi":"https://youtube.com/playlist?list=PL9fwy3NUQKwaZgUE02hmS5fI0wHk77Q86&feature=shared",
+      "Discussion Eng.  Mohammed Mushtaha":"https://youtube.com/playlist?list=PLRDRZbpBYjA80ROWf9694FgCQH7jyjU9B&feature=shared",
+      "Discussion Eng. Malak AlAshi":"https://youtube.com/playlist?list=PLPHOBGVvZNk6OMn_uT_9e9ylN8Pa36tA0&feature=shared",
+      }, 
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1Vz9g39mGaVDJZUi_MsKgwYVmP90nMK0o",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1ZCMPaXFa4hkbE2keQsLTj_BelKIMzVd7",
-      "Tips": ""
+      "Tips": "المادة تكرز على مواضيع معينة منها VTC,POWER,FANOUT,حالات الترانزستور افهمهم جيدا"
     },
     "Practical digital electronics": {
-      "Lab": "Practical digital electronics_Lab.html",
-      "Recorded Videos": "Practical digital electronics_lec.html",
-      "Tips": ""
+      "Lab": "https://drive.google.com/drive/folders/10uEt6uMQOaF2UH36uDF7kfX01GLyZN5E",
+      "Recorded Videos": {
+      " Eng.Malik Al-Ashi ":"https://youtube.com/playlist?list=PLPHOBGVvZNk6OBANQIKULxPn2V9E_XdC2&feature=shared",
+      "Eng.Mohammed Abu Faris":"https://youtube.com/playlist?list=PLMiM7CPo0dNmY_a81X7uiMpGquEFo6Bzq&feature=shared",
+      "Eng.Ayman Al-Khazindar ":"https://youtube.com/playlist?list=PL4n--WNT9N3Esl-lEoI1dvfx827IbD0sP&feature=shared",
+      },
+      "Tips": "تطبيق للنظري"
     },
     "Linear control systems": {
-      "Slides": "Linear_control_systems_slides.html",
+      "Slides": "https://drive.google.com/drive/folders/1Npjto7np2L7q_JG3lu0CH0c-FIx1GSLl",
       "Book & Solutions": "https://drive.google.com/drive/folders/1SjwckHgTPwQ7wRTm-vh8AjIoLkcNW7gb",
-      "Lectures": "Linear_control_systems_lec.html",
-      "Chapters": "Linear_control_systems_chapters.html",
+      "Lectures": {
+      "Dr. Basil Hamad":"https://youtube.com/playlist?list=PLDG4OdepPTCHB2JNcmZ3q4WLecTyXOYOe&feature=shared",
+      "Discussion Eng. Nael Dokhan ":"https://youtube.com/playlist?list=PLEaX3zrsfnLAgkQoMCADNCN6CFb4aVJa_&feature=shared",
+      "Discussion Eng. Faten  ":"https://youtube.com/playlist?list=PLDG4OdepPTCHzaF74ncrRJ1f-tCt73yty&feature=shared",
+      },
+      "Chapters": "https://drive.google.com/drive/folders/1Npjto7np2L7q_JG3lu0CH0c-FIx1GSLl",
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1Gn_8eOuR1b0OfaoyX2MMcxQb_caLXoJQ",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1MaExSgm5xjTh2JK9Jl1LDRiT1NoOvAaJ",
-      "Tips": ""
+      "Tips": "احضر للمعيد نائل"
     },
     "Linear control systems practical": {
-      "Lab": "Linear control systems practical Lab.html",
+      "Lab": {
+
+      "Homework":"https://drive.google.com/drive/folders/14dR7MJQJmwa5vsmb-ZEpS_62TVniE3Wa",
+      "Report":"https://drive.google.com/drive/folders/1oB_B1HjeMR5TRHkZXmJ0PRQvZon_QZ3H",
+      "All files ":"https://drive.google.com/drive/folders/1lfH2tq9iRWxVtn8B1g50bV9G1WV5zT1L",
+      },
+
       "Recorded Videos": "https://youtube.com/playlist?list=PLDG4OdepPTCHzaF74ncrRJ1f-tCt73yty&feature=shared",
-      "Tips": ""
+      "Tips": "مش محتاج بس تدريب منيح على النماذج السابقة لانه الاختبار منها"
     }
   }
 },
@@ -577,147 +680,230 @@ const courses = {
 year4: {
   semester1: {
     "Operating Systems": {
-      "Slides": "Operating_Systems_slides.html",
+      "Slides & Chapters":{ 
+      "All slides & Chapters":"https://drive.google.com/drive/folders/1-1fasz9KWyiCmmRdIDc9Bf6H5a6Ui9kq",
+      },
       "Book & Solutions": "https://drive.google.com/drive/folders/1zpBNtl_2jKRhf_ZDnrK25eW-o2F2m7rq",
-      "Lectures": "Operating_Systems_lec.html",
-      "Chapters": "Operating_Systems_chapters.html",
+      "Lectures": {
+      "Dr. Ibrahim Abu Hiba":"https://youtube.com/playlist?list=PL9fwy3NUQKwb0dYZrnE6gice1Jw5jB1SP&feature=shared",
+      "محاضرات اجنبية":"https://youtube.com/playlist?list=PLoeerdvt7Rcx5oKGUI7SxAsltRPWhouFA&feature=shared",
+    },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/12ulDRADxdwg_Djp_F6RBB44fGkzAo0SN",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/12ttLRpr0mKM_XdbcW3w-OcWjbs9hO_4s",
-      "Tips": ""
+      "Tips": "الاختبار من النماذج"
     },
     "Operating Systems Lab": {
-      "Lab": "Operating_Systems_Lab.html",
-      "Recorded Videos": "Operating_Systems_Lab_lec.html",
-      "Tips": ""
+      "Lab":  {
+      "Project":"https://drive.google.com/drive/folders/1zd0M-EDdfYQL9d0JBh-unaWA5oqWMV6X",
+      "Lab fi;e":"https://drive.google.com/drive/folders/1Vch0_HVeoqFt8U8BNXHY1YWAwgks0xbW",
+      "All files ":"https://drive.google.com/drive/folders/1y_m6s6MOnmSZwESfT9A3QpaGuBNIyLQt",
+     },
+      "Recorded Videos": {
+      "Eng.Mohammed Abu Aqlin ":"https://youtube.com/playlist?list=PL4nkhRgZwhCKttppP7a8BD1QZHxXWi25i&feature=shared",
+      "Eng.Safaa Al-Banna":"https://youtube.com/playlist?list=PLYCNhQDVbex9kPr8myGkwBHdoaFNGIndM&feature=shared",
+      "Eng.Mohammed Al-Madhoun":"https://youtube.com/playlist?list=PLDVYwpibSDSW9coq-akMHyjgUtbgcTKGl&feature=shared",
+      "Eng.Anas Baba":"https://youtube.com/playlist?list=PL3Lm1Dh_YDhK6SE3DolAlbQoBO7vQ8uiT&si=Ge-ZxY3QTqBPouxB"
+     },
+      "Tips": "طبق عملي على البرنامج"
     },
     "Data Communication": {
-      "Slides": "Data_Communication_slides.html",
+      "Slides & Chapters":{ 
+      "All slide &Chapters ":"https://drive.google.com/drive/folders/1hzPAg91ycYrdTIFGyO9LesDuMAInUfsD",
+      },
       "Book & Solutions": "https://drive.google.com/drive/folders/1hhOgx5g5OkOnsb82uJttZlVfpTPqV0K6",
-      "Lectures": "Data_Communication_lec.html",
-      "Chapters": "Data_Communication_chapters.html",
+      "Lectures":{  
+      "Dr. Ayman Abu Samra ":"https://youtube.com/playlist?list=PLhidj2WdRnd-rq5dHEjZ4VQQsQKJuX5Fw&feature=shared",
+      "Dr. Mohammed Boukhari":"https://youtube.com/playlist?list=PLVl2wY_uRKfpMuHCDe56Ma-6Knk3viQdF&feature=shared",
+      "Discussion":"https://youtube.com/playlist?list=PLn9Q0FC7RMxLIIyIWe98WiOQRVyITK8my&feature=shared",
+      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1pnjeAQaDaLjo8eflPudd4wy7VbOLY0Od",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1po7746cWl2xtf4r1iIqdffsLsdUJI69O",
-      "Tips": ""
+      "Tips": " الفهم الكامل لكل فقرة بالسلايد لانه في مسائل شرح بالاختبار"
     },
     "Data Communication Lab": {
       "Lab": "https://drive.google.com/drive/folders/1x_adf8apcrNQNqdFNbXGG203WNsVujyg",
-      "Recorded Videos": "Data Com Lab_lec.html",
-      "Tips": ""
+      "Recorded Videos":{ 
+      "Eng. Abdullah Ouda ":"https://youtu.be/HdaikxbmgwU?si=JlSw694RDLpevQbX",
+      "Discussion":"https://youtube.com/playlist?list=PLDnSyw7TIc55E2OiXsozDZ-Ztdqas_6lD&si=paggZRkEOSIJ7GSX",
+     },
+      "Tips": "المعيد شرحه كافي"
     },
     "Assembly Language": {
-      "Slides": "Assembly_Language_slides.html",
+      "Slides  & Chapters":{ 
+      "All slides & Chapters ":"https://drive.google.com/drive/folders/1TcnZycjftiBI-yO-ZYuu1qdO0ObdpSDY",
+     },
       "Book & Solutions": "https://drive.google.com/drive/folders/1TCoxACAHT60y7E1njfhzcOajBQFMdTeL",
-      "Lectures": "Assembly_Language_lec.html",
-      "Chapters": "Assembly_Language_chapters.html",
+      "Lectures": {
+      "Dr. Ruba Salama":"https://youtube.com/playlist?list=PLn9Q0FC7RMxKRiAqrvl-CJik1fUXjBmNU&feature=shared",
+      "Dr. Ahmed Abu Dabousah":"https://youtube.com/playlist?list=PLJGg4x6CCiDTJCkTqZKv3XAywTyNGxk-z&feature=shared",
+     },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1TdSVPABut_aa3aSzZwm54ThzF7wBsqU1",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1Th2s-yEbdEBmDgc2tpgrKWlz3atu5yr-",
-      "Tips": ""
+      "Tips": "شرح الدكاترة كويس"
     },
     "Assembly Language Lab": {
-      "Lab": "Assembly Language Lab_.html",
-      "Recorded Videos": "Assembly_Language_Lab_lec.html",
-      "Tips": ""
+      "Lab": {
+      "Lab & HW":"https://drive.google.com/drive/folders/1SQpwFyJhYqheXMdNBAXFb8q92IrRXig5",
+      "Quiz":"https://drive.google.com/drive/folders/1hQZT01FzH-YL8Od3Yi9sG2WcpXLhIAkr",
+      "All files":"https://drive.google.com/drive/folders/1fHOBXfywKQ5ZR9-s_Ct0mDYDiEWV56Vi",
+     },
+      "Recorded Videos": {
+      "Eng.  Amal Abderhman":"https://youtube.com/playlist?list=PLaN_skmK8LECPLUlJI5NjYZHaF7u10ohe&si=V11A8siLBZ-R1FFO",
+      "Eng. Safa Albana":"https://youtube.com/playlist?list=PLYCNhQDVbex-EYEJFxg6F3uluWfi0y50-&feature=shared",
+      },
+      "Tips": "شرح الميعدين كافي"
     },
     "تدريب عملي(250)ساعة": {
-      "Lab": "تدريب عملي(250)ساعة.html",
+      "Lab": "https://drive.google.com/drive/folders/19dWhAXXJnx0FyGVvjHnWgBfrzYG7Q9-1",
       "Recorded Videos": "https://drive.google.com/drive/folders/19dWhAXXJnx0FyGVvjHnWgBfrzYG7Q9-1",
-      "Tips": ""
+      "Tips": "تدريب"
     }
   },
   semester2: {
     "Computer Networks": {
-      "Slides": "Computer_Networks_slides.html",
+      "Slides & Chapters":{ 
+      "All Slides & Chapters ":"https://drive.google.com/drive/folders/1DswIODl5jBQ_BgjG9-hS1omavRCf-8w_"
+      },
       "Book & Solutions": "https://drive.google.com/drive/folders/NETWORK123",
-      "Lectures": "Computer_Networks_lec.html",
-      "Chapters": "Computer_Networks_chapters.html",
+      "Lectures": {
+      "Dr. Ayman Abu Samra":"https://youtube.com/playlist?list=PLhidj2WdRnd_p_FoK6zU-KgpvKs_eNjpq&feature=shared",
+      "Dr. Ihab Mortaja (IT)":"https://youtube.com/playlist?list=PL9fwy3NUQKwbGu7MKFFyvxX7tawD4YQDi&feature=shared",
+      "Ain Shams(مصر)  ":"https://youtube.com/playlist?list=PLJLhMygEmQDXbwjHc0S2gbZt6EOUdhEbB&feature=shared",
+     },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/NETWORK456",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/NETWORK789",
-      "Tips": ""
+      "Tips": "مادة سهلة وبتعتمد على الاتصالات"
     },
     "Computer Networks Lab": {
-      "Lab": "Computer_Networks_Lab.html",
-      "Recorded Videos": "Computer_Networks_Lab_lec.html",
-      "Tips": ""
+      "Lab": {
+      "Project ":"https://drive.google.com/drive/folders/1HX8VB5MM9pYq0cXTI3SqCMcRG6VExmC5",
+      "All files":"https://drive.google.com/drive/folders/1HDBXbwZ-ygrVxZVlzWs-Nxlr2yXEGm6A",
+      },
+      "Recorded Videos": {
+      "Lecture(packet Tracer)  ":"https://youtube.com/playlist?list=PLZURQ_XyXLwD6ScmyrzzvFMgidIQQX05N&feature=shared",
+      "lecture(Egypt)":"https://youtube.com/playlist?list=PLJLhMygEmQDVKJbL31PH7DJZX35xdkhHs&feature=shared",
+      },
+      "Tips": "العملي يعني نطبق"
     },
     "Embedded Systems": {
-      "Slides": "Embedded_Systems_slides.html",
+      "Slides": {
+      "All Slides & Chapters ":"https://drive.google.com/drive/folders/1Hk6QTARS4Um9zejXhv-5moQl6P_e1SiL",
+       },
       "Book & Solutions": "https://drive.google.com/drive/folders/EMBEDSYS123",
-      "Lectures": "Embedded_Systems_lec.html",
-      "Chapters": "Embedded_Systems_chapters.html",
+      "Lectures":{ 
+      "Dr. Ibrahim Abu Hiba":"https://youtube.com/playlist?list=PL9fwy3NUQKwbYqX7pRezwxDHPXynbUewK&feature=shared",
+     },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/EMBEDSYS456",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/EMBEDSYS789",
-      "Tips": ""
+      "Tips": "لما اخلصها بعطي النصيحة"
     },
     "Embedded Systems Lab": {
-      "Lab": "Embedded Systems Lab.html",
+      "Lab": {
+      "Project ":"https://drive.google.com/drive/folders/1NECGMiT_NRp1C0lp5Pnm9ZaA-gt-qloT",
+      "All files":"https://drive.google.com/drive/folders/1MRwDP1frR0oPhcG6ReeyARCXVFYIo6nP",
+    },
       "Recorded Videos": "https://youtube.com/playlist?list=PLq5FW85cJhv4WZpa4VydMSqcNm38xGBhf&feature=shared",
-      "Tips": ""
+      "Tips": "تطبيق عملي"
     },
     "VHDL": {
-      "Slides": "VHDL_slides.html",
+      "Slides & Chapters": {
+      "All Slides & Chapters":"https://drive.google.com/drive/folders/1TaUj7JvJldixnSbbYdvYrffOoxWSMOTl",
+      },
       "Book & Solutions": "https://drive.google.com/drive/folders/VHDL123",
-      "Lectures": "VHDL_lec.html",
-      "Chapters": "VHDL_chapters.html",
+      "Lectures": {
+      "Dr. Ibrahim Abu Heiba":"https://youtube.com/playlist?list=PL9fwy3NUQKwZxV6lHjK-ShPlZD0H8baax&feature=shared",
+      "VHDL course":"https://youtube.com/playlist?list=PLM64jSCxdKfXCjmu0QXL2NbhG2xiFPeug&feature=shared",
+      "Dr. Ruba Salama VHDL Ch(6) ":"https://youtube.com/playlist?list=PLD0Lm3-uSQeqOoEH-fye718kyGPXAwfr4&feature=shared",
+    },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/VHDL456",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/VHDL789",
-      "Tips": ""
+      "Tips": " ما عندي خبرة بعد"
     },
     "VHDL Lab": {
       "Lab": "https://drive.google.com/drive/folders/1ZZ3GPjkxyHG0ZubFg1EgY8o7GnIxQd3F",
-      "Recorded Videos": "VHDL Lab_lec.html",
-      "Tips": ""
+      "Recorded Videos": { 
+      "Eng.Rasha Sammour  ":"https://youtube.com/playlist?list=PLq5FW85cJhv6R6Fs9mRv6lGSWC2583Xw1&feature=shared",
+      "Eng.Mohammed Al-Madhoun":"https://youtube.com/playlist?list=PLq5FW85cJhv6R6Fs9mRv6lGSWC2583Xw1&feature=shared",
+      "Eng.Lama Nafei":"https://youtube.com/playlist?list=PLxD4M5utghGu8VFMBTG9zn2Qv4NhP5y3L&feature=shared",
+      "Eng.Ala Harara ":"https://youtube.com/playlist?list=PLF4WKGz4m1djdOHMIhaPJHr4Xu3QjC8F9&feature=shared",
+      "Telegram channel(VHDL) ":"https://t.me/+WqE8lRE93I8wZmU6",
+      },
+      "Tips": "المحاضرات كافية"
     },
     "Software Engineering": {
-      "Slides": "Software_Engineering_slides.html",
+      "Slides & Chapters": {
+      "All Slides & Chapters":"https://drive.google.com/drive/folders/1NksiJLNqgzdA6sY4dnevE_wgC3_wyblA",
+      },
       "Book & Solutions": "https://drive.google.com/drive/folders/SWENG123",
-      "Lectures": "Software_Engineering_lec.html",
-      "Chapters": "Software_Engineering_chapters.html",
+      "Lectures":{
+      "Concept(مصر)":"https://youtube.com/playlist?list=PL08ef9eJxtJZvt5BOsT46vN6kWnflVKH4&feature=shared",
+     },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/SWENG456",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/SWENG789",
-      "Tips": ""
+      "Tips": "برضه لسى ما خلصتها"
     }
   }
 },
 year5: {
   semester1: {
     "AI": {
-      "Lab": "Ai.html",
+      "Lab":{
+      "Slides":"https://drive.google.com/drive/folders/1dxiLbjcPyqw4zGz9jyguBNsvluAinG8p",
+      "Exam":"https://drive.google.com/drive/folders/1aNq91NjtdwGgOMoSP1q-LJT3hP42v_2C",
+      "All files":"https://drive.google.com/drive/folders/1iUvcQ7LcjZu2KhEPAEdM1LdeO3MDMxdG",
+     },
       "Recorded Videos": "https://www.youtube.com/playlist?list=PL9fwy3NUQKwbyzcrZS3SXHXq2bmczG2zD",
-      "Tips": ""
+      "Tips": "لم ادرس المادة بعد اعذرني ولكن اكيد بدها متابعة جدا"
     },
     "AI Lab": {
       "Lab": "https://drive.google.com/drive/folders/1AnrCTffG_cgDnPUhA1ycK2oDHxR7RQoj",
       "Recorded Videos": "https://www.youtube.com/playlist?list=PLoxxbQaXjEPiFy7_CE3t7zPbLAENAVUXw",
-      "Tips": ""
+      "Tips": "طبق كل اشي ي صديقي "
     },
     "Network Security": {
       "Slides": "https://drive.google.com/drive/folders/1fQuOOB3NdyJ_Cya2NuJFGent8C5bOxh6",
       "Book & Solutions": "https://drive.google.com/drive/folders/1AKDUcSwsXjCXBp687cfnwsljZbD_yIk1",
-      "Lectures": "Network Security_lec.html",
+      "Lectures":{
+      "Dr. Ahmed Abu Dabousa":"https://youtube.com/playlist?list=PLJGg4x6CCiDTVoIdKLUgkjzrYZOP_m6ra&si=JdYgkhFcBu4WPmEd",
+      "Dr. Mohammed Fawreh (Jordan)":"https://youtube.com/playlist?list=PLywXTudHysK3_NtkYB-aayS-EyCvDvOD5&feature=shared",
+      "Dr. Mohammed Alkasassbeh (Jordan )":"https://youtube.com/playlist?list=PLCaBbsduBn60vLfP2h1XAhbIk32BHdwkq&feature=shared",
+      "Dr. Malik Mohammed Barhoush":"https://youtube.com/playlist?list=PLKcmcnPl3WuIMH1dwqPP3djpustUK9rI_&feature=shared",
+     },
+
+
+
+
       "Chapters":"https://drive.google.com/drive/folders/1T3oW8asOjXWHiEjT58FnjMMsxd4yXrzr",
       "Discussion & Problems & Problems solution":"https://drive.google.com/drive/folders/1N1124TuAYZ2IzAgNqMkqo49AVhVAQjE8",
       "Quiz & Exams & Homework":"https://drive.google.com/drive/folders/1gX4eZau0_5P14tjZBfB5tEfUA99ajKWH",
-      "Tips": ""
+      "Tips": "الفهم الجيد للمادة مع حل اكبر كم من النماذج"
     },
     "Network Security Lab": {
       "Lab": "https://drive.google.com/drive/folders/1yQ9o4l_PAR9pOt1CZy6FFbDuTktn8cMR",
-      "Recorded Videos": "Network Security_lec Lab.html",
-      "Tips": ""
+      "Recorded Videos":{ 
+      "Eng. Mohammed Habboub":"https://youtube.com/playlist?list=PLq6tvdQqyXAVf_BIAJsgv71k0aFogQeLn&si=C_X1qXFuhz07nkmG",
+      "Eng. Mohammed ALMadhoun":"https://www.youtube.com/playlist?list=PLq5FW85cJhv4Gm0ycivqhaVKCbXi5w_UV",
+     },
+      "Tips": "طبق كل ما تعلمته ي غالي"
     },
     "Digital Image Processing": {
       "Slides": "https://drive.google.com/drive/folders/1bWY2mZCjMMwSoLNqbJUvKfZamPENIMwU",
       "Book & Solutions": "https://drive.google.com/drive/folders/17AKPwdDFzgTCqTnvvImvsRANBrXSsHyu",
-      "Lectures": "DIP_Lec.html",
+      "Lectures":{
+      "Dr.Osama من الاردن":"https://youtube.com/playlist?list=PLIVqjZoOR8uxQrAlTbh8lwOQuVvrNgCRu&si=LvMADbcvYwv7rYXJ",
+      "شرح حل اختبار الميد":"https://youtu.be/IOQ_r5adf9U",
+      },
       "Chapters":"https://drive.google.com/drive/folders/14NRjtIxX7SjXoLrmOoWByz8DbiT2HyWZ",
       "Discussion & Problems & Problems solution":"https://drive.google.com/drive/folders/1gfdQ_FZ3EeyIcPYW_VjGw-P2i-2ZWYoo",
       "Quiz & Exams & Homework":"https://drive.google.com/drive/folders/1oG3YAvaHEn0gZvJvPT4FM3uWZYByhSwX",
-      "Tips": ""
+      "Tips": "عملت ملفات شرح لكل شابتر من خلال حل المسائل بتشوفوا بعد ما تدرس"
     }
   },
   semester2: {
     "Security In Computer Systems": {
       "Lab": "https://drive.google.com/drive/folders/1i4njOu8R0sNNq8b-JBVVWPbJEjpOQb7O",
       "Recorded Videos": "https://www.youtube.com/playlist?list=PLJGg4x6CCiDT14V0C-4Jp1t", 
+      "Tips":"الفهم الجيد للمحاضرات"
     }   
   }
 } 
