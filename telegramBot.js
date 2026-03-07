@@ -191,21 +191,42 @@ bot.on("callback_query", (query) => {
     let reply = "📚 " + subject + "\n";
     reply += "━━━━━━━━━━━━━━\n\n";
 
-    for (const key in links) {
+  for (const key in links) {
 
-      if (links[key] && links[key] !== "لا توجد روابط") {
+  const value = links[key];
 
-        reply += "🔗 " + key + "\n";
-        reply += links[key] + "\n\n";
+  if (!value || value === "لا توجد روابط") {
 
-      } else {
+    reply += "⚠️ " + key + "\n";
+    reply += "لا توجد روابط\n\n";
+    continue;
 
-        reply += "⚠️ " + key + "\n";
-        reply += "لا توجد روابط\n\n";
+  }
 
-      }
+  reply += "🔗 " + key + "\n";
+
+  // لو الرابط نص عادي
+  if (typeof value === "string") {
+
+    reply += value + "\n\n";
+
+  }
+
+  // لو فيه عدة روابط (مثل السلايد أو المحاضرات)
+  else if (typeof value === "object") {
+
+    for (const sub in value) {
+
+      reply += "• " + sub + "\n";
+      reply += value[sub] + "\n";
 
     }
+
+    reply += "\n";
+
+  }
+
+}
 
     bot.sendMessage(chatId, reply);
 
