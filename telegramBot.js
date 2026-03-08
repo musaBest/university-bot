@@ -1,5 +1,6 @@
 const TelegramBot = require("node-telegram-bot-api");
 const { courses } = require("./courses");
+const path = require("path");
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
@@ -50,10 +51,8 @@ const contacts = {
 
 // start
 bot.onText(/\/start/, (msg) => {
-
   const chatId = msg.chat.id;
   const name = msg.from.first_name || "طالب";
-
   userState[chatId] = {};
 
   bot.sendMessage(
@@ -63,209 +62,139 @@ bot.onText(/\/start/, (msg) => {
       reply_markup: {
         inline_keyboard: [
           [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
-          [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }]
+          [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
+          [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }]
         ]
       }
     }
   );
-
 });
 
 // التعامل مع الأزرار
 bot.on("callback_query", (query) => {
-
   const chatId = query.message.chat.id;
   const data = query.data;
 
   // منع التكرار
   if (processedCallbacks.has(query.id)) return;
   processedCallbacks.add(query.id);
-
   bot.answerCallbackQuery(query.id);
 
   setTimeout(() => {
     processedCallbacks.delete(query.id);
   }, 5000);
 
-  // الرجوع للسنوات
-  if (data === "back_years") {
+  // ======= عرض صورة المواد المعتمدة =======
+  if (data === "show_prerequisites") {
+    const imagePath = path.join(__dirname, "prerequisites.png");
+    bot.sendPhoto(chatId, imagePath, {
+      caption: "📷 المواد المعتمدة على بعضها"
+    });
+    return;
+  }
 
+  // ======= الرجوع للسنوات =======
+  if (data === "back_years") {
     const yearsButtons = Object.keys(courses).map((y) => {
       return [{ text: y, callback_data: "year_" + y }];
     });
-
-    bot.sendMessage(chatId, "اختر السنة:", {
-      reply_markup: { inline_keyboard: yearsButtons }
-    });
-
+    bot.sendMessage(chatId, "اختر السنة:", { reply_markup: { inline_keyboard: yearsButtons } });
     return;
   }
 
-  // الرجوع للفصول
+  // ======= الرجوع للفصول =======
   if (data === "back_semesters") {
-
     const year = userState[chatId]?.year;
     if (!year) return;
-
     const semesters = Object.keys(courses[year]).map((s) => {
       return [{ text: s, callback_data: "semester_" + s }];
     });
-
-    bot.sendMessage(chatId, "اختر الفصل:", {
-      reply_markup: { inline_keyboard: semesters }
-    });
-
+    bot.sendMessage(chatId, "اختر الفصل:", { reply_markup: { inline_keyboard: semesters } });
     return;
   }
 
-  // عرض السنوات
+  // ======= عرض السنوات =======
   if (data === "show_years") {
-
     const buttons = Object.keys(courses).map((year) => {
       return [{ text: year, callback_data: "year_" + year }];
     });
-
-    bot.sendMessage(chatId, "اختر السنة:", {
-      reply_markup: { inline_keyboard: buttons }
-    });
-
+    bot.sendMessage(chatId, "اختر السنة:", { reply_markup: { inline_keyboard: buttons } });
     return;
   }
 
-  // عرض جهات التواصل
+  // ======= عرض جهات التواصل =======
   if (data === "show_contacts") {
-
     const buttons = Object.keys(contacts).map((c) => {
       return [{ text: c, callback_data: "contact_" + c }];
     });
-
-    bot.sendMessage(chatId, "اختر الجهة:", {
-      reply_markup: { inline_keyboard: buttons }
-    });
-
+    bot.sendMessage(chatId, "اختر الجهة:", { reply_markup: { inline_keyboard: buttons } });
     return;
   }
-
-  // اختيار جهة
+  // ======= اختيار جهة =======
   if (data.startsWith("contact_")) {
-
     const name = data.replace("contact_", "");
-
     const buttons = contacts[name].map((c) => {
-      return [{
-        text: c.name,
-        url: "https://wa.me/" + c.phone.replace(/\D/g, "")
-      }];
+      return [{ text: c.name, url: "https://wa.me/" + c.phone.replace(/\D/g, "") }];
     });
-
-    bot.sendMessage(chatId, "📞 " + name + "\nاضغط على الاسم للتواصل:", {
-      reply_markup: { inline_keyboard: buttons }
-    });
-
+    buttons.push([{ text: "🔙 رجوع لجهات الاتصال", callback_data: "show_contacts" }]);
+    bot.sendMessage(chatId, "📞 " + name + "\nاضغط على الاسم للتواصل:", { reply_markup: { inline_keyboard: buttons } });
     return;
   }
-  // اختيار سنة
-  if (data.startsWith("year_")) {
 
+  // ======= اختيار سنة =======
+  if (data.startsWith("year_")) {
     const year = data.replace("year_", "");
     userState[chatId] = { year: year };
-
-    const semesters = Object.keys(courses[year]).map((s) => {
-      return [{ text: s, callback_data: "semester_" + s }];
-    });
-
+    const semesters = Object.keys(courses[year]).map((s) => [{ text: s, callback_data: "semester_" + s }]);
     bot.sendMessage(chatId, "اختر الفصل:", {
-      reply_markup: {
-        inline_keyboard: [
-          ...semesters,
-          [{ text: "🔙 رجوع للسنوات", callback_data: "back_years" }]
-        ]
-      }
+      reply_markup: { inline_keyboard: [...semesters, [{ text: "🔙 رجوع للسنوات", callback_data: "back_years" }]] }
     });
-
     return;
   }
 
-  // اختيار فصل
+  // ======= اختيار فصل =======
   if (data.startsWith("semester_")) {
-
     const semester = data.replace("semester_", "");
     const year = userState[chatId]?.year;
-
-    if (!year) {
-      bot.sendMessage(chatId, "حدث خطأ، اختر السنة أولاً.");
-      return;
-    }
-
+    if (!year) { bot.sendMessage(chatId, "حدث خطأ، اختر السنة أولاً."); return; }
     userState[chatId].semester = semester;
-
-    const subjects = Object.keys(courses[year][semester]).map((sub) => {
-      return [{ text: sub, callback_data: "subject_" + sub }];
-    });
-
+    const subjects = Object.keys(courses[year][semester]).map((sub) => [{ text: sub, callback_data: "subject_" + sub }]);
     bot.sendMessage(chatId, "اختر المادة:", {
-      reply_markup: {
-        inline_keyboard: [
-          ...subjects,
-          [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }]
-        ]
-      }
+      reply_markup: { inline_keyboard: [...subjects, [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }]] }
     });
-
     return;
   }
 
-  // اختيار مادة
+  // ======= اختيار مادة =======
   if (data.startsWith("subject_")) {
-
     const subject = data.replace("subject_", "");
     const state = userState[chatId];
-
-    if (!state?.year || !state?.semester) {
-      bot.sendMessage(chatId, "حدث خطأ. اختر السنة والفصل أولاً.");
-      return;
-    }
+    if (!state?.year || !state?.semester) { bot.sendMessage(chatId, "حدث خطأ. اختر السنة والفصل أولاً."); return; }
 
     const links = courses[state.year][state.semester][subject];
-
-    let reply = "📚 " + subject + "\n";
-    reply += "━━━━━━━━━━━━━━\n\n";
+    let reply = "📚 " + subject + "\n━━━━━━━━━━━━━━\n\n";
 
     for (const key in links) {
-
       const value = links[key];
-
       if (!value || value === "لا توجد روابط") {
-        reply += "⚠️ " + key + "\n";
-        reply += "لا توجد روابط\n\n";
+        reply += "⚠️ " + key + "\nلا توجد روابط\n\n";
         continue;
       }
-
       reply += "🔗 " + key + "\n";
-
-      if (typeof value === "string") {
-        reply += value + "\n\n";
-      }
-
+      if (typeof value === "string") { reply += value + "\n\n"; }
       else if (typeof value === "object") {
-
         for (const sub in value) {
-          reply += "• " + sub + "\n";
-          reply += value[sub] + "\n";
+          reply += "• " + sub + "\n" + value[sub] + "\n";
         }
-
         reply += "\n";
       }
     }
 
     bot.sendMessage(chatId, reply);
-
     return;
   }
 
 });
 
 // أخطاء
-bot.on("polling_error", (err) => {
-  console.log(err.message);
-});
+bot.on("polling_error", (err) => { console.log(err.message); });

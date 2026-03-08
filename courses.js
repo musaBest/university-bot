@@ -503,13 +503,13 @@ const courses = {
       "Slides & Chapters ": {
       "All Slides & Chapters":"https://drive.google.com/file/d/1A0qw480ZDOfqVq44LzeY6Luhs5ou7gkz/view?usp=drivesdk", 
       },
-      "Book & Solutions": "https://drive.google.com/drive/folders/XYZ123", 
+      "Book & Solutions": "https://drive.google.com/drive/folders/1eD1rzo-buF2U6CjCZ2jK9WoU2Ds9HZ3R", 
       "Lectures": {
       "Dr. Ahmed Mahdi":"https://drive.google.com/drive/folders/1Xz1aLytDZu_Gq7ZRXKxWrxQNR70JcEpU",
       "Adel Nasem":"https://youtube.com/playlist?list=PLCInYL3l2AajqOUW_2SwjWeMwf4vL4RSp&feature=shared",
       },
-      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/ABC456",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/DEF789",
+      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1eeeyvfVNVF-uBLu1orj278PydFbkwr3O",
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1eewtgvRjA7mZqLadYzzGPReV8WDRMkNi",
       "Tips": "اهم مادة معنا تقريبا اهتم انك تفهمها فهم كويس"
     },
     "Data structures and algorithms Lab": {
@@ -639,7 +639,7 @@ const courses = {
       }, 
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1Vz9g39mGaVDJZUi_MsKgwYVmP90nMK0o",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1ZCMPaXFa4hkbE2keQsLTj_BelKIMzVd7",
-      "Tips": "المادة تكرز على مواضيع معينة منها VTC,POWER,FANOUT,حالات الترانزستور افهمهم جيدا"
+      "Tips": "المادة تركز على مواضيع معينة منها VTC,POWER,FANOUT,حالات الترانزستور افهمهم جيدا"
     },
     "Practical digital electronics": {
       "Lab": "https://drive.google.com/drive/folders/10uEt6uMQOaF2UH36uDF7kfX01GLyZN5E",
@@ -764,14 +764,14 @@ year4: {
       "Slides & Chapters":{ 
       "All Slides & Chapters ":"https://drive.google.com/drive/folders/1DswIODl5jBQ_BgjG9-hS1omavRCf-8w_"
       },
-      "Book & Solutions": "https://drive.google.com/drive/folders/NETWORK123",
+      "Book & Solutions": "https://drive.google.com/drive/folders/1AzL18ADbV90gFeP3mG96_MEkeCBr9YAp",
       "Lectures": {
       "Dr. Ayman Abu Samra":"https://youtube.com/playlist?list=PLhidj2WdRnd_p_FoK6zU-KgpvKs_eNjpq&feature=shared",
       "Dr. Ihab Mortaja (IT)":"https://youtube.com/playlist?list=PL9fwy3NUQKwbGu7MKFFyvxX7tawD4YQDi&feature=shared",
       "Ain Shams(مصر)  ":"https://youtube.com/playlist?list=PLJLhMygEmQDXbwjHc0S2gbZt6EOUdhEbB&feature=shared",
      },
-      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/NETWORK456",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/NETWORK789",
+      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1G5ZxiBvhosuCSy1rupWpiqQEcM83RqE6",
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1BDLTlWA9LBf6IuCmfEy9EioHS604pFDe",
       "Tips": "مادة سهلة وبتعتمد على الاتصالات"
     },
     "Computer Networks Lab": {
@@ -789,12 +789,12 @@ year4: {
       "Slides": {
       "All Slides & Chapters ":"https://drive.google.com/drive/folders/1Hk6QTARS4Um9zejXhv-5moQl6P_e1SiL",
        },
-      "Book & Solutions": "https://drive.google.com/drive/folders/EMBEDSYS123",
+      "Book & Solutions": "https://drive.google.com/drive/folders/1Ha-FktxIVnUrfJ-RtvaPv0zSgGBfMt0g",
       "Lectures":{ 
       "Dr. Ibrahim Abu Hiba":"https://youtube.com/playlist?list=PL9fwy3NUQKwbYqX7pRezwxDHPXynbUewK&feature=shared",
      },
-      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/EMBEDSYS456",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/EMBEDSYS789",
+      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1Jv2_87dN99FNNTvxgq3lQIZpgIVR8uJ9",
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1I72ucHKhXKx9vufUX3vY9V0qsWSI_pz3",
       "Tips": "لما اخلصها بعطي النصيحة"
     },
     "Embedded Systems Lab": {
@@ -809,14 +809,14 @@ year4: {
       "Slides & Chapters": {
       "All Slides & Chapters":"https://drive.google.com/drive/folders/1TaUj7JvJldixnSbbYdvYrffOoxWSMOTl",
       },
-      "Book & Solutions": "https://drive.google.com/drive/folders/VHDL123",
+      "Book & Solutions": "https://drive.google.com/drive/folders/1TLMCsvRBFzFUukK5tjsPVu6ecFzJCu_l",
       "Lectures": {
       "Dr. Ibrahim Abu Heiba":"https://youtube.com/playlist?list=PL9fwy3NUQKwZxV6lHjK-ShPlZD0H8baax&feature=shared",
       "VHDL course":"https://youtube.com/playlist?list=PLM64jSCxdKfXCjmu0QXL2NbhG2xiFPeug&feature=shared",
       "Dr. Ruba Salama VHDL Ch(6) ":"https://youtube.com/playlist?list=PLD0Lm3-uSQeqOoEH-fye718kyGPXAwfr4&feature=shared",
     },
-      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/VHDL456",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/VHDL789",
+      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1X1aZY9WQAXRxQjJ2qrVjZRdzJF1c5Nrc",
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1Vc7q5vaBfSH6aJrRK8ZnXG9T3KEPBiTl",
       "Tips": " ما عندي خبرة بعد"
     },
     "VHDL Lab": {
@@ -834,12 +834,12 @@ year4: {
       "Slides & Chapters": {
       "All Slides & Chapters":"https://drive.google.com/drive/folders/1NksiJLNqgzdA6sY4dnevE_wgC3_wyblA",
       },
-      "Book & Solutions": "https://drive.google.com/drive/folders/SWENG123",
+      "Book & Solutions": "https://drive.google.com/drive/folders/1NNXTwTLAvmMnl-8aEFHyDrI8zUlYDGX0",
       "Lectures":{
       "Concept(مصر)":"https://youtube.com/playlist?list=PL08ef9eJxtJZvt5BOsT46vN6kWnflVKH4&feature=shared",
      },
-      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/SWENG456",
-      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/SWENG789",
+      "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1P6Wwg0ooB5oZGn0oPELEj_CLOB0VraZq",
+      "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1P5gtzyUtGBcqfqTRc6wCXPZctcQ-2xBF",
       "Tips": "برضه لسى ما خلصتها"
     }
   }
@@ -902,7 +902,7 @@ year5: {
   semester2: {
     "Security In Computer Systems": {
       "Lab": "https://drive.google.com/drive/folders/1i4njOu8R0sNNq8b-JBVVWPbJEjpOQb7O",
-      "Recorded Videos": "https://www.youtube.com/playlist?list=PLJGg4x6CCiDT14V0C-4Jp1t", 
+      "Recorded Videos": "https://www.youtube.com/playlist?list=PLJGg4x6CCiDT14V0C-4Jp1tO6LASSr2fI", 
       "Tips":"الفهم الجيد للمحاضرات"
     }   
   }
