@@ -791,6 +791,7 @@ year4: {
        },
       "Book & Solutions": "https://drive.google.com/drive/folders/1Ha-FktxIVnUrfJ-RtvaPv0zSgGBfMt0g",
       "Lectures":{ 
+      "Dr. Ahmed Abu Dabousa":"https://youtu.be/3rgszL689Tw?feature=shared",
       "Dr. Ibrahim Abu Hiba":"https://youtube.com/playlist?list=PL9fwy3NUQKwbYqX7pRezwxDHPXynbUewK&feature=shared",
      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1Jv2_87dN99FNNTvxgq3lQIZpgIVR8uJ9",
