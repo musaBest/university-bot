@@ -9,10 +9,10 @@ const userState = {};
 const processedCallbacks = new Set();
 
 const ADMIN_ID = 5687891184; // حط ID تبعك
-require("./upload")(bot, userState, ADMIN_ID);
-require("./rating")(bot, userState);
+require("./data/upload")(bot, userState, ADMIN_ID);
+require("./data/rating")(bot, userState);
 
-const utils = require("./utils");
+const utils = require("./data/utils");
 
 // جهات التواصل
 const contacts = {
