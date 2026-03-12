@@ -8,6 +8,12 @@ const bot = new TelegramBot(token, { polling: true });
 const userState = {};
 const processedCallbacks = new Set();
 
+const ADMIN_ID = 5687891184; // حط ID تبعك
+require("./upload/upload")(bot, userState, ADMIN_ID);
+require("./rating/rating")(bot, userState);
+
+const utils = require("./data/utils");
+
 // جهات التواصل
 const contacts = {
   "القبول والتسجيل": [
@@ -90,7 +96,6 @@ bot.on("callback_query", (query) => {
     processedCallbacks.delete(query.id);
   }, 5000);
 
-  // ===== حاسبة المعدل =====
   if (data === "gpa_file") {
 
     const filePath = path.join(__dirname, "gpa_calculator.xlsx");
@@ -102,7 +107,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== خطة 5 سنوات =====
   if (data === "plan5") {
 
     const filePath = path.join(__dirname, "plan_5years.pdf");
@@ -114,7 +118,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== خطة 4 سنوات =====
   if (data === "plan4") {
 
     const img1 = path.join(__dirname, "plan4_1.png");
@@ -126,7 +129,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== عرض صورة المواد المعتمدة =====
   if (data === "show_prerequisites") {
 
     const imagePath = path.join(__dirname, "prerequisites.png");
@@ -138,7 +140,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== الرجوع للسنوات =====
   if (data === "back_years") {
 
     const yearsButtons = Object.keys(courses).map((y) => {
@@ -152,9 +153,7 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== الرجوع للفصول =====
   if (data === "back_semesters") {
-
     const year = userState[chatId]?.year;
     if (!year) return;
 
@@ -169,7 +168,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== عرض السنوات =====
   if (data === "show_years") {
 
     const buttons = Object.keys(courses).map((year) => {
@@ -183,7 +181,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== جهات التواصل =====
   if (data === "show_contacts") {
 
     const buttons = Object.keys(contacts).map((c) => {
@@ -197,7 +194,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== اختيار جهة =====
   if (data.startsWith("contact_")) {
 
     const name = data.replace("contact_", "");
@@ -218,7 +214,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== اختيار سنة =====
   if (data.startsWith("year_")) {
 
     const year = data.replace("year_", "");
@@ -240,7 +235,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== اختيار فصل =====
   if (data.startsWith("semester_")) {
 
     const semester = data.replace("semester_", "");
@@ -269,7 +263,6 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // ===== اختيار مادة =====
   if (data.startsWith("subject_")) {
 
     const subject = data.replace("subject_", "");
@@ -312,7 +305,12 @@ bot.on("callback_query", (query) => {
       }
     }
 
-    bot.sendMessage(chatId, reply);
+    const keyboard = [
+      [{ text: "📤 لديك ملخص شاركنا به", callback_data: "upload_summary" }],
+      [{ text: "🏠 العودة للقائمة الرئيسية", callback_data: "main_menu" }]
+    ];
+
+    bot.sendMessage(chatId, reply, { reply_markup: { inline_keyboard: keyboard } });
 
     return;
   }
