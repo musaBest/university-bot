@@ -8,7 +8,8 @@ const bot = new TelegramBot(token, { polling: true });
 const userState = {};
 const processedCallbacks = new Set();
 
-const ADMIN_ID = 5687891184; // حط ID تبعك
+const ADMIN_ID = 5687891184;
+
 require("./data/upload")(bot, userState, ADMIN_ID);
 require("./data/rating")(bot, userState);
 
@@ -55,31 +56,28 @@ const contacts = {
   ]
 };
 
+// القائمة الرئيسية
+function showMainMenu(chatId, name = "طالب") {
+  bot.sendMessage(chatId, "مرحباً " + name + "!\nاختر من القائمة التالية:", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
+        [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
+        [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
+        [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
+        [{ text: "📄 خطة هندسة الحاسوب 5 سنوات", callback_data: "plan5" }],
+        [{ text: "🖼 خطة هندسة الحاسوب 4 سنوات", callback_data: "plan4" }]
+      ]
+    }
+  });
+}
+
 // start
 bot.onText(/\/start/, (msg) => {
-
   const chatId = msg.chat.id;
   const name = msg.from.first_name || "طالب";
-
   userState[chatId] = {};
-
-  bot.sendMessage(
-    chatId,
-    "مرحباً " + name + "!\nاختر من القائمة التالية:",
-    {
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
-          [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
-          [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
-          [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
-          [{ text: "📄 خطة هندسة الحاسوب 5 سنوات", callback_data: "plan5" }],
-          [{ text: "🖼 خطة هندسة الحاسوب 4 سنوات", callback_data: "plan4" }]
-        ]
-      }
-    }
-  );
-
+  showMainMenu(chatId, name);
 });
 
 // التعامل مع الأزرار
@@ -90,89 +88,59 @@ bot.on("callback_query", (query) => {
 
   if (processedCallbacks.has(query.id)) return;
   processedCallbacks.add(query.id);
+
   bot.answerCallbackQuery(query.id);
+  setTimeout(() => processedCallbacks.delete(query.id), 5000);
 
-  setTimeout(() => {
-    processedCallbacks.delete(query.id);
-  }, 5000);
+  // القائمة الرئيسية
+  if (data === "main_menu") {
+    showMainMenu(chatId);
+    return;
+  }
 
+  // ملف المعدل
   if (data === "gpa_file") {
-
     const filePath = path.join(__dirname, "gpa_calculator.xlsx");
-
     bot.sendDocument(chatId, filePath, {
       caption: "📊 ملف حساب المعدل الفصلي والتراكمي"
     });
-
     return;
   }
 
+  // خطة 5 سنوات
   if (data === "plan5") {
-
     const filePath = path.join(__dirname, "plan_5years.pdf");
-
     bot.sendDocument(chatId, filePath, {
       caption: "📄 خطة هندسة الحاسوب - نظام 5 سنوات"
     });
-
     return;
   }
 
+  // خطة 4 سنوات
   if (data === "plan4") {
-
     const img1 = path.join(__dirname, "plan4_1.png");
     const img2 = path.join(__dirname, "plan4_2.png");
-
     bot.sendPhoto(chatId, img1);
     bot.sendPhoto(chatId, img2);
-
     return;
   }
 
+  // المتطلبات
   if (data === "show_prerequisites") {
-
     const imagePath = path.join(__dirname, "prerequisites.png");
-
     bot.sendPhoto(chatId, imagePath, {
       caption: "📷 المواد المعتمدة على بعضها"
     });
-
     return;
   }
 
-  if (data === "back_years") {
+  // عرض السنوات
+  if (data === "show_years" || data === "back_years") {
+    const buttons = Object.keys(courses).map((year) => [
+      { text: year, callback_data: "year_" + year }
+    ]);
 
-    const yearsButtons = Object.keys(courses).map((y) => {
-      return [{ text: y, callback_data: "year_" + y }];
-    });
-
-    bot.sendMessage(chatId, "اختر السنة:", {
-      reply_markup: { inline_keyboard: yearsButtons }
-    });
-
-    return;
-  }
-
-  if (data === "back_semesters") {
-    const year = userState[chatId]?.year;
-    if (!year) return;
-
-    const semesters = Object.keys(courses[year]).map((s) => {
-      return [{ text: s, callback_data: "semester_" + s }];
-    });
-
-    bot.sendMessage(chatId, "اختر الفصل:", {
-      reply_markup: { inline_keyboard: semesters }
-    });
-
-    return;
-  }
-
-  if (data === "show_years") {
-
-    const buttons = Object.keys(courses).map((year) => {
-      return [{ text: year, callback_data: "year_" + year }];
-    });
+    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
 
     bot.sendMessage(chatId, "اختر السنة:", {
       reply_markup: { inline_keyboard: buttons }
@@ -181,11 +149,14 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // جهات الاتصال
   if (data === "show_contacts") {
 
-    const buttons = Object.keys(contacts).map((c) => {
-      return [{ text: c, callback_data: "contact_" + c }];
-    });
+    const buttons = Object.keys(contacts).map((c) => [
+      { text: c, callback_data: "contact_" + c }
+    ]);
+
+    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
 
     bot.sendMessage(chatId, "اختر الجهة:", {
       reply_markup: { inline_keyboard: buttons }
@@ -194,18 +165,19 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // تفاصيل جهة الاتصال
   if (data.startsWith("contact_")) {
 
     const name = data.replace("contact_", "");
 
-    const buttons = contacts[name].map((c) => {
-      return [{
-        text: c.name,
-        url: "https://wa.me/" + c.phone.replace(/\D/g, "")
-      }];
-    });
+    const buttons = contacts[name].map((c) => [
+      { text: c.name, url: "https://wa.me/" + c.phone.replace(/\D/g, "") }
+    ]);
 
-    buttons.push([{ text: "🔙 رجوع لجهات الاتصال", callback_data: "show_contacts" }]);
+    buttons.push(
+      [{ text: "🔙 رجوع لجهات الاتصال", callback_data: "show_contacts" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "📞 " + name + "\nاضغط على الاسم للتواصل:", {
       reply_markup: { inline_keyboard: buttons }
@@ -214,27 +186,52 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // اختيار السنة
   if (data.startsWith("year_")) {
 
     const year = data.replace("year_", "");
+
     userState[chatId] = { year: year };
 
-    const semesters = Object.keys(courses[year]).map((s) => {
-      return [{ text: s, callback_data: "semester_" + s }];
-    });
+    const semesters = Object.keys(courses[year]).map((s) => [
+      { text: s, callback_data: "semester_" + s }
+    ]);
+
+    semesters.push(
+      [{ text: "🔙 رجوع للسنوات", callback_data: "back_years" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "اختر الفصل:", {
-      reply_markup: {
-        inline_keyboard: [
-          ...semesters,
-          [{ text: "🔙 رجوع للسنوات", callback_data: "back_years" }]
-        ]
-      }
+      reply_markup: { inline_keyboard: semesters }
     });
 
     return;
   }
 
+  // الرجوع للفصول
+  if (data === "back_semesters") {
+
+    const year = userState[chatId]?.year;
+    if (!year) return;
+
+    const semesters = Object.keys(courses[year]).map((s) => [
+      { text: s, callback_data: "semester_" + s }
+    ]);
+
+    semesters.push(
+      [{ text: "🔙 رجوع للسنوات", callback_data: "back_years" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
+
+    bot.sendMessage(chatId, "اختر الفصل:", {
+      reply_markup: { inline_keyboard: semesters }
+    });
+
+    return;
+  }
+
+  // اختيار فصل
   if (data.startsWith("semester_")) {
 
     const semester = data.replace("semester_", "");
@@ -247,22 +244,23 @@ bot.on("callback_query", (query) => {
 
     userState[chatId].semester = semester;
 
-    const subjects = Object.keys(courses[year][semester]).map((sub) => {
-      return [{ text: sub, callback_data: "subject_" + sub }];
-    });
+    const subjects = Object.keys(courses[year][semester]).map((sub) => [
+      { text: sub, callback_data: "subject_" + sub }
+    ]);
+
+    subjects.push(
+      [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }],
+      [{ text: "🏠 العودة للقائمة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "اختر المادة:", {
-      reply_markup: {
-        inline_keyboard: [
-          ...subjects,
-          [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }]
-        ]
-      }
+      reply_markup: { inline_keyboard: subjects }
     });
 
     return;
   }
 
+  // اختيار مادة
   if (data.startsWith("subject_")) {
 
     const subject = data.replace("subject_", "");
@@ -275,16 +273,14 @@ bot.on("callback_query", (query) => {
 
     const links = courses[state.year][state.semester][subject];
 
-    let reply = "📚 " + subject + "\n";
-    reply += "━━━━━━━━━━━━━━\n\n";
+    let reply = "📚 " + subject + "\n━━━━━━━━━━━━━━\n\n";
 
     for (const key in links) {
 
       const value = links[key];
 
       if (!value || value === "لا توجد روابط") {
-        reply += "⚠️ " + key + "\n";
-        reply += "لا توجد روابط\n\n";
+        reply += "⚠️ " + key + "\nلا توجد روابط\n\n";
         continue;
       }
 
@@ -292,32 +288,78 @@ bot.on("callback_query", (query) => {
 
       if (typeof value === "string") {
         reply += value + "\n\n";
-      }
-
-      else if (typeof value === "object") {
-
+      } else if (typeof value === "object") {
         for (const sub in value) {
-          reply += "• " + sub + "\n";
-          reply += value[sub] + "\n";
+          reply += "• " + sub + "\n" + value[sub] + "\n";
         }
-
         reply += "\n";
       }
     }
-
     const keyboard = [
       [{ text: "📤 لديك ملخص شاركنا به", callback_data: "upload_summary" }],
+      [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }],
       [{ text: "🏠 العودة للقائمة الرئيسية", callback_data: "main_menu" }]
     ];
 
-    bot.sendMessage(chatId, reply, { reply_markup: { inline_keyboard: keyboard } });
+    bot.sendMessage(chatId, reply, {
+      reply_markup: { inline_keyboard: keyboard }
+    });
+
+    return;
+  }
+
+  // زر رفع الملخص
+  if (data === "upload_summary") {
+
+    userState[chatId].waitingUpload = true;
+
+    bot.sendMessage(
+      chatId,
+      "📤 أرسل الملخص الآن (PDF أو صورة أو رابط).\nسيتم مراجعته قبل نشره."
+    );
 
     return;
   }
 
 });
 
-// أخطاء
+// استقبال الملفات أو الروابط من الطلاب
+bot.on("message", (msg) => {
+
+  const chatId = msg.chat.id;
+  const state = userState[chatId];
+
+  if (!state || !state.waitingUpload) return;
+
+  let fileInfo = null;
+
+  // إذا أرسل ملف PDF أو أي ملف
+  if (msg.document) {
+    fileInfo = msg.document;
+  }
+
+  // إذا أرسل صورة
+  else if (msg.photo) {
+    fileInfo = msg.photo[msg.photo.length - 1];
+  }
+
+  // إذا أرسل رابط أو نص
+  else if (msg.text) {
+    fileInfo = { file_name: msg.text };
+  }
+
+  if (fileInfo) {
+
+    utils.handleUpload(bot, chatId, fileInfo, ADMIN_ID);
+
+    state.waitingUpload = false;
+
+    bot.sendMessage(chatId, "✅ تم استلام الملخص وسيتم مراجعته.");
+  }
+
+});
+
+// الأخطاء
 bot.on("polling_error", (err) => {
   console.log(err.message);
 });
