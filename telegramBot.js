@@ -270,6 +270,7 @@ bot.on("callback_query", (query) => {
       bot.sendMessage(chatId, "حدث خطأ. اختر السنة والفصل أولاً.");
       return;
     }
+    state.currentSubject = subject;
 
     const links = courses[state.year][state.semester][subject];
 
