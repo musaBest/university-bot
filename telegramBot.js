@@ -325,38 +325,24 @@ bot.on("callback_query", (query) => {
 
 // استقبال الملفات أو الروابط من الطلاب
 bot.on("message", (msg) => {
-
   const chatId = msg.chat.id;
   const state = userState[chatId];
 
-  if (!state || !state.waitingUpload) return;
+  if (state?.waitingUpload) {
+    let fileInfo = null;
+    if (msg.document) {
+      fileInfo = msg.document;
+    } else if (msg.photo) {
+      fileInfo = msg.photo[msg.photo.length - 1]; // آخر صورة
+    } else if (msg.text) {
+      fileInfo = { file_name: msg.text };
+    }
 
-  let fileInfo = null;
-
-  // إذا أرسل ملف PDF أو أي ملف
-  if (msg.document) {
-    fileInfo = msg.document;
+    if (fileInfo) {
+      utils.handleUpload(bot, chatId, fileInfo, ADMIN_ID);
+      state.waitingUpload = false;
+    }
   }
-
-  // إذا أرسل صورة
-  else if (msg.photo) {
-    fileInfo = msg.photo[msg.photo.length - 1];
-  }
-
-  // إذا أرسل رابط أو نص
-  else if (msg.text) {
-    fileInfo = { file_name: msg.text };
-  }
-
-  if (fileInfo) {
-
-    utils.handleUpload(bot, chatId, fileInfo, ADMIN_ID);
-
-    state.waitingUpload = false;
-
-    bot.sendMessage(chatId, "✅ تم استلام الملخص وسيتم مراجعته.");
-  }
-
 });
 
 // الأخطاء
