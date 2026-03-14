@@ -76,7 +76,7 @@ function showMainMenu(chatId, name = "طالب") {
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const name = msg.from.first_name || "طالب";
-  userState[chatId] = {};
+  userState[chatId] = { name: name };
   showMainMenu(chatId, name);
 });
 
@@ -93,10 +93,11 @@ bot.on("callback_query", (query) => {
   setTimeout(() => processedCallbacks.delete(query.id), 5000);
 
   // القائمة الرئيسية
-  if (data === "main_menu") {
-    showMainMenu(chatId);
-    return;
-  }
+   if (data === "main_menu") {
+  const name = userState[chatId]?.name || "طالب";
+  showMainMenu(chatId, name);
+  return;
+}
 
   // ملف المعدل
   if (data === "gpa_file") {
