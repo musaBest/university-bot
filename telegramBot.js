@@ -10,7 +10,7 @@ const processedCallbacks = new Set();
 
 const ADMIN_ID = 5687891184;
 
-require("./data/upload")(bot, userState, ADMIN_ID);
+
 require("./data/rating")(bot, userState);
 
 const utils = require("./data/utils");
@@ -296,11 +296,17 @@ bot.on("callback_query", (query) => {
         reply += "\n";
       }
     }
+    
     const keyboard = [
-      [{ text: "📤 لديك ملخص شاركنا به", callback_data: "upload_summary" }],
-      [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }],
-      [{ text: "🏠 العودة للقائمة الرئيسية", callback_data: "main_menu" }]
-    ];
+  [
+    {
+      text: "📤 لديك ملخص شاركنا به",
+      url: "https://t.me/+095sVcKluog5NTky"
+    }
+  ],
+  [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }],
+  [{ text: "🏠 العودة للقائمة الرئيسية", callback_data: "main_menu" }]
+];
 
     bot.sendMessage(chatId, reply, {
       reply_markup: { inline_keyboard: keyboard }
@@ -309,41 +315,7 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // زر رفع الملخص
-  if (data === "upload_summary") {
 
-    userState[chatId].waitingUpload = true;
-
-    bot.sendMessage(
-      chatId,
-      "📤 أرسل الملخص الآن (PDF أو صورة أو رابط).\nسيتم مراجعته قبل نشره."
-    );
-
-    return;
-  }
-
-});
-
-// استقبال الملفات أو الروابط من الطلاب
-bot.on("message", (msg) => {
-  const chatId = msg.chat.id;
-  const state = userState[chatId];
-
-  if (state?.waitingUpload) {
-    let fileInfo = null;
-    if (msg.document) {
-      fileInfo = msg.document;
-    } else if (msg.photo) {
-      fileInfo = msg.photo[msg.photo.length - 1]; // آخر صورة
-    } else if (msg.text) {
-      fileInfo = { file_name: msg.text };
-    }
-
-    if (fileInfo) {
-      utils.handleUpload(bot, chatId, fileInfo, ADMIN_ID);
-      state.waitingUpload = false;
-    }
-  }
 });
 
 // الأخطاء
