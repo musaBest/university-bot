@@ -300,7 +300,7 @@ bot.on("callback_query", (query) => {
     const keyboard = [
   [
     {
-      text: "📤 لديك ملخص شاركنا به",
+      text: "📤 ارفع ملفاتك المهمة للمادة لكي يستفيد غيرنا",
       url: "https://t.me/+095sVcKluog5NTky"
     }
   ],
