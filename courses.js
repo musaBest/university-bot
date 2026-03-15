@@ -880,6 +880,27 @@ year5: {
       "Quiz & Exams & Homework":"https://drive.google.com/drive/folders/1gX4eZau0_5P14tjZBfB5tEfUA99ajKWH",
       "Tips": "الفهم الجيد للمادة مع حل اكبر كم من النماذج"
     },
+
+    "Deep learning": {
+      "Slides": "https://drive.google.com/drive/folders/1yJ-anXjW6LhskjbN7QkjKBOvvhiNbKaf",
+      "Book & Solutions": "https://drive.google.com/drive/folders/1R58NOG1ePh-CTEgJjBZ5DNpJVg_adwU7",
+      "Lectures":{
+      "3Blue1Brown  من ١ -٥":"https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&si=V_9LPdNp6XzhB3lZ",
+      "فيديوهات الدكتور ايمن على المودل ادرس من الكتاب":"https://drive.google.com/drive/folders/1R58NOG1ePh-CTEgJjBZ5DNpJVg_adwU7",
+     },
+
+
+
+
+      "Chapters":"https://drive.google.com/drive/folders/1yJ-anXjW6LhskjbN7QkjKBOvvhiNbKaf",
+      "Discussion & Problems & Problems solution":"https://drive.google.com/drive/folders/1DVh8vqgd8NJGt_1D1D1f5xKpmzy9P1P4",
+      "Quiz & Exams & Homework":"https://drive.google.com/drive/folders/1-Ar7678c7LJpPFLOjLi-SGl5Jce8H8gF",
+      "Tips": "الدراسة الجيدة من الكتاب "
+    },
+
+
+
+
     "Network Security Lab": {
       "Lab": "https://drive.google.com/drive/folders/1yQ9o4l_PAR9pOt1CZy6FFbDuTktn8cMR",
       "Recorded Videos":{ 

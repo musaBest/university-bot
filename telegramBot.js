@@ -302,7 +302,7 @@ bot.on("callback_query", (query) => {
   [
     {
       text: "📤 ارفع ملفاتك المهمة للمادة لكي يستفيد غيرنا",
-      url: "https://t.me/+095sVcKluog5NTky"
+      url: "https://t.me/+lUyeZmUh7KpjM2Fi"
     }
   ],
   [{ text: "🔙 رجوع للفصول", callback_data: "back_semesters" }],
