@@ -302,6 +302,7 @@ const courses = {
       "Book & Solutions": "https://drive.google.com/drive/folders/152ds4OkK0QMPu7fIaweshHvGH0jfujrR",
       "Lectures":{
         "د. ماهر صبرة":"https://www.youtube.com/playlist?list=PL9fwy3NUQKwanLo2tOrusU5xd98mQfH0W",
+        "Dr . Abderhman (مصر)":"https://youtube.com/playlist?list=PLUSE6w0Kh7fKLEM_b7rEaUUXOS0RzDsyn&si=9bT_NbU8SV8Yescm",
         "د هالة الخزندار":"https://youtube.com/playlist?list=PL9fwy3NUQKwZ5kRV2VK4xpKkGIxnGvQns&feature=shared",
       "د اسعد ابو جاسر":"https://youtube.com/@dr.abu-jasserelectriccircu2438?feature=shared",
       "(الاردن) د اكرم المحروق":"https://youtube.com/playlist?list=PLKaHePm6MsICKiilzaqDQ7ggeDwWy9PVt&si=b5__mlOnQa8PsCaW",
@@ -404,6 +405,7 @@ const courses = {
       "Book & Solutions": "https://drive.google.com/drive/folders/17Caiwj2571-fykWMovDiFs4hbl1gmu8W",
       "Lectures":{
       "Dr.Jawdat Abu Taha":"https://youtube.com/playlist?list=PL9fwy3NUQKwabfMAYhR0Cdn7S90qYpCW1&feature=shared",
+      "Dr. محمد عايد (الاردن)":"https://youtube.com/playlist?list=PLkXK5Ys6YkPJeYfEHo8Rei1dToH6hB5e1&si=iMM7DDQS7K8rZ36O",
       "Dr. Hala AlKhozondar":"https://youtube.com/playlist?list=PL9fwy3NUQKwZJn5R6nZCI_2ylXNzs-aGx&feature=shared",
       "Discussion Eng.  Mohammed Mushtaha":"https://youtube.com/playlist?list=PLDG4OdepPTCHDFZ5jT65fratSfU3qCWgY&feature=shared",
       "Razavi lectures":"https://youtube.com/playlist?list=PLiDoPUX9nLkJ8dnPgKoVEOiAb8BfulKRR&feature=shared",
@@ -608,6 +610,7 @@ const courses = {
       "Book & Solutions": "https://drive.google.com/drive/folders/1ZzfKgokCLhxS39TlujxEA89FkLTLSKH0",
       "Lectures": {
       "Dr. Ahmed Mahdi":"https://t.me/+sNLIlAHeZCRjYjYy",
+      "Dr . Belal Elfarra":"https://youtube.com/playlist?list=PLok7sV5T4cfIPjpv39M90N66F1Be4D0Jo&si=dBylLFz4XFJaP1to",
       "Dr. Osama Radwan ":"https://youtube.com/playlist?list=PLjAUiTpbDWsjPKXagqmJG90Kawp6hYIlj&feature=shared",
       "Amani Adel(مصر)":"https://youtube.com/playlist?list=PLBcOV2jq_2hLcMj22ISRsrgBNnaVxfi23&feature=shared",
       "Concept of Database":"https://youtube.com/playlist?list=PLPn4eVPZKtrI-AIET96mSMcPsKOevYnqm&feature=shared",
@@ -644,9 +647,11 @@ const courses = {
     "Practical digital electronics": {
       "Lab": "https://drive.google.com/drive/folders/10uEt6uMQOaF2UH36uDF7kfX01GLyZN5E",
       "Recorded Videos": {
+      "Eng.Ayman Al-Khazindar ":"https://youtube.com/playlist?list=PL4n--WNT9N3Esl-lEoI1dvfx827IbD0sP&feature=shared",
       " Eng.Malik Al-Ashi ":"https://youtube.com/playlist?list=PLPHOBGVvZNk6OBANQIKULxPn2V9E_XdC2&feature=shared",
       "Eng.Mohammed Abu Faris":"https://youtube.com/playlist?list=PLMiM7CPo0dNmY_a81X7uiMpGquEFo6Bzq&feature=shared",
-      "Eng.Ayman Al-Khazindar ":"https://youtube.com/playlist?list=PL4n--WNT9N3Esl-lEoI1dvfx827IbD0sP&feature=shared",
+      "Eng. Saja Nihad (Introduction to Lt Spice)":"https://youtu.be/AaSUmrf9mQo?si=NocsuaSaTT5Dr8kN",
+      
       },
       "Tips": "تطبيق للنظري"
     },
@@ -780,6 +785,7 @@ year4: {
       "All files":"https://drive.google.com/drive/folders/1HDBXbwZ-ygrVxZVlzWs-Nxlr2yXEGm6A",
       },
       "Recorded Videos": {
+      "Eng. Abdullah ouda":"https://youtu.be/5Nk1j6anBo0?si=fDhc0QFUFpyOyz5a",
       "Lecture(packet Tracer)  ":"https://youtube.com/playlist?list=PLZURQ_XyXLwD6ScmyrzzvFMgidIQQX05N&feature=shared",
       "lecture(Egypt)":"https://youtube.com/playlist?list=PLJLhMygEmQDVKJbL31PH7DJZX35xdkhHs&feature=shared",
       },
@@ -803,7 +809,10 @@ year4: {
       "Project ":"https://drive.google.com/drive/folders/1NECGMiT_NRp1C0lp5Pnm9ZaA-gt-qloT",
       "All files":"https://drive.google.com/drive/folders/1MRwDP1frR0oPhcG6ReeyARCXVFYIo6nP",
     },
-      "Recorded Videos": "https://youtube.com/playlist?list=PLq5FW85cJhv4WZpa4VydMSqcNm38xGBhf&feature=shared",
+      "Recorded Videos": {
+      "Eng.Anas baba":"https://youtube.com/playlist?list=PL3Lm1Dh_YDhL202-8ChiftsuiP84vBpdX&si=ZBUsp8UWFTT3r19Z",
+      "Eng. Mohammed Almadhoun":"https://youtube.com/playlist?list=PLq5FW85cJhv4WZpa4VydMSqcNm38xGBhf&feature=shared",
+    },
       "Tips": "تطبيق عملي"
     },
     "VHDL": {
