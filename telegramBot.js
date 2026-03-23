@@ -63,7 +63,7 @@ function showMainMenu(chatId, name = "طالب") {
     reply_markup: {
       inline_keyboard: [
         [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
-        [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "lab_programs" }],
+        [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "open_lab_programs" }],
         [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
         [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
         [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
@@ -84,6 +84,12 @@ bot.onText(/\/start/, (msg) => {
 
 // التعامل مع الأزرار
 bot.on("callback_query", (query) => {
+
+  if (data === "main_menu") {
+  const name = userState[chatId]?.name || "طالب";
+  showMainMenu(chatId, name);
+  return;
+}
 
   const chatId = query.message.chat.id;
   const data = query.data;
@@ -137,41 +143,50 @@ bot.on("callback_query", (query) => {
     return;
   }
   
-  if (data === "lab_programs") {
-       const buttons = Object.keys(labPrograms).map((name) => [
-      { text: name, callback_data: "lab_" + name }
+  
+  // عرض مواد المختبرات
+if (data === "open_lab_programs") {
+
+  const buttons = Object.keys(labPrograms).map((name) => [
+    { text: name, callback_data: "labItem_" + name }
   ]);
 
-       buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+  buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
 
-         bot.sendMessage(chatId, "🧪 اختر المادة:", {
-         reply_markup: { inline_keyboard: buttons }
+  bot.sendMessage(chatId, "🧪 اختر المادة:", {
+    reply_markup: { inline_keyboard: buttons }
   });
 
-          return;
+  return;
+}
+
+// عند اختيار مادة من المختبر
+if (data.startsWith("labItem_")) {
+
+  const name = data.replace("labItem_", "");
+  const item = labPrograms[name];
+
+  if (!item) {
+    bot.sendMessage(chatId, "❌ حدث خطأ، المادة غير موجودة");
+    return;
   }
 
-  if (data.startsWith("lab_")) {
-
-       const name = data.replace("lab_", "");
-       const item = labPrograms[name];
-
-       let msg = "📚 " + name + "\n\n" + item.text;
+  let message = "📚 " + name + "\n\n" + item.text;
 
   // رابط واحد
   if (item.link) {
-      bot.sendMessage(chatId, msg + "\n" + item.link);
+    bot.sendMessage(chatId, message + "\n\n" + item.link);
   }
 
   // عدة روابط
   else if (item.links) {
-      const buttons = item.links.map(l => [
+    const buttons = item.links.map(l => [
       { text: l.name, url: l.url }
     ]);
 
-      buttons.push([{ text: "🔙 رجوع", callback_data: "lab_programs" }]);
+    buttons.push([{ text: "🔙 رجوع", callback_data: "open_lab_programs" }]);
 
-       bot.sendMessage(chatId, msg, {
+    bot.sendMessage(chatId, message, {
       reply_markup: { inline_keyboard: buttons }
     });
   }
@@ -179,7 +194,7 @@ bot.on("callback_query", (query) => {
   // ملف من جهازك
   else if (item.file) {
     const filePath = path.join(__dirname, item.file);
-    bot.sendDocument(chatId, filePath, { caption: msg });
+    bot.sendDocument(chatId, filePath, { caption: message });
   }
 
   return;
