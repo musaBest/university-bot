@@ -10,17 +10,17 @@ const labPrograms = {
     link: "https://youtu.be/_8nw6Tnu67E?si=YZydmjdSpcjLN3Ms"
   },
 
-  "تصميم رقمي ,تتابعي + عمارة حاسبات": {
+  "تصميم رقمي1,2 + عمارة حاسبات": {
     text: "⚙️ برنامج Logisim مطلوب",
     file: "logisim-evolution-3.8.0-x86.msi"
   },
 
-  "دوائر + الكترونيات 1 عملي + الكترونيات رقمية عملي": {
+  "دوائر + الكترونيات 1 +رقمية عملي": {
     text: "🔌 برنامج LTSpice",
     link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
   },
 
-  "Signals & Control اشارات انظمة التحكم": {
+  "Signals & Control ": {
     text: "📊 تحتاج MATLAB + LabVIEW",
     links: [
       { name: "MATLAB", url: "https://getintopc.com/softwares/analysis/matlab-r2024b-free-download/" },
@@ -28,7 +28,7 @@ const labPrograms = {
     ]
   },
 
-  "Database قواعد بيانات": {
+  "Database ": {
     text: "🗄️ لازم تنزل البرنامجين",
     links: [
       { name: "SQL Developer", url: "https://drive.google.com/file/d/1L8BBwgJxvE4FctO78oCEpPD59smrkdWz/view?usp=drivesdk" },
@@ -36,17 +36,17 @@ const labPrograms = {
     ]
   },
 
-  "Data Communications اتصالات": {
+  "Data Communications ": {
     text: "🌐 برنامج Wireshark",
     link: "https://www.wireshark.org/download.html"
   },
 
-  "Assembly لغة تجميع": {
+  "Assembly ": {
     text: "🧠 برنامج VS Code",
     link: "https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Enterprise"
   },
 
-  "Operating Systems نظم التشغيل": {
+  "Operating Systems ": {
     text: "🐧 شرح تثبيت Ubuntu",
     link: "https://www.youtube.com/watch?v=-1S5qisIx8I"
   },
@@ -56,7 +56,7 @@ const labPrograms = {
     link: "https://www.intel.com/content/www/us/en/software-kit/757262/intel-quartus-prime-lite-edition-design-software-version-22-1-for-windows.html"
   },
 
-  "Image Processing صور رقمية": {
+  "Image Processing ": {
     text: "🖼️ برنامج Octave",
     link: "https://ftpmirror.gnu.org/octave/windows/octave-10.1.0-w64-installer.exe"
   }
