@@ -585,6 +585,7 @@ const courses = {
       "Book & Solutions": "https://drive.google.com/drive/folders/1AwD72iRKmMC4s3zHh7soIlkOY3F8d5tT",
       "Lectures": {
       "Dr. Wissam Ashour":"https://youtube.com/playlist?list=PL9czOgVE8oVd0uexbs75zZcVxa6YwwJVt&feature=shared",
+      "Dr. Mamoun Saleh":"https://youtube.com/playlist?list=PL1x2XmA5tzRaKRie4_Jb02ln3QcX4QM8M&si=W6P1ZUOCIfs6fE4d",
       "Dr. Mohamed Mekki":"https://youtube.com/playlist?list=PL9fwy3NUQKwYwa_mCwGHM-DvI0RlVg1yN&feature=shared",
       "Dr. Wissam Ashour (list 2)":"https://youtube.com/playlist?list=PL3mDEAb0jyXq4SyL1bbbEcU1jz8tTVFvi&si=0jyw6mfD9uYJgivw",
       "Al-Hussaini Akidmi(مصر)":"https://youtube.com/playlist?list=PL-cKUB-e2KiswAkwZLJYlTzI69FpSJa50&feature=shared",

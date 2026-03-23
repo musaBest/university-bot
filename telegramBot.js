@@ -1,5 +1,6 @@
 const TelegramBot = require("node-telegram-bot-api");
 const { courses } = require("./courses");
+const labPrograms = require("./labPrograms");
 const path = require("path");
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
@@ -62,6 +63,7 @@ function showMainMenu(chatId, name = "طالب") {
     reply_markup: {
       inline_keyboard: [
         [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
+        [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "lab_programs" }],
         [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
         [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
         [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
@@ -134,6 +136,55 @@ bot.on("callback_query", (query) => {
     });
     return;
   }
+  
+  if (data === "lab_programs") {
+
+  const buttons = Object.keys(labPrograms).map((name) => [
+    { text: name, callback_data: "lab_" + name }
+  ]);
+
+  buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+
+  bot.sendMessage(chatId, "🧪 اختر المادة:", {
+    reply_markup: { inline_keyboard: buttons }
+  });
+
+  return;
+  }
+
+  if (data.startsWith("lab_")) {
+
+  const name = data.replace("lab_", "");
+  const item = labPrograms[name];
+
+  let msg = "📚 " + name + "\n\n" + item.text;
+
+  // رابط واحد
+  if (item.link) {
+    bot.sendMessage(chatId, msg + "\n" + item.link);
+  }
+
+  // عدة روابط
+  else if (item.links) {
+    const buttons = item.links.map(l => [
+      { text: l.name, url: l.url }
+    ]);
+
+    buttons.push([{ text: "🔙 رجوع", callback_data: "lab_programs" }]);
+
+    bot.sendMessage(chatId, msg, {
+      reply_markup: { inline_keyboard: buttons }
+    });
+  }
+
+  // ملف من جهازك
+  else if (item.file) {
+    const filePath = path.join(__dirname, item.file);
+    bot.sendDocument(chatId, filePath, { caption: msg });
+  }
+
+  return;
+}
 
   // عرض السنوات
   if (data === "show_years" || data === "back_years") {
