@@ -137,8 +137,39 @@ bot.on("callback_query", (query) => {
     return;
   }
   
-  
-  // عرض مواد المختبرات
+
+  // عرض السنوات
+  if (data === "show_years" || data === "back_years") {
+    const buttons = Object.keys(courses).map((year) => [
+      { text: year, callback_data: "year_" + year }
+    ]);
+
+    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+
+    bot.sendMessage(chatId, "اختر السنة:", {
+      reply_markup: { inline_keyboard: buttons }
+    });
+
+    return;
+  }
+
+  // جهات الاتصال
+  if (data === "show_contacts") {
+
+    const buttons = Object.keys(contacts).map((c) => [
+      { text: c, callback_data: "contact_" + c }
+    ]);
+
+    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+
+    bot.sendMessage(chatId, "اختر الجهة:", {
+      reply_markup: { inline_keyboard: buttons }
+    });
+
+    return;
+  }
+
+   // عرض مواد المختبرات
 if (data === "open_lab_programs") {
 
   const buttons = Object.keys(labPrograms).map((name) => [
@@ -194,36 +225,6 @@ if (data.startsWith("labItem_")) {
   return;
 }
 
-  // عرض السنوات
-  if (data === "show_years" || data === "back_years") {
-    const buttons = Object.keys(courses).map((year) => [
-      { text: year, callback_data: "year_" + year }
-    ]);
-
-    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
-
-    bot.sendMessage(chatId, "اختر السنة:", {
-      reply_markup: { inline_keyboard: buttons }
-    });
-
-    return;
-  }
-
-  // جهات الاتصال
-  if (data === "show_contacts") {
-
-    const buttons = Object.keys(contacts).map((c) => [
-      { text: c, callback_data: "contact_" + c }
-    ]);
-
-    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
-
-    bot.sendMessage(chatId, "اختر الجهة:", {
-      reply_markup: { inline_keyboard: buttons }
-    });
-
-    return;
-  }
 
   // تفاصيل جهة الاتصال
   if (data.startsWith("contact_")) {
