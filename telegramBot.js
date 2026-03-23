@@ -138,41 +138,40 @@ bot.on("callback_query", (query) => {
   }
   
   if (data === "lab_programs") {
-
-  const buttons = Object.keys(labPrograms).map((name) => [
-    { text: name, callback_data: "lab_" + name }
+       const buttons = Object.keys(labPrograms).map((name) => [
+      { text: name, callback_data: "lab_" + name }
   ]);
 
-  buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+       buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
 
-  bot.sendMessage(chatId, "🧪 اختر المادة:", {
-    reply_markup: { inline_keyboard: buttons }
+         bot.sendMessage(chatId, "🧪 اختر المادة:", {
+         reply_markup: { inline_keyboard: buttons }
   });
 
-  return;
+          return;
   }
 
   if (data.startsWith("lab_")) {
 
-  const name = data.replace("lab_", "");
-  const item = labPrograms[name];
+       const name = data.replace("lab_", "");
+       const item = labPrograms[name];
 
-  let msg = "📚 " + name + "\n\n" + item.text;
+       let msg = "📚 " + name + "\n\n" + item.text;
 
   // رابط واحد
   if (item.link) {
-    bot.sendMessage(chatId, msg + "\n" + item.link);
+      bot.sendMessage(chatId, msg + "\n" + item.link);
   }
 
   // عدة روابط
   else if (item.links) {
-    const buttons = item.links.map(l => [
+      const buttons = item.links.map(l => [
       { text: l.name, url: l.url }
     ]);
 
-    buttons.push([{ text: "🔙 رجوع", callback_data: "lab_programs" }]);
+      buttons.push([{ text: "🔙 رجوع", callback_data: "lab_programs" }]);
 
-    bot.sendMessage(chatId, msg, {
+       bot.sendMessage(chatId, msg, {
       reply_markup: { inline_keyboard: buttons }
     });
   }
