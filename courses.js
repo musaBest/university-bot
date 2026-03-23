@@ -21,8 +21,9 @@ const courses = {
             "Dr. Raed Salha":"https://drive.google.com/drive/folders/1qj8N97enxcP7IqADqbl3a9B-BqNiE6eJ?usp=sharing",
             "Dr. Ismail al-Astal":"https://drive.google.com/drive/folders/1pMf3WkDzaJDiNlXqBiYP9DU7CsW0sOM3?usp=sharing",
             "Dr. Ayman Al-Sakka ":"https://drive.google.com/drive/folders/1YD7NbCD5Vkq4t7Jl833SOtYTu0d7sCF1?usp=sharing",
-            "Dr. Safjan Al-Shami":"https://drive.google.com/drive/folders/1QTr-fVPPm1K4I29J7bRAaVfZi2ptYikt?usp=sharing",
             "Dr. Hisham Mahdi":"https://drive.google.com/drive/folders/1rgLGffi4guHP42LQhuAFWK6E7kxSbh65?usp=sharing",
+            "Dr. Safjan Al-Shami":"https://drive.google.com/drive/folders/1QTr-fVPPm1K4I29J7bRAaVfZi2ptYikt?usp=sharing",
+            
         }, 
  
 
