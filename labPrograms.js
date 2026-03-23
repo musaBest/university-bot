@@ -1,24 +1,41 @@
 const path = require("path");
 const labPrograms = {
-  "مقدمة في الحاسبات & أساسيات الهندسة": {
+  " Introduction to Computers": {
     text: "📱 نزل تطبيق بايثون (خفيف على الجوال)",
     link: "https://play.google.com/store/apps/details?id=ru.iiec.pydroid3"
   },
 
-  "برمجة حاسوب 1 & 2": {
+  "Computer programing 1&2": {
     text: "💻 نزل IDE للـ Java (مثل NetBeans)",
     link: "https://youtu.be/_8nw6Tnu67E?si=YZydmjdSpcjLN3Ms"
   },
 
-  "تصميم رقمي1,2 + عمارة حاسبات": {
+  "Digital Design 1,2 ": {
+    text: "⚙️ برنامج Logisim مطلوب",
+    file: "logisim-evolution-3.8.0-x86.msi"
+  },
+  
+  " Computer architecture ": {
     text: "⚙️ برنامج Logisim مطلوب",
     file: "logisim-evolution-3.8.0-x86.msi"
   },
 
-  "دوائر + الكترونيات 1 +رقمية عملي": {
+  " Electronics 1 ": {
     text: "🔌 برنامج LTSpice",
     link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
   },
+
+  " Electric Circuits 1": {
+    text: "🔌 برنامج LTSpice",
+    link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
+  },
+
+  " Digital Electronics ": {
+    text: "🔌 برنامج LTSpice",
+    link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
+  },
+
+
 
   "Signals & Control ": {
     text: "📊 تحتاج MATLAB + LabVIEW",
