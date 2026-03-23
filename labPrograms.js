@@ -12,12 +12,12 @@ const labPrograms = {
 
   "Digital Design 1,2 ": {
     text: "⚙️ برنامج Logisim مطلوب",
-    file: "logisim-evolution-3.8.0-x86.msi"
+    link: "https://drive.google.com/drive/folders/1nmWpiWEX-WeTpDT8jqbE6sbjljDjXRsI"
   },
   
   " Computer architecture ": {
     text: "⚙️ برنامج Logisim مطلوب",
-    file: "logisim-evolution-3.8.0-x86.msi"
+    link: "https://drive.google.com/drive/folders/1nmWpiWEX-WeTpDT8jqbE6sbjljDjXRsI"
   },
 
   " Electronics 1 ": {
@@ -70,7 +70,8 @@ const labPrograms = {
 
   "VHDL": {
     text: "🔧 برنامج Quartus",
-    link: "https://www.intel.com/content/www/us/en/software-kit/757262/intel-quartus-prime-lite-edition-design-software-version-22-1-for-windows.html"
+    link: "https://www.intel.com/content/www/us/en/software-kit/757262/intel-quartus-prime-lite-edition-design-software-version-22-1-for-windows.html",
+    file:"VHDL Install software.pdf"
   },
 
   "Image Processing ": {
