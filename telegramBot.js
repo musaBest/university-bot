@@ -1,6 +1,6 @@
 const TelegramBot = require("node-telegram-bot-api");
 const { courses } = require("./courses");
-const labPrograms = require("./labPrograms");
+const { labPrograms } = require("./labPrograms");
 const path = require("path");
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";

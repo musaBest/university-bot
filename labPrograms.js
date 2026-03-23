@@ -1,6 +1,5 @@
 const path = require("path");
-
-module.exports = {
+const labPrograms = {
   "مقدمة في الحاسبات & أساسيات الهندسة": {
     text: "📱 نزل تطبيق بايثون (خفيف على الجوال)",
     link: "https://play.google.com/store/apps/details?id=ru.iiec.pydroid3"
@@ -62,3 +61,6 @@ module.exports = {
     link: "https://ftpmirror.gnu.org/octave/windows/octave-10.1.0-w64-installer.exe"
   }
 };
+
+
+module.exports = { labPrograms };
