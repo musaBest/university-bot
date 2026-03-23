@@ -85,12 +85,6 @@ bot.onText(/\/start/, (msg) => {
 // التعامل مع الأزرار
 bot.on("callback_query", (query) => {
 
-  if (data === "main_menu") {
-  const name = userState[chatId]?.name || "طالب";
-  showMainMenu(chatId, name);
-  return;
-}
-
   const chatId = query.message.chat.id;
   const data = query.data;
 
