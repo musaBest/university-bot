@@ -75,7 +75,6 @@ const labPrograms = {
 
   "VHDL_lab": {
     text: "🔧 برنامج Quartus",
-    link: "https://www.intel.com/content/www/us/en/software-kit/757262/intel-quartus-prime-lite-edition-design-software-version-22-1-for-windows.html",
     file:"VHDL Install software.pdf"
   },
 
