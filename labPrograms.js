@@ -73,6 +73,20 @@ const labPrograms = {
     link: "https://www.youtube.com/watch?v=-1S5qisIx8I"
   },
 
+  "Embedded System_Lab ": {
+    text: "🗄️ لازم تنزل Proteus",
+    links: [
+      { name: "تنزيل البرنامج", url: "https://drive.google.com/drive/folders/143W6HR5KCG-Brmbw6aEWVcG8ZDPuL7PZ" },
+      { name: "شرح التثبيت", url: "https://drive.google.com/drive/folders/15LCRRTGJpLK6bDMvTVK2A8mSXbaQgl5g" }
+    ]
+  },
+
+   "Computer Networks_lab": {
+    text: "🔧 برنامج Cisco Packet Tracer",
+    link:"https://drive.google.com/drive/folders/1eVpjGZJfoFznhIHlRf4g4xlsDvjQZlcV"
+  },
+
+
   "VHDL_lab": {
     text: "🔧 برنامج Quartus",
     file:"VHDL Install software.pdf"
