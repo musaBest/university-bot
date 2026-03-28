@@ -849,6 +849,7 @@ year4: {
       },
       "Book & Solutions": "https://drive.google.com/drive/folders/1NNXTwTLAvmMnl-8aEFHyDrI8zUlYDGX0",
       "Lectures":{
+      "Dr. Ahmed Mahdi":"https://t.me/+t0znSrbmhbA3ODQy",
       "Concept(مصر)":"https://youtube.com/playlist?list=PL08ef9eJxtJZvt5BOsT46vN6kWnflVKH4&feature=shared",
      },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1P6Wwg0ooB5oZGn0oPELEj_CLOB0VraZq",

@@ -22,17 +22,17 @@ const labPrograms = {
 
   " Electronics 1_Lab ": {
     text: "🔌 برنامج LTSpice",
-    link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
+    link: "https://drive.google.com/drive/folders/1OSSrGEWePOrMVzQZ9EnupSzVEbLd2Oxi"
   },
 
   " Electric Circuits 1_Lab": {
     text: "🔌 برنامج LTSpice",
-    link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
+    link: "https://drive.google.com/drive/folders/1OSSrGEWePOrMVzQZ9EnupSzVEbLd2Oxi"
   },
 
   " Digital Electronics_Lab ": {
     text: "🔌 برنامج LTSpice",
-    link: "https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html"
+    link: "https://drive.google.com/drive/folders/1OSSrGEWePOrMVzQZ9EnupSzVEbLd2Oxi"
   },
 
   " Signals_Lab ": {
