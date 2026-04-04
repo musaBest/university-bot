@@ -119,7 +119,7 @@ const courses = {
 
         "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1wqWktARE5PP6L0YSpauysGFh9g5IbxEh",
         "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1qs_VN7fUGVQ2npqVOehmseqhXgrGBarQ",
-        "Tips": "احضر للدكتور عادل وحل نماذج سابقة لانه المادة الكتروني"
+        "Tips": "احضر للدكتور عادل وحل نماذج سابقة "
       },
       "Workshop Technology": {
         "Lab":{
@@ -678,7 +678,10 @@ const courses = {
       "All files ":"https://drive.google.com/drive/folders/1lfH2tq9iRWxVtn8B1g50bV9G1WV5zT1L",
       },
 
-      "Recorded Videos": "https://youtube.com/playlist?list=PLDG4OdepPTCHzaF74ncrRJ1f-tCt73yty&feature=shared",
+      "Recorded Videos":{
+        "Eng.Nael Dukhan" :"https://youtube.com/playlist?list=PLDG4OdepPTCHzaF74ncrRJ1f-tCt73yty&feature=shared",
+        "Eng. Adam Al-Hamarna":"https://youtube.com/playlist?list=PLaGDWz3a9tVHz9caykE-Wj8qEmKfmipup&si=ZtQ4fBDDK3dFTUw6",
+        },
       "Tips": "مش محتاج بس تدريب منيح على النماذج السابقة لانه الاختبار منها"
     }
   }
@@ -849,6 +852,7 @@ year4: {
       },
       "Book & Solutions": "https://drive.google.com/drive/folders/1NNXTwTLAvmMnl-8aEFHyDrI8zUlYDGX0",
       "Lectures":{
+      "د.ولاء مدحت (مصر)":"https://www.youtube.com/playlist?list=PLVl2wY_uRKfptKh1oxDnGBIosNvkK_Mi7",
       "Dr. Ahmed Mahdi":"https://t.me/+t0znSrbmhbA3ODQy",
       "Concept(مصر)":"https://youtube.com/playlist?list=PL08ef9eJxtJZvt5BOsT46vN6kWnflVKH4&feature=shared",
      },

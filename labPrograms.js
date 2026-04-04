@@ -50,13 +50,22 @@ const labPrograms = {
     ]
   },
 
-  "Database_Lab ": {
+  "Database(Ahmed Abu  Shawish) ": {
     text: "🗄️ لازم تنزل البرنامجين",
     links: [
       { name: "SQL Developer", url: "https://drive.google.com/file/d/1L8BBwgJxvE4FctO78oCEpPD59smrkdWz/view?usp=drivesdk" },
       { name: "Oracle", url: "https://drive.google.com/file/d/14l2cjXkyqyPpDZzSrc2KJ6PEHMl4tkAt/view?usp=drivesdk" }
     ]
   },
+
+  "Database(Ahmed Al-Kahlout) ": {
+    text: "🗄️  نزل Postgres ",
+    links: [
+      { name: "تنزيل البرنامج", url: "https://www.postgresql.org/download/" },
+      { name: "شرح التثبيت", url: "https://youtu.be/T1PrXly6kOs?si=nTeEOH7vKzgxvs5Z" }
+    ]
+  },
+
 
   "Data Communications_Lab ": {
     text: "🌐 برنامج Wireshark",
