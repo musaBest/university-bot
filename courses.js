@@ -679,7 +679,7 @@ const courses = {
       },
 
       "Recorded Videos":{
-        "Eng.Nael Dukhan" :"https://youtube.com/playlist?list=PLDG4OdepPTCHzaF74ncrRJ1f-tCt73yty&feature=shared",
+        "Eng.Nael Dukhan" :"https://youtube.com/playlist?list=PLDG4OdepPTCHRzVF6fn86C3PrrWqU8U4n&si=dcQsjmuZgxdq07cR",
         "Eng. Adam Al-Hamarna":"https://youtube.com/playlist?list=PLaGDWz3a9tVHz9caykE-Wj8qEmKfmipup&si=ZtQ4fBDDK3dFTUw6",
         },
       "Tips": "مش محتاج بس تدريب منيح على النماذج السابقة لانه الاختبار منها"
