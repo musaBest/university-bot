@@ -420,7 +420,11 @@ const courses = {
     },
      "Electronics Lab 1": {
       "Lab": "https://drive.google.com/drive/folders/15xgy7lDnHt28g7MG8JFhxrX-y7d6PnH9",
-      "Recorded Videos": "https://youtube.com/playlist?list=PLDG4OdepPTCGTx2U6QGsFz_pBdXkWQbp9&si=90xvkbypQiMrxYDJ",
+      "Recorded Videos":{
+        "Eng.Nael Dukhan":"https://youtu.be/FxJRV8wLVCE?si=cMX41TUQL5OAoHmZ",
+        "Mohammed Saleh": "https://youtube.com/playlist?list=PLDG4OdepPTCGTx2U6QGsFz_pBdXkWQbp9&si=90xvkbypQiMrxYDJ",
+        "Eng.Israa Abu Raya":"https://youtube.com/playlist?list=PLDG4OdepPTCGBXT35j-V_fQwTqX4NjePO&si=jM-1a1wKRr2yYLoo",
+       }, 
       "Tips":"نفهم النظري ان شاء الله بتمر وما بتضر"
     },
 
@@ -838,6 +842,7 @@ year4: {
     "VHDL Lab": {
       "Lab": "https://drive.google.com/drive/folders/1ZZ3GPjkxyHG0ZubFg1EgY8o7GnIxQd3F",
       "Recorded Videos": { 
+      "Eng.Ahmed Abu Shawish":"https://youtube.com/playlist?list=PL5oMcvTwk7_G-tTcpVaPtalcSsBxCYWH1&si=DKFAZ7ATU-2RVXYR",
       "Eng.Rasha Sammour  ":"https://youtube.com/playlist?list=PLq5FW85cJhv6R6Fs9mRv6lGSWC2583Xw1&feature=shared",
       "Eng.Mohammed Al-Madhoun":"https://youtube.com/playlist?list=PLq5FW85cJhv6R6Fs9mRv6lGSWC2583Xw1&feature=shared",
       "Eng.Lama Nafei":"https://youtube.com/playlist?list=PLxD4M5utghGu8VFMBTG9zn2Qv4NhP5y3L&feature=shared",
