@@ -901,7 +901,7 @@ year5: {
       "Recorded Videos": "https://www.youtube.com/playlist?list=PLoxxbQaXjEPiFy7_CE3t7zPbLAENAVUXw",
       "Tips": "طبق كل اشي ي صديقي "
     },
-    "Digital System Design with SystemVerilog (An alternative course to field training)": {
+    "Digital System Design ": {
       "Lab": "https://drive.google.com/drive/folders/10ZgBtY4WWsAouaJcuDyZeno0lS-6Al_-",
       "Recorded Videos": "https://youtube.com/playlist?list=PLKzJ_un9PrOw&si=uXBK8UqjvNLR3zlc",
       "Tips": "مساق تم اقتراحه كمساق بديل للتدريب الميداني"
