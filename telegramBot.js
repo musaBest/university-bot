@@ -4,6 +4,7 @@ const { labPrograms } = require("./labPrograms");
 const { uniRequirements } = require("./uniRequirements");
 const courseCodes = require("./courseCodes");
 const path = require("path");
+const fs = require("fs");
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
@@ -13,6 +14,170 @@ const processedCallbacks = new Set();
 const adminMessageMap = new Map();
 
 const ADMIN_ID = 5687891184;
+
+// ==========================================
+// إدارة المستخدمين ونظام الإذاعة والإشعارات
+// ==========================================
+const usersFilePath = path.join(__dirname, "data", "users.json");
+
+function loadUsers() {
+  try {
+    if (!fs.existsSync(usersFilePath)) {
+      fs.writeFileSync(usersFilePath, JSON.stringify([]));
+      return [];
+    }
+    const data = fs.readFileSync(usersFilePath, "utf8");
+    return JSON.parse(data || "[]");
+  } catch (err) {
+    console.error("Error loading users:", err);
+    return [];
+  }
+}
+
+function saveUser(msgUser, chatId) {
+  try {
+    if (!chatId) return;
+    const users = loadUsers();
+    const existingIndex = users.findIndex((u) => u.id === chatId);
+    const firstName = msgUser?.first_name || "";
+    const lastName = msgUser?.last_name || "";
+    const fullName = (firstName + " " + lastName).trim() || "طالب";
+    const username = msgUser?.username ? `@${msgUser.username}` : "";
+    const now = new Date().toISOString();
+
+    if (existingIndex >= 0) {
+      users[existingIndex].name = fullName;
+      users[existingIndex].username = username;
+      users[existingIndex].lastActive = now;
+      users[existingIndex].active = true;
+    } else {
+      users.push({
+        id: chatId,
+        name: fullName,
+        username: username,
+        joinedAt: now,
+        lastActive: now,
+        active: true
+      });
+    }
+
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+  } catch (err) {
+    console.error("Error saving user:", err);
+  }
+}
+
+function markUserInactive(chatId) {
+  try {
+    const users = loadUsers();
+    const user = users.find((u) => u.id === chatId);
+    if (user) {
+      user.active = false;
+      fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+    }
+  } catch (err) {
+    console.error("Error updating user status:", err);
+  }
+}
+
+async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset = false) {
+  const users = loadUsers().filter((u) => u.active !== false);
+  const totalUsers = users.length;
+
+  if (totalUsers === 0) {
+    botInstance.sendMessage(adminChatId, "⚠️ لا يوجد طلاب مسجلين في قاعدة البيانات حالياً.");
+    return;
+  }
+
+  await botInstance.sendMessage(adminChatId, `⏳ جاري بدء الإذاعة وإرسال الإشعار إلى ${totalUsers} طالب...`);
+
+  let successCount = 0;
+  let failedCount = 0;
+  const startTime = Date.now();
+
+  const presetText = `🔔 *تحديثات جديدة وإضافات مهمة في البوت!*
+━━━━━━━━━━━━━━━━━━━━
+
+مرحباً بكم زملائنا الطلبة! تم تحديث البوت لتسهيل وصولكم للمصادر ومتابعة دراستكم بكل سهولة:
+
+1️⃣ 🔍 *محرك بحث ذكي وسريع:*
+أرسل كود المساق مباشرة (مثل \`ECOM 2401\` أو \`MATHB1301\`) أو اسم المادة بالعربي أو الإنجليزي لتصلك كل الروابط، الكتب، السلايدات، والشروحات فوراً.
+
+2️⃣ 💬 *تواصل مباشر مع الأدمن:*
+يمكنك الآن إرسال أي استفسار أو ملف/صورة داخل البوت من زر (تواصل مع الأدمن) وسيتم الرد عليك مباشرة هنا.
+
+3️⃣ 🌐 *الموقع الإلكتروني الرسمي:*
+تم ربط البوت بالموقع الجديد لقسم هندسة الحاسوب لتصفح أكثر سلاسة.
+
+💡 *نتمنى لكم فصلاً دراسياً موفقاً وناجحاً!*`;
+
+  const keyboard = {
+    inline_keyboard: [
+      [{ text: "🔍 ابدأ البحث عن مادة", callback_data: "start_search" }],
+      [{ text: "🌐 زيارة الموقع الإلكتروني", url: "https://computer-engineering-iug.vercel.app" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    ]
+  };
+
+  for (const user of users) {
+    if (user.id === adminChatId) {
+      successCount++;
+      continue;
+    }
+
+    try {
+      if (isPreset) {
+        await botInstance.sendMessage(user.id, presetText, {
+          parse_mode: "Markdown",
+          reply_markup: keyboard
+        });
+      } else if (contentMsg.text) {
+        await botInstance.sendMessage(user.id, contentMsg.text, {
+          reply_markup: keyboard
+        });
+      } else if (contentMsg.photo) {
+        const fileId = contentMsg.photo[contentMsg.photo.length - 1].file_id;
+        await botInstance.sendPhoto(user.id, fileId, {
+          caption: contentMsg.caption || "",
+          reply_markup: keyboard
+        });
+      } else if (contentMsg.document) {
+        await botInstance.sendDocument(user.id, contentMsg.document.file_id, {
+          caption: contentMsg.caption || "",
+          reply_markup: keyboard
+        });
+      } else if (contentMsg.voice) {
+        await botInstance.sendVoice(user.id, contentMsg.voice.file_id, {
+          reply_markup: keyboard
+        });
+      } else if (contentMsg.video) {
+        await botInstance.sendVideo(user.id, contentMsg.video.file_id, {
+          caption: contentMsg.caption || "",
+          reply_markup: keyboard
+        });
+      } else if (contentMsg.audio) {
+        await botInstance.sendAudio(user.id, contentMsg.audio.file_id, {
+          caption: contentMsg.caption || "",
+          reply_markup: keyboard
+        });
+      }
+      successCount++;
+    } catch (err) {
+      failedCount++;
+      if (err.response && err.response.statusCode === 403) {
+        markUserInactive(user.id);
+      }
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 35));
+  }
+
+  const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+  botInstance.sendMessage(
+    adminChatId,
+    `✅ *اكتملت عملية الإذاعة بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *إجمالي المستلمين:* ${successCount}\n❌ *تعذر الإرسال:* ${failedCount} (حظر البوت أو حذف الحساب)\n⏱️ *المدة الزمنية:* ${duration} ثانية.`
+  );
+}
 
 require("./data/rating")(bot, userState);
 const utils = require("./data/utils");
@@ -731,22 +896,29 @@ const contacts = {
 
 // القائمة الرئيسية
 function showMainMenu(chatId, name = "طالب") {
+  const keyboard = [
+    [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
+    [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
+    [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
+    [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
+    [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "open_lab_programs" }],
+    [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
+    [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
+    [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
+    [{ text: "📄 خطة هندسة الحاسوب 5 سنوات", callback_data: "plan5" }],
+    [{ text: "🖼 خطة هندسة الحاسوب 4 سنوات", callback_data: "plan4" }],
+    [{ text: "🌐 يمكنك استخدام الموقع الالكتروني", url: "https://computer-engineering-iug.vercel.app" }]
+  ];
+
+  if (chatId === ADMIN_ID) {
+    keyboard.push(
+      [{ text: "📢 إرسال إشعار جماعي للطلاب", callback_data: "start_broadcast" }],
+      [{ text: "📊 إحصائيات المشتركين", callback_data: "bot_stats" }]
+    );
+  }
+
   bot.sendMessage(chatId, "مرحباً " + name + "!\nاختر من القائمة التالية أو أرسل اسم/كود المادة مباشرة للبحث:", {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
-        [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
-        [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
-        [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
-        [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "open_lab_programs" }],
-        [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
-        [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
-        [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
-        [{ text: "📄 خطة هندسة الحاسوب 5 سنوات", callback_data: "plan5" }],
-        [{ text: "🖼 خطة هندسة الحاسوب 4 سنوات", callback_data: "plan4" }],
-        [{ text: "🌐 يمكنك استخدام الموقع الالكتروني", url: "https://computer-engineering-iug.vercel.app" }]
-      ]
-    }
+    reply_markup: { inline_keyboard: keyboard }
   });
 }
 
@@ -754,14 +926,52 @@ function showMainMenu(chatId, name = "طالب") {
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const name = msg.from.first_name || "طالب";
+  saveUser(msg.from, chatId);
   userState[chatId] = { name: name };
   showMainMenu(chatId, name);
+});
+
+// أوامر الإذاعة والإحصائيات للأدمن
+bot.onText(/\/broadcast/, (msg) => {
+  const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID) return;
+  const users = loadUsers();
+  const activeCount = users.filter((u) => u.active !== false).length;
+
+  userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBroadcastMessage: true };
+  bot.sendMessage(
+    chatId,
+    `📢 *لوحة الإذاعة والإشعارات الجماعية*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *عدد المشتركين النشطين:* ${activeCount} طالب\n\nاختر من الأزرار أدناه أو أرسل رسالتك/صورتك/ملفك فوراً في المحادثة ليتم بثها للجميع:`,
+    {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🚀 إرسال إشعار التحديثات الجديدة تلقائياً", callback_data: "send_preset_broadcast" }],
+          [{ text: "❌ إلغاء الإذاعة", callback_data: "cancel_broadcast" }]
+        ]
+      }
+    }
+  );
+});
+
+bot.onText(/\/stats/, (msg) => {
+  const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID) return;
+  const users = loadUsers();
+  const activeUsers = users.filter((u) => u.active !== false);
+  bot.sendMessage(
+    chatId,
+    `📊 *إحصائيات مستخدمي البوت*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 إجمالي المستخدمين المسجلين: *${users.length}*\n✅ المستخدمين النشطين: *${activeUsers.length}*\n❌ المستخدمين غير النشطين: *${users.length - activeUsers.length}*`,
+    { parse_mode: "Markdown" }
+  );
 });
 
 // التعامل مع جميع أزرار Callback Queries
 bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
+
+  saveUser(query.from, chatId);
 
   if (processedCallbacks.has(query.id)) return;
   processedCallbacks.add(query.id);
@@ -771,9 +981,63 @@ bot.on("callback_query", (query) => {
 
   // القائمة الرئيسية
   if (data === "main_menu") {
-    if (userState[chatId]) userState[chatId].waitingAdminMessage = false;
+    if (userState[chatId]) {
+      userState[chatId].waitingAdminMessage = false;
+      userState[chatId].waitingBroadcastMessage = false;
+    }
     const name = userState[chatId]?.name || "طالب";
     showMainMenu(chatId, name);
+    return;
+  }
+
+  // لوحة الإذاعة
+  if (data === "start_broadcast") {
+    if (chatId !== ADMIN_ID) return;
+    const users = loadUsers();
+    const activeCount = users.filter((u) => u.active !== false).length;
+
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBroadcastMessage: true };
+    bot.sendMessage(
+      chatId,
+      `📢 *لوحة الإذاعة والإشعارات الجماعية*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *عدد المشتركين النشطين:* ${activeCount} طالب\n\nاختر من الأزرار أدناه أو أرسل رسالتك/صورتك/ملفك فوراً في المحادثة ليتم بثها للجميع:`,
+      {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🚀 إرسال إشعار التحديثات الجديدة تلقائياً", callback_data: "send_preset_broadcast" }],
+            [{ text: "❌ إلغاء الإذاعة", callback_data: "cancel_broadcast" }]
+          ]
+        }
+      }
+    );
+    return;
+  }
+
+  // إرسال الإشعار الجاهز للتحديثات
+  if (data === "send_preset_broadcast") {
+    if (chatId !== ADMIN_ID) return;
+    if (userState[ADMIN_ID]) userState[ADMIN_ID].waitingBroadcastMessage = false;
+    broadcastMessage(bot, ADMIN_ID, null, true);
+    return;
+  }
+
+  // إلغاء الإذاعة
+  if (data === "cancel_broadcast") {
+    if (userState[ADMIN_ID]) userState[ADMIN_ID].waitingBroadcastMessage = false;
+    bot.sendMessage(chatId, "تم إلغاء عملية الإذاعة.");
+    return;
+  }
+
+  // إحصائيات البوت
+  if (data === "bot_stats") {
+    if (chatId !== ADMIN_ID) return;
+    const users = loadUsers();
+    const activeUsers = users.filter((u) => u.active !== false);
+    bot.sendMessage(
+      chatId,
+      `📊 *إحصائيات مستخدمي البوت*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 إجمالي المستخدمين المسجلين: *${users.length}*\n✅ المستخدمين النشطين: *${activeUsers.length}*\n❌ المستخدمين غير النشطين: *${users.length - activeUsers.length}*`,
+      { parse_mode: "Markdown" }
+    );
     return;
   }
 
@@ -1126,8 +1390,18 @@ bot.on("callback_query", (query) => {
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
 
+  // حفظ بيانات المستخدم فور تفاعله
+  saveUser(msg.from, chatId);
+
   // تجاهل الأوامر الرسمية مثل /start
   if (msg.text && msg.text.startsWith("/")) return;
+
+  // حالة: الأدمن في وضع إرسال إشعار إذاعي جماعي للطلاب
+  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingBroadcastMessage) {
+    userState[ADMIN_ID].waitingBroadcastMessage = false;
+    broadcastMessage(bot, ADMIN_ID, msg, false);
+    return;
+  }
 
   // 1. حالة: الأدمن يقوم بالرد على طالب (سواء بعمل Reply على رسالة أو بالضغط على زر الرد)
   let targetStudentId = null;

@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": 5687891184,
+    "name": "Test Admin",
+    "username": "@testadmin",
+    "joinedAt": "2026-09-02T10:23:07.048Z",
+    "lastActive": "2026-09-02T10:23:07.048Z",
+    "active": true
+  }
+]
