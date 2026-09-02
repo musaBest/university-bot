@@ -10,6 +10,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 const userState = {};
 const processedCallbacks = new Set();
+const adminMessageMap = new Map();
 
 const ADMIN_ID = 5687891184;
 
@@ -734,6 +735,7 @@ function showMainMenu(chatId, name = "طالب") {
     reply_markup: {
       inline_keyboard: [
         [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
+        [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
         [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
         [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
         [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "open_lab_programs" }],
@@ -769,8 +771,61 @@ bot.on("callback_query", (query) => {
 
   // القائمة الرئيسية
   if (data === "main_menu") {
+    if (userState[chatId]) userState[chatId].waitingAdminMessage = false;
     const name = userState[chatId]?.name || "طالب";
     showMainMenu(chatId, name);
+    return;
+  }
+
+  // تواصل مع الأدمن
+  if (data === "contact_admin") {
+    userState[chatId] = { ...userState[chatId], waitingAdminMessage: true };
+    bot.sendMessage(
+      chatId,
+      "💬 *تواصل مع الأدمن / إرسال استفسار أو ملف*\n━━━━━━━━━━━━━━━━━━━━\n\nأهلاً بك! يمكنك الآن كتابة استفسارك أو إرسال أي ملف (مستند PDF، صورة، تسجيل صوتي، كود، إلخ) وسيتم إيصاله للأدمن مباشرة ليقوم بالرد عليك.\n\n👇 *أرسل رسالتك أو ملفك الآن في المحادثة:*",
+      {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ إلغاء والعودة للقائمة الرئيسية", callback_data: "cancel_contact_admin" }]
+          ]
+        }
+      }
+    );
+    return;
+  }
+
+  // إلغاء التواصل مع الأدمن
+  if (data === "cancel_contact_admin") {
+    if (userState[chatId]) userState[chatId].waitingAdminMessage = false;
+    const name = userState[chatId]?.name || "طالب";
+    showMainMenu(chatId, name);
+    return;
+  }
+
+  // ضغط الأدمن على زر الرد على الطالب
+  if (data.startsWith("admin_reply_")) {
+    const studentChatId = data.replace("admin_reply_", "");
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], replyingToStudent: studentChatId };
+    bot.sendMessage(
+      chatId,
+      `✍️ *الرد على الطالب:*\n🆔 الآيدي: \`${studentChatId}\`\n\nأرسل الآن ردك (رسالة نصية، صورة، ملف، تسجيل صوتي) وسيتم تسليمها للطالب مباشرة:`,
+      {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ إلغاء الرد", callback_data: "cancel_admin_reply" }]
+          ]
+        }
+      }
+    );
+    return;
+  }
+
+  // إلغاء رد الأدمن
+  if (data === "cancel_admin_reply") {
+    if (userState[ADMIN_ID]) userState[ADMIN_ID].replyingToStudent = null;
+    bot.sendMessage(chatId, "تم إلغاء عملية الرد.");
     return;
   }
 
@@ -1066,70 +1121,234 @@ bot.on("callback_query", (query) => {
 });
 
 // ==========================================
-// 2. معالج البحث التفاعلي للنصوص (الرسائل المباشرة)
+// 2. معالج الرسائل المباشرة والتواصل مع الأدمن
 // ==========================================
-bot.on("text", (msg) => {
+bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
-  const text = msg.text.trim();
 
   // تجاهل الأوامر الرسمية مثل /start
-  if (text.startsWith("/")) return;
+  if (msg.text && msg.text.startsWith("/")) return;
 
-  const results = searchAll(text);
+  // 1. حالة: الأدمن يقوم بالرد على طالب (سواء بعمل Reply على رسالة أو بالضغط على زر الرد)
+  let targetStudentId = null;
+  if (chatId === ADMIN_ID) {
+    if (userState[ADMIN_ID]?.replyingToStudent) {
+      targetStudentId = userState[ADMIN_ID].replyingToStudent;
+    } else if (msg.reply_to_message) {
+      targetStudentId = adminMessageMap.get(msg.reply_to_message.message_id);
+    }
+  }
 
-  // في حال عدم وجود نتائج
-  if (results.length === 0) {
-    const keyboard = [[{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]];
+  if (targetStudentId) {
+    try {
+      const studentKeyboard = {
+        inline_keyboard: [
+          [{ text: "💬 إرسال رد أو استفسار آخر", callback_data: "contact_admin" }],
+          [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+        ]
+      };
+
+      if (msg.text) {
+        await bot.sendMessage(
+          targetStudentId,
+          `📩 *رد من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.text}`,
+          { parse_mode: "Markdown", reply_markup: studentKeyboard }
+        );
+      } else if (msg.photo) {
+        const fileId = msg.photo[msg.photo.length - 1].file_id;
+        await bot.sendPhoto(targetStudentId, fileId, {
+          caption: `📩 *رد من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
+          parse_mode: "Markdown",
+          reply_markup: studentKeyboard
+        });
+      } else if (msg.document) {
+        await bot.sendDocument(targetStudentId, msg.document.file_id, {
+          caption: `📩 *رد من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
+          parse_mode: "Markdown",
+          reply_markup: studentKeyboard
+        });
+      } else if (msg.voice) {
+        await bot.sendVoice(targetStudentId, msg.voice.file_id, {
+          caption: `📩 *تسجيل صوتي من إدارة البوت / الأدمن*`,
+          parse_mode: "Markdown",
+          reply_markup: studentKeyboard
+        });
+      } else if (msg.video) {
+        await bot.sendVideo(targetStudentId, msg.video.file_id, {
+          caption: `📩 *فيديو من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
+          parse_mode: "Markdown",
+          reply_markup: studentKeyboard
+        });
+      } else if (msg.audio) {
+        await bot.sendAudio(targetStudentId, msg.audio.file_id, {
+          caption: `📩 *ملف صوتي من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
+          parse_mode: "Markdown",
+          reply_markup: studentKeyboard
+        });
+      }
+
+      bot.sendMessage(ADMIN_ID, "✅ تم إرسال الرد إلى الطالب بنجاح.");
+      if (userState[ADMIN_ID]) userState[ADMIN_ID].replyingToStudent = null;
+    } catch (err) {
+      console.error("Error sending reply to student:", err.message);
+      bot.sendMessage(ADMIN_ID, "❌ تعذر إرسال الرد إلى الطالب (قد يكون قام بحظر البوت أو حذف المحادثة).");
+    }
+    return;
+  }
+
+  // 2. حالة: الطالب يرسل رسالة أو ملف إلى الأدمن
+  if (userState[chatId]?.waitingAdminMessage) {
+    try {
+      const studentName = ((msg.from?.first_name || "") + " " + (msg.from?.last_name || "")).trim() || "طالب";
+      const username = msg.from?.username ? `@${msg.from.username}` : "لا يوجد معرف";
+      const header = `📨 *رسالة جديدة من طالب / مستخدم:*\n━━━━━━━━━━━━━━━━━━━━\n👤 *الاسم:* ${studentName}\n🔗 *المعرف:* ${username}\n🆔 *الآيدي:* \`${chatId}\``;
+      const adminKeyboard = {
+        inline_keyboard: [
+          [{ text: "✍️ الرد على الطالب", callback_data: `admin_reply_${chatId}` }]
+        ]
+      };
+
+      let sentMsg = null;
+      if (msg.text) {
+        sentMsg = await bot.sendMessage(
+          ADMIN_ID,
+          `${header}\n\n💬 *نص الرسالة:*\n${msg.text}`,
+          { parse_mode: "Markdown", reply_markup: adminKeyboard }
+        );
+      } else if (msg.photo) {
+        const fileId = msg.photo[msg.photo.length - 1].file_id;
+        sentMsg = await bot.sendPhoto(ADMIN_ID, fileId, {
+          caption: `${header}\n\n📷 *صورة مرفقة*` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
+          parse_mode: "Markdown",
+          reply_markup: adminKeyboard
+        });
+      } else if (msg.document) {
+        sentMsg = await bot.sendDocument(ADMIN_ID, msg.document.file_id, {
+          caption: `${header}\n\n📄 *ملف مرفق:* ${msg.document.file_name || ""}` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
+          parse_mode: "Markdown",
+          reply_markup: adminKeyboard
+        });
+      } else if (msg.voice) {
+        sentMsg = await bot.sendVoice(ADMIN_ID, msg.voice.file_id, {
+          caption: `${header}\n\n🎙️ *تسجيل صوتي*`,
+          parse_mode: "Markdown",
+          reply_markup: adminKeyboard
+        });
+      } else if (msg.video) {
+        sentMsg = await bot.sendVideo(ADMIN_ID, msg.video.file_id, {
+          caption: `${header}\n\n🎥 *فيديو مرفق*` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
+          parse_mode: "Markdown",
+          reply_markup: adminKeyboard
+        });
+      } else if (msg.audio) {
+        sentMsg = await bot.sendAudio(ADMIN_ID, msg.audio.file_id, {
+          caption: `${header}\n\n🎵 *ملف صوتي مرفق*` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
+          parse_mode: "Markdown",
+          reply_markup: adminKeyboard
+        });
+      }
+
+      if (sentMsg) {
+        adminMessageMap.set(sentMsg.message_id, chatId);
+      }
+
+      userState[chatId].waitingAdminMessage = false;
+
+      bot.sendMessage(
+        chatId,
+        "✅ *تم إرسال رسالتك / ملفك إلى الأدمن بنجاح!*\nسيتم مراجعتها والرد عليك هنا في البوت قريباً 👍",
+        {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+            ]
+          }
+        }
+      );
+    } catch (err) {
+      console.error("Error forwarding to admin:", err.message);
+      bot.sendMessage(chatId, "❌ حدث خطأ أثناء إرسال الرسالة، يرجى المحاولة لاحقاً.");
+    }
+    return;
+  }
+
+  // 3. حالة: إرسال ملف/صورة بدون تفعيل وضع التواصل
+  if (msg.photo || msg.document || msg.voice || msg.video || msg.audio) {
     bot.sendMessage(
       chatId,
-      `❌ لم يتم العثور على أي نتائج لـ "${text}".\n\n💡 جرب البحث بكود المساق (مثل: \`ECOM 2401\` أو \`MATHB1301\`) أو اسم المادة بالعربي أو الإنجليزي (مثل: \`برمجة\`، \`تفاضل\`، \`شبكات\`).`,
+      "💡 هل ترغب في إرسال هذا الملف أو الاستفسار عنه للأدمن؟\nاضغط على الزر أدناه ثم أرسل الملف:",
       {
-        parse_mode: "Markdown",
-        reply_markup: { inline_keyboard: keyboard }
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "💬 تواصل مع الأدمن / إرسال ملف", callback_data: "contact_admin" }],
+            [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+          ]
+        }
       }
     );
     return;
   }
 
-  // في حال وجود نتيجة واحدة مؤكدة ومباشرة، يتم عرض تفاصيل المادة فوراً
-  if (results.length === 1 || results[0].score >= 150) {
-    const top = results[0];
-    if (top.type === "course") {
-      userState[chatId] = {
-        year: top.year,
-        semester: top.semester,
-        currentSubject: top.name
-      };
-      sendCourseDetails(chatId, top, false);
-      return;
-    } else if (top.type === "uni_req") {
-      sendUniReqDetails(chatId, top.name, top.data);
-      return;
-    } else if (top.type === "lab") {
-      sendLabDetails(chatId, top.name, top.data);
+  // 4. حالة: رسالة نصية عادية للبحث عن المواد
+  if (msg.text) {
+    const text = msg.text.trim();
+    const results = searchAll(text);
+
+    // في حال عدم وجود نتائج
+    if (results.length === 0) {
+      const keyboard = [[{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]];
+      bot.sendMessage(
+        chatId,
+        `❌ لم يتم العثور على أي نتائج لـ "${text}".\n\n💡 جرب البحث بكود المساق (مثل: \`ECOM 2401\` أو \`MATHB1301\`) أو اسم المادة بالعربي أو الإنجليزي (مثل: \`برمجة\`، \`تفاضل\`، \`شبكات\`).`,
+        {
+          parse_mode: "Markdown",
+          reply_markup: { inline_keyboard: keyboard }
+        }
+      );
       return;
     }
+
+    // في حال وجود نتيجة واحدة مؤكدة ومباشرة، يتم عرض تفاصيل المادة فوراً
+    if (results.length === 1 || results[0].score >= 150) {
+      const top = results[0];
+      if (top.type === "course") {
+        userState[chatId] = {
+          year: top.year,
+          semester: top.semester,
+          currentSubject: top.name
+        };
+        sendCourseDetails(chatId, top, false);
+        return;
+      } else if (top.type === "uni_req") {
+        sendUniReqDetails(chatId, top.name, top.data);
+        return;
+      } else if (top.type === "lab") {
+        sendLabDetails(chatId, top.name, top.data);
+        return;
+      }
+    }
+
+    // في حال وجود أكثر من نتيجة مطابقة، يتم تقديم قائمة أزرار لاختيار المادة المطلوبة
+    const buttons = results.slice(0, 8).map((res) => {
+      if (res.type === "course") {
+        const label = res.arName
+          ? `📚 ${res.arName} (${res.name})` + (res.code ? ` - ${res.code}` : "")
+          : `📚 ${res.name}` + (res.code ? ` - ${res.code}` : "");
+        return [{ text: label, callback_data: "find_c_" + res.id }];
+      } else if (res.type === "uni_req") {
+        return [{ text: "🏛️ " + res.name + (res.code ? ` (${res.code})` : ""), callback_data: "find_req_" + res.name }];
+      } else {
+        return [{ text: "🧪 " + res.name, callback_data: "find_lab_" + res.name }];
+      }
+    });
+
+    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+
+    bot.sendMessage(chatId, `🔍 تم العثور على ${results.length} نتيجة لـ "${text}".\nاختر المادة المطلوبة لعرض روابطها وملفاتها:`, {
+      reply_markup: { inline_keyboard: buttons }
+    });
   }
-
-  // في حال وجود أكثر من نتيجة مطابقة، يتم تقديم قائمة أزرار لاختيار المادة المطلوبة
-  const buttons = results.slice(0, 8).map((res) => {
-    if (res.type === "course") {
-      const label = res.arName
-        ? `📚 ${res.arName} (${res.name})` + (res.code ? ` - ${res.code}` : "")
-        : `📚 ${res.name}` + (res.code ? ` - ${res.code}` : "");
-      return [{ text: label, callback_data: "find_c_" + res.id }];
-    } else if (res.type === "uni_req") {
-      return [{ text: "🏛️ " + res.name + (res.code ? ` (${res.code})` : ""), callback_data: "find_req_" + res.name }];
-    } else {
-      return [{ text: "🧪 " + res.name, callback_data: "find_lab_" + res.name }];
-    }
-  });
-
-  buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
-
-  bot.sendMessage(chatId, `🔍 تم العثور على ${results.length} نتيجة لـ "${text}".\nاختر المادة المطلوبة لعرض روابطها وملفاتها:`, {
-    reply_markup: { inline_keyboard: buttons }
-  });
 });
 
 // التعامل مع الأخطاء
