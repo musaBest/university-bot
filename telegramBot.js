@@ -1046,7 +1046,7 @@ bot.on("callback_query", (query) => {
     userState[chatId] = { ...userState[chatId], waitingAdminMessage: true };
     bot.sendMessage(
       chatId,
-      "💬 *تواصل مع الأدمن / إرسال استفسار أو ملف*\n━━━━━━━━━━━━━━━━━━━━\n\nأهلاً بك! يمكنك الآن كتابة استفسارك أو إرسال أي ملف (مستند PDF، صورة، تسجيل صوتي، كود، إلخ) وسيتم إيصاله للأدمن مباشرة ليقوم بالرد عليك.\n\n👇 *أرسل رسالتك أو ملفك الآن في المحادثة:*",
+      "💬 *تواصل مع الأدمن / إرسال استفسار أو ملف*\n━━━━━━━━━━━━━━━━━━━━\n\nأهلاً بك! يمكنك الآن كتابة استفسارك أو إرسال **أي نوع من الملفات بجميع الصيغ**:\n📊 جداول إكسل: Excel (`.xlsx`, `.xls`, `.csv`)\n📽️ عروض تقديمية: PowerPoint (`.pptx`, `.ppt`)\n📄 مستندات: Word (`.docx`, `.doc`), PDF (`.pdf`)\n📦 ملفات مضغوطة: `ZIP`, `RAR`, `7Z`\n💻 ملفات برمجية ونصوص: أكواد وملاحظات\n📷 وسائط: صور، فيديوهات، تسجيلات صوتية\n\n👇 *أرسل رسالتك أو ملفك الآن في المحادثة:*",
       {
         parse_mode: "Markdown",
         reply_markup: {
@@ -1428,40 +1428,49 @@ bot.on("message", async (msg) => {
           `📩 *رد من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.text}`,
           { parse_mode: "Markdown", reply_markup: studentKeyboard }
         );
-      } else if (msg.photo) {
-        const fileId = msg.photo[msg.photo.length - 1].file_id;
-        await bot.sendPhoto(targetStudentId, fileId, {
-          caption: `📩 *رد من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
-          parse_mode: "Markdown",
+      } else if (msg.document) {
+        const fileName = msg.document.file_name || "ملف مرفق";
+        const caption = `📩 رد ومرفق من إدارة البوت / الأدمن:\n━━━━━━━━━━━━━━━━━━━━\n📁 الملف: ${fileName}` + (msg.caption ? `\n📝 الوصف: ${msg.caption}` : "");
+        await bot.sendDocument(targetStudentId, msg.document.file_id, {
+          caption: caption,
           reply_markup: studentKeyboard
         });
-      } else if (msg.document) {
-        await bot.sendDocument(targetStudentId, msg.document.file_id, {
-          caption: `📩 *رد من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
-          parse_mode: "Markdown",
+      } else if (msg.photo) {
+        const fileId = msg.photo[msg.photo.length - 1].file_id;
+        const caption = `📩 صورة من إدارة البوت / الأدمن:\n━━━━━━━━━━━━━━━━━━━━\n` + (msg.caption ? `📝 الوصف: ${msg.caption}` : "");
+        await bot.sendPhoto(targetStudentId, fileId, {
+          caption: caption,
           reply_markup: studentKeyboard
         });
       } else if (msg.voice) {
         await bot.sendVoice(targetStudentId, msg.voice.file_id, {
-          caption: `📩 *تسجيل صوتي من إدارة البوت / الأدمن*`,
-          parse_mode: "Markdown",
+          caption: `📩 تسجيل صوتي من إدارة البوت / الأدمن`,
           reply_markup: studentKeyboard
         });
       } else if (msg.video) {
+        const caption = `📩 فيديو من إدارة البوت / الأدمن:\n━━━━━━━━━━━━━━━━━━━━\n` + (msg.caption ? `📝 الوصف: ${msg.caption}` : "");
         await bot.sendVideo(targetStudentId, msg.video.file_id, {
-          caption: `📩 *فيديو من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
-          parse_mode: "Markdown",
+          caption: caption,
+          reply_markup: studentKeyboard
+        });
+      } else if (msg.video_note) {
+        await bot.sendVideoNote(targetStudentId, msg.video_note.file_id, {
+          reply_markup: studentKeyboard
+        });
+      } else if (msg.animation) {
+        await bot.sendAnimation(targetStudentId, msg.animation.file_id, {
+          caption: `📩 صورة متحركة من إدارة البوت / الأدمن`,
           reply_markup: studentKeyboard
         });
       } else if (msg.audio) {
+        const caption = `📩 ملف صوتي من إدارة البوت / الأدمن:\n━━━━━━━━━━━━━━━━━━━━\n` + (msg.caption ? `📝 الوصف: ${msg.caption}` : "");
         await bot.sendAudio(targetStudentId, msg.audio.file_id, {
-          caption: `📩 *ملف صوتي من إدارة البوت / الأدمن:*\n━━━━━━━━━━━━━━━━━━━━\n\n${msg.caption || ""}`,
-          parse_mode: "Markdown",
+          caption: caption,
           reply_markup: studentKeyboard
         });
       }
 
-      bot.sendMessage(ADMIN_ID, "✅ تم إرسال الرد إلى الطالب بنجاح.");
+      bot.sendMessage(ADMIN_ID, "✅ تم إرسال الرد والمرفقات إلى الطالب بنجاح.");
       if (userState[ADMIN_ID]) userState[ADMIN_ID].replyingToStudent = null;
     } catch (err) {
       console.error("Error sending reply to student:", err.message);
@@ -1470,12 +1479,27 @@ bot.on("message", async (msg) => {
     return;
   }
 
-  // 2. حالة: الطالب يرسل رسالة أو ملف إلى الأدمن
-  if (userState[chatId]?.waitingAdminMessage) {
+  // 2. حالة: إرسال الطالب لملفات بجميع أنواعها أو رسائل للأدمن
+  const isMediaOrDoc = Boolean(
+    msg.document ||
+    msg.photo ||
+    msg.voice ||
+    msg.video ||
+    msg.video_note ||
+    msg.animation ||
+    msg.audio
+  );
+
+  if (userState[chatId]?.waitingAdminMessage || isMediaOrDoc) {
     try {
       const studentName = ((msg.from?.first_name || "") + " " + (msg.from?.last_name || "")).trim() || "طالب";
       const username = msg.from?.username ? `@${msg.from.username}` : "لا يوجد معرف";
-      const header = `📨 *رسالة جديدة من طالب / مستخدم:*\n━━━━━━━━━━━━━━━━━━━━\n👤 *الاسم:* ${studentName}\n🔗 *المعرف:* ${username}\n🆔 *الآيدي:* \`${chatId}\``;
+      const header = `📨 رسالة/ملف جديد من طالب:
+━━━━━━━━━━━━━━━━━━━━
+👤 الاسم: ${studentName}
+🔗 المعرف: ${username}
+🆔 الآيدي: ${chatId}`;
+
       const adminKeyboard = {
         inline_keyboard: [
           [{ text: "✍️ الرد على الطالب", callback_data: `admin_reply_${chatId}` }]
@@ -1483,56 +1507,78 @@ bot.on("message", async (msg) => {
       };
 
       let sentMsg = null;
-      if (msg.text) {
+      let fileDesc = "الرسالة";
+
+      if (msg.text && !isMediaOrDoc) {
         sentMsg = await bot.sendMessage(
           ADMIN_ID,
-          `${header}\n\n💬 *نص الرسالة:*\n${msg.text}`,
-          { parse_mode: "Markdown", reply_markup: adminKeyboard }
+          `${header}\n\n💬 نص الرسالة:\n${msg.text}`,
+          { reply_markup: adminKeyboard }
         );
+        fileDesc = "استفسارك";
+      } else if (msg.document) {
+        // يدعم جميع أنواع الملفات: Excel (.xlsx, .xls, .csv), PowerPoint (.pptx, .ppt), Word (.docx, .doc), PDF, ZIP, RAR, Code, etc.
+        const fileName = msg.document.file_name || "ملف مرفق";
+        const captionText = `${header}\n\n📁 ملف مرفق: ${fileName}` + (msg.caption ? `\n📝 الوصف: ${msg.caption}` : "");
+        sentMsg = await bot.sendDocument(ADMIN_ID, msg.document.file_id, {
+          caption: captionText,
+          reply_markup: adminKeyboard
+        });
+        fileDesc = `الملف (${fileName})`;
       } else if (msg.photo) {
         const fileId = msg.photo[msg.photo.length - 1].file_id;
+        const captionText = `${header}\n\n📷 صورة مرفقة` + (msg.caption ? `\n📝 الوصف: ${msg.caption}` : "");
         sentMsg = await bot.sendPhoto(ADMIN_ID, fileId, {
-          caption: `${header}\n\n📷 *صورة مرفقة*` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
-          parse_mode: "Markdown",
+          caption: captionText,
           reply_markup: adminKeyboard
         });
-      } else if (msg.document) {
-        sentMsg = await bot.sendDocument(ADMIN_ID, msg.document.file_id, {
-          caption: `${header}\n\n📄 *ملف مرفق:* ${msg.document.file_name || ""}` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
-          parse_mode: "Markdown",
-          reply_markup: adminKeyboard
-        });
+        fileDesc = "الصورة";
       } else if (msg.voice) {
         sentMsg = await bot.sendVoice(ADMIN_ID, msg.voice.file_id, {
-          caption: `${header}\n\n🎙️ *تسجيل صوتي*`,
-          parse_mode: "Markdown",
+          caption: `${header}\n\n🎙️ تسجيل صوتي`,
           reply_markup: adminKeyboard
         });
+        fileDesc = "التسجيل الصوتي";
       } else if (msg.video) {
+        const captionText = `${header}\n\n🎥 فيديو مرفق` + (msg.caption ? `\n📝 الوصف: ${msg.caption}` : "");
         sentMsg = await bot.sendVideo(ADMIN_ID, msg.video.file_id, {
-          caption: `${header}\n\n🎥 *فيديو مرفق*` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
-          parse_mode: "Markdown",
+          caption: captionText,
           reply_markup: adminKeyboard
         });
+        fileDesc = "الفيديو";
+      } else if (msg.video_note) {
+        sentMsg = await bot.sendVideoNote(ADMIN_ID, msg.video_note.file_id, {
+          reply_markup: adminKeyboard
+        });
+        fileDesc = "الرسالة المرئية";
+      } else if (msg.animation) {
+        sentMsg = await bot.sendAnimation(ADMIN_ID, msg.animation.file_id, {
+          caption: `${header}\n\n🎞️ صورة متحركة GIF`,
+          reply_markup: adminKeyboard
+        });
+        fileDesc = "الصورة المتحركة";
       } else if (msg.audio) {
+        const audioName = msg.audio.title || msg.audio.file_name || "ملف صوتي";
+        const captionText = `${header}\n\n🎵 ملف صوتي مرفق: ${audioName}` + (msg.caption ? `\n📝 الوصف: ${msg.caption}` : "");
         sentMsg = await bot.sendAudio(ADMIN_ID, msg.audio.file_id, {
-          caption: `${header}\n\n🎵 *ملف صوتي مرفق*` + (msg.caption ? `\n📝 *الوصف:* ${msg.caption}` : ""),
-          parse_mode: "Markdown",
+          caption: captionText,
           reply_markup: adminKeyboard
         });
+        fileDesc = `الملف الصوتي (${audioName})`;
       }
 
       if (sentMsg) {
         adminMessageMap.set(sentMsg.message_id, chatId);
       }
 
-      userState[chatId].waitingAdminMessage = false;
+      if (userState[chatId]) {
+        userState[chatId].waitingAdminMessage = false;
+      }
 
       bot.sendMessage(
         chatId,
-        "✅ *تم إرسال رسالتك / ملفك إلى الأدمن بنجاح!*\nسيتم مراجعتها والرد عليك هنا في البوت قريباً 👍",
+        `✅ تم استلام ${fileDesc} وإرساله إلى إدارة البوت بنجاح!\nسيتم مراجعته والرد عليك هنا في البوت قريباً 👍`,
         {
-          parse_mode: "Markdown",
           reply_markup: {
             inline_keyboard: [
               [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
@@ -1542,29 +1588,12 @@ bot.on("message", async (msg) => {
       );
     } catch (err) {
       console.error("Error forwarding to admin:", err.message);
-      bot.sendMessage(chatId, "❌ حدث خطأ أثناء إرسال الرسالة، يرجى المحاولة لاحقاً.");
+      bot.sendMessage(chatId, "❌ حدث خطأ أثناء إرسال الملف، يرجى المحاولة لاحقاً.");
     }
     return;
   }
 
-  // 3. حالة: إرسال ملف/صورة بدون تفعيل وضع التواصل
-  if (msg.photo || msg.document || msg.voice || msg.video || msg.audio) {
-    bot.sendMessage(
-      chatId,
-      "💡 هل ترغب في إرسال هذا الملف أو الاستفسار عنه للأدمن؟\nاضغط على الزر أدناه ثم أرسل الملف:",
-      {
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "💬 تواصل مع الأدمن / إرسال ملف", callback_data: "contact_admin" }],
-            [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
-          ]
-        }
-      }
-    );
-    return;
-  }
-
-  // 4. حالة: رسالة نصية عادية للبحث عن المواد
+  // 3. حالة: رسالة نصية عادية للبحث عن المواد
   if (msg.text) {
     const text = msg.text.trim();
     const results = searchAll(text);
