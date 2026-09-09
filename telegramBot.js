@@ -5,6 +5,7 @@ const { uniRequirements } = require("./uniRequirements");
 const courseCodes = require("./courseCodes");
 const path = require("path");
 const fs = require("fs");
+const { generateAIResponse } = require("./data/aiService");
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
@@ -897,6 +898,7 @@ const contacts = {
 // القائمة الرئيسية
 function showMainMenu(chatId, name = "طالب") {
   const keyboard = [
+    [{ text: "🤖 المساعد الأكاديمي الذكي (AI Chatbot)", callback_data: "start_ai_chat" }],
     [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
     [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
     [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
@@ -927,8 +929,62 @@ bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const name = msg.from.first_name || "طالب";
   saveUser(msg.from, chatId);
-  userState[chatId] = { name: name };
+  userState[chatId] = { name: name, inAiChat: false };
   showMainMenu(chatId, name);
+});
+
+// أمر المساعد الذكي /ai
+bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  saveUser(msg.from, chatId);
+  const query = match[1]?.trim();
+
+  if (!query) {
+    userState[chatId] = {
+      ...userState[chatId],
+      inAiChat: true,
+      waitingAdminMessage: false,
+      aiHistory: []
+    };
+    bot.sendMessage(
+      chatId,
+      "🤖 *المساعد الأكاديمي الذكي جاهز!*\n━━━━━━━━━━━━━━━━━━━━\n\nتفضل بطرح أي سؤال أو استفسار برمجي أو هندسي وسأقوم بمساعدتك فوراً 👇",
+      {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "❌ إنهاء المحادثة والعودة للقائمة", callback_data: "exit_ai_chat" }]
+          ]
+        }
+      }
+    );
+    return;
+  }
+
+  bot.sendChatAction(chatId, "typing");
+  const history = userState[chatId]?.aiHistory || [];
+  const answer = await generateAIResponse(query, history);
+
+  if (!userState[chatId]) userState[chatId] = {};
+  if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+  userState[chatId].aiHistory.push({ role: "user", text: query });
+  userState[chatId].aiHistory.push({ role: "model", text: answer });
+
+  const aiButtons = {
+    inline_keyboard: [
+      [{ text: "🤖 مواصلة المحادثة الذكية", callback_data: "start_ai_chat" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    ]
+  };
+
+  bot.sendMessage(chatId, answer, {
+    parse_mode: "Markdown",
+    reply_markup: aiButtons
+  }).catch(() => {
+    bot.sendMessage(chatId, answer, {
+      reply_markup: aiButtons
+    });
+  });
 });
 
 // أوامر الإذاعة والإحصائيات للأدمن
@@ -984,8 +1040,65 @@ bot.on("callback_query", (query) => {
     if (userState[chatId]) {
       userState[chatId].waitingAdminMessage = false;
       userState[chatId].waitingBroadcastMessage = false;
+      userState[chatId].inAiChat = false;
     }
     const name = userState[chatId]?.name || "طالب";
+    showMainMenu(chatId, name);
+    return;
+  }
+
+  // بدء محادثة مع الذكاء الاصطناعي
+  if (data === "start_ai_chat") {
+    userState[chatId] = {
+      ...userState[chatId],
+      inAiChat: true,
+      waitingAdminMessage: false,
+      aiHistory: []
+    };
+
+    const aiWelcome = `🤖 *المساعد الأكاديمي الذكي لقسم هندسة الحاسوب*
+━━━━━━━━━━━━━━━━━━━━
+
+أهلاً بك! أنا مساعدك الأكاديمي الذكي المعتمد 🎓
+أنا هنا لمساعدتك في فهم موادك وتجاوز صعوبات البرمجة والدراسة:
+
+💡 *أمثلة على ما يمكنك سؤاله:*
+• *شرح المفاهيم:* "اشرح لي خوارزمية Dijkstra بالتفصيل مع مثال"
+• *البرمجة والأكواد:* "اكتب لي كود Binary Search Tree بلغة C++"
+• *نصائح للمواد:* "كيف أدرس لمادة نظم التشغيل وما هي أهم المواضيع؟"
+• *حل المسائل:* "اشرح لي طريقة تبسيط دوائر K-Map"
+
+👇 *اكتب سؤالك أو استفسارك هنا مباشرة في المحادثة:*`;
+
+    bot.sendMessage(chatId, aiWelcome, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
+          [{ text: "❌ إنهاء المحادثة والعودة للقائمة الرئيسية", callback_data: "exit_ai_chat" }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // مسح ذاكرة محادثة الذكاء الاصطناعي
+  if (data === "clear_ai_chat") {
+    if (userState[chatId]) {
+      userState[chatId].aiHistory = [];
+    }
+    bot.sendMessage(chatId, "🧹 تم مسح سجل المحادثة السابقة بنجاح. تفضل بطرح سؤالك الجديد:");
+    return;
+  }
+
+  // إنهاء محادثة الذكاء الاصطناعي
+  if (data === "exit_ai_chat") {
+    if (userState[chatId]) {
+      userState[chatId].inAiChat = false;
+      userState[chatId].aiHistory = [];
+    }
+    const name = userState[chatId]?.name || "طالب";
+    bot.sendMessage(chatId, "تم إنهاء المحادثة مع المساعد الذكي. يمكنك اختيار أي خدمة أخرى من القائمة:");
     showMainMenu(chatId, name);
     return;
   }
@@ -1400,6 +1513,34 @@ bot.on("message", async (msg) => {
   if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingBroadcastMessage) {
     userState[ADMIN_ID].waitingBroadcastMessage = false;
     broadcastMessage(bot, ADMIN_ID, msg, false);
+    return;
+  }
+
+  // حالة: الطالب في وضع المحادثة التفاعلية مع المساعد الذكي
+  if (userState[chatId]?.inAiChat && msg.text && !msg.text.startsWith("/")) {
+    bot.sendChatAction(chatId, "typing");
+    const history = userState[chatId].aiHistory || [];
+    const answer = await generateAIResponse(msg.text, history);
+
+    if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+    userState[chatId].aiHistory.push({ role: "user", text: msg.text });
+    userState[chatId].aiHistory.push({ role: "model", text: answer });
+
+    const aiKeyboard = {
+      inline_keyboard: [
+        [{ text: "🧹 مسح الذاكرة", callback_data: "clear_ai_chat" }],
+        [{ text: "❌ إنهاء المحادثة الذكية", callback_data: "exit_ai_chat" }]
+      ]
+    };
+
+    bot.sendMessage(chatId, answer, {
+      parse_mode: "Markdown",
+      reply_markup: aiKeyboard
+    }).catch(() => {
+      bot.sendMessage(chatId, answer, {
+        reply_markup: aiKeyboard
+      });
+    });
     return;
   }
 
