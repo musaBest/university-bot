@@ -85,32 +85,41 @@ async function generateAIResponse(prompt, history = []) {
     );
   }
 
-  // بناء سجل المحادثة مع تحديد أحدث 6 رسائل للسرعة القصوى
+  // بناء سجل المحادثة المنضبط لـ Gemini بالتناوب الدقيق (user -> model)
   const contents = [];
 
   if (Array.isArray(history)) {
-    for (const turn of history.slice(-6)) {
-      if (turn.role && turn.text) {
-        contents.push({
-          role: turn.role === "user" ? "user" : "model",
-          parts: [{ text: turn.text }]
-        });
+    let lastRole = null;
+    for (const turn of history.slice(-8)) {
+      if (turn && turn.text && typeof turn.text === "string" && turn.text.trim()) {
+        const role = turn.role === "model" ? "model" : "user";
+        if (role !== lastRole) {
+          contents.push({
+            role: role,
+            parts: [{ text: turn.text.trim() }]
+          });
+          lastRole = role;
+        }
       }
     }
   }
 
+  // التأكد من أن آخر رسالة في السجل هي model قبل إضافة رسالة الـ user الحالية
+  if (contents.length > 0 && contents[contents.length - 1].role === "user") {
+    contents.pop();
+  }
+
   contents.push({
     role: "user",
-    parts: [{ text: prompt }]
+    parts: [{ text: prompt.trim() }]
   });
 
   // النماذج مرتبة من الأسرع والأخف استجابة
   const modelsToTry = [
     "gemini-3.5-flash-lite",   // فائق السرعة والاستجابة اللحظية
-    "gemini-flash-lite-latest", // أحدث نسخة لايت خفيفة وسريعة
-    "gemini-3.5-flash",
-    "gemini-flash-latest",
-    "gemini-3.6-flash"
+    "gemini-flash-lite-latest", // أحدث نسخة لايت
+    "gemini-3.5-flash",        // فلاش القياسي
+    "gemini-flash-latest"      // فلاش المحدث
   ];
 
   let lastError = null;
@@ -127,13 +136,12 @@ async function generateAIResponse(prompt, history = []) {
         generationConfig: {
           temperature: 0.7,
           topP: 0.9,
-          maxOutputTokens: 1200
+          maxOutputTokens: 1000
         }
       };
 
-      // مهلة زمنية 5 ثوانٍ لكل نموذج لضمان الانتقال الفوري للبديل في حال أي بطء
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
 
       const response = await fetch(url, {
         method: "POST",
@@ -167,7 +175,7 @@ async function generateAIResponse(prompt, history = []) {
 
   console.error("AI Generation Error:", lastError);
   return (
-    "أهلاً بك! 👋 أنا هنا ومعك دائماً. تفضل بطرح سؤالك أو ما تود التحدث عنه وسأجيبك فوراً!"
+    "⚠️ واجهت بطئاً مؤقتاً في الاتصال بالسيرفر. تفضل بإعادة إرسال رسالتك الآن وسأجيبك فوراً! 🚀"
   );
 }
 

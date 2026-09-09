@@ -970,10 +970,15 @@ bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
     const history = userState[chatId]?.aiHistory || [];
     const answer = await generateAIResponse(query, history);
 
-    if (!userState[chatId]) userState[chatId] = {};
-    if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
-    userState[chatId].aiHistory.push({ role: "user", text: query });
-    userState[chatId].aiHistory.push({ role: "model", text: answer });
+    if (!answer.startsWith("⚠️")) {
+      if (!userState[chatId]) userState[chatId] = {};
+      if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+      userState[chatId].aiHistory.push({ role: "user", text: query });
+      userState[chatId].aiHistory.push({ role: "model", text: answer });
+      if (userState[chatId].aiHistory.length > 8) {
+        userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-8);
+      }
+    }
 
     const aiButtons = {
       inline_keyboard: [
@@ -1538,11 +1543,13 @@ bot.on("message", async (msg) => {
       const history = userState[chatId].aiHistory || [];
       const answer = await generateAIResponse(msg.text, history);
 
-      if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
-      userState[chatId].aiHistory.push({ role: "user", text: msg.text });
-      userState[chatId].aiHistory.push({ role: "model", text: answer });
-      if (userState[chatId].aiHistory.length > 10) {
-        userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-10);
+      if (!answer.startsWith("⚠️")) {
+        if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+        userState[chatId].aiHistory.push({ role: "user", text: msg.text });
+        userState[chatId].aiHistory.push({ role: "model", text: answer });
+        if (userState[chatId].aiHistory.length > 8) {
+          userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-8);
+        }
       }
 
       const aiKeyboard = {
