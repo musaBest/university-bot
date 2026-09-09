@@ -17,6 +17,7 @@ const adminMessageMap = new Map();
 const ADMIN_ID = 5687891184;
 
 // ==========================================
+// ==========================================
 // إدارة المستخدمين ونظام الإذاعة والإشعارات
 // ==========================================
 const usersFilePath = path.join(__dirname, "data", "users.json");
@@ -24,7 +25,9 @@ const usersFilePath = path.join(__dirname, "data", "users.json");
 function loadUsers() {
   try {
     if (!fs.existsSync(usersFilePath)) {
-      fs.writeFileSync(usersFilePath, JSON.stringify([]));
+      const dataDir = path.dirname(usersFilePath);
+      if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+      fs.writeFileSync(usersFilePath, JSON.stringify([], null, 2), "utf8");
       return [];
     }
     const data = fs.readFileSync(usersFilePath, "utf8");
@@ -37,32 +40,38 @@ function loadUsers() {
 
 function saveUser(msgUser, chatId) {
   try {
-    if (!chatId) return;
+    const rawId = chatId || msgUser?.id;
+    if (!rawId) return;
+    const id = Number(rawId);
+    if (!id || isNaN(id)) return;
+
     const users = loadUsers();
-    const existingIndex = users.findIndex((u) => u.id === chatId);
+    const existingIndex = users.findIndex((u) => Number(u.id) === id);
     const firstName = msgUser?.first_name || "";
     const lastName = msgUser?.last_name || "";
-    const fullName = (firstName + " " + lastName).trim() || "طالب";
-    const username = msgUser?.username ? `@${msgUser.username}` : "";
+    const fullName = (firstName + " " + lastName).trim() || (existingIndex >= 0 ? users[existingIndex].name : "طالب");
+    const username = msgUser?.username ? `@${msgUser.username}` : (existingIndex >= 0 ? users[existingIndex].username : "");
     const now = new Date().toISOString();
 
     if (existingIndex >= 0) {
-      users[existingIndex].name = fullName;
-      users[existingIndex].username = username;
+      if (fullName && fullName !== "طالب") users[existingIndex].name = fullName;
+      if (username) users[existingIndex].username = username;
       users[existingIndex].lastActive = now;
       users[existingIndex].active = true;
     } else {
       users.push({
-        id: chatId,
-        name: fullName,
-        username: username,
+        id: id,
+        name: fullName || "طالب",
+        username: username || "",
         joinedAt: now,
         lastActive: now,
         active: true
       });
     }
 
-    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+    const dataDir = path.dirname(usersFilePath);
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), "utf8");
   } catch (err) {
     console.error("Error saving user:", err);
   }
@@ -71,14 +80,49 @@ function saveUser(msgUser, chatId) {
 function markUserInactive(chatId) {
   try {
     const users = loadUsers();
-    const user = users.find((u) => u.id === chatId);
+    const user = users.find((u) => Number(u.id) === Number(chatId));
     if (user) {
       user.active = false;
-      fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+      fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), "utf8");
     }
   } catch (err) {
     console.error("Error updating user status:", err);
   }
+}
+
+function sendStatsReport(botInstance, adminChatId) {
+  const users = loadUsers();
+  const activeUsers = users.filter((u) => u.active !== false);
+  const inactiveUsers = users.filter((u) => u.active === false);
+
+  let text = `📊 *إحصائيات مستخدمي ومشتركي البوت*\n━━━━━━━━━━━━━━━━━━━━\n\n`;
+  text += `👥 *إجمالي الطلاب المسجلين:* \`${users.length}\`\n`;
+  text += `✅ *الطلاب النشطين:* \`${activeUsers.length}\`\n`;
+  text += `❌ *غير النشطين (حظر البوت):* \`${inactiveUsers.length}\`\n\n`;
+
+  if (users.length > 0) {
+    text += `📋 *أحدث الطلاب المتفاعلين:* \n`;
+    const recent = users.slice(-10).reverse();
+    recent.forEach((u, i) => {
+      const uName = u.name || "طالب";
+      const uTag = u.username ? ` (${u.username})` : "";
+      text += `${i + 1}. *${uName}*${uTag} - \`ID: ${u.id}\`\n`;
+    });
+  } else {
+    text += `ℹ️ *لا يوجد مستخدمين مسجلين بعد.* سيتم تسجيل كل طالب فور تفاعله بالبوت.`;
+  }
+
+  const buttons = [
+    [{ text: "📢 إرسال إشعار للجميع", callback_data: "admin_broadcast" }],
+    [{ text: "📄 تصدير وعرض قائمة المشتركين كاملة", callback_data: "export_users_list" }],
+    [{ text: "🔄 تحديث الإحصائيات", callback_data: "bot_stats" }],
+    [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+  ];
+
+  botInstance.sendMessage(adminChatId, text, {
+    parse_mode: "Markdown",
+    reply_markup: { inline_keyboard: buttons }
+  });
 }
 
 async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset = false) {
@@ -1029,13 +1073,8 @@ bot.onText(/\/broadcast/, (msg) => {
 bot.onText(/\/stats/, (msg) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
-  const users = loadUsers();
-  const activeUsers = users.filter((u) => u.active !== false);
-  bot.sendMessage(
-    chatId,
-    `📊 *إحصائيات مستخدمي البوت*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 إجمالي المستخدمين المسجلين: *${users.length}*\n✅ المستخدمين النشطين: *${activeUsers.length}*\n❌ المستخدمين غير النشطين: *${users.length - activeUsers.length}*`,
-    { parse_mode: "Markdown" }
-  );
+  saveUser(msg.from, chatId);
+  sendStatsReport(bot, chatId);
 });
 
 // التعامل مع جميع أزرار Callback Queries
@@ -1160,13 +1199,54 @@ bot.on("callback_query", (query) => {
   // إحصائيات البوت
   if (data === "bot_stats") {
     if (chatId !== ADMIN_ID) return;
+    sendStatsReport(bot, chatId);
+    return;
+  }
+
+  // تصدير وعرض قائمة المشتركين بالكامل
+  if (data === "export_users_list") {
+    if (chatId !== ADMIN_ID) return;
     const users = loadUsers();
-    const activeUsers = users.filter((u) => u.active !== false);
-    bot.sendMessage(
-      chatId,
-      `📊 *إحصائيات مستخدمي البوت*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 إجمالي المستخدمين المسجلين: *${users.length}*\n✅ المستخدمين النشطين: *${activeUsers.length}*\n❌ المستخدمين غير النشطين: *${users.length - activeUsers.length}*`,
-      { parse_mode: "Markdown" }
-    );
+    if (users.length === 0) {
+      bot.sendMessage(chatId, "⚠️ لا يوجد طلاب مسجلين حتى الآن.");
+      return;
+    }
+
+    let listText = `📋 *قائمة جميع المشتركين المسجلين (${users.length} طالب)*:\n━━━━━━━━━━━━━━━━━━━━\n\n`;
+    users.forEach((u, index) => {
+      const uName = u.name || "طالب";
+      const uTag = u.username ? ` (${u.username})` : " (بدون يوزر)";
+      const status = u.active !== false ? "✅" : "❌";
+      listText += `${index + 1}. ${status} *${uName}*${uTag}\n   🆔 \`${u.id}\`\n`;
+    });
+
+    if (listText.length < 3900) {
+      bot.sendMessage(chatId, listText, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "📊 العودة للإحصائيات", callback_data: "bot_stats" }],
+            [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+          ]
+        }
+      });
+    } else {
+      const tempPath = path.join(__dirname, "data", "subscribers_list.txt");
+      let fileContent = `قائمة مشتركي بوت هندسة الحاسوب - الجامعة الإسلامية بغزة\n`;
+      fileContent += `إجمالي المشتركين: ${users.length}\n`;
+      fileContent += `التاريخ: ${new Date().toLocaleString()}\n`;
+      fileContent += `====================================================\n\n`;
+      users.forEach((u, i) => {
+        fileContent += `${i + 1}. Name: ${u.name} | Username: ${u.username || "None"} | ID: ${u.id} | Joined: ${u.joinedAt || "N/A"} | Active: ${u.active !== false}\n`;
+      });
+      fs.writeFileSync(tempPath, fileContent, "utf8");
+      bot.sendDocument(chatId, tempPath, {
+        caption: `📄 قائمة المشتركين بالكامل (${users.length} طالب)`,
+        reply_markup: {
+          inline_keyboard: [[{ text: "📊 العودة للإحصائيات", callback_data: "bot_stats" }]]
+        }
+      });
+    }
     return;
   }
 
