@@ -1,6 +1,6 @@
 /**
  * AI Service Module for Computer Engineering Telegram Bot
- * Powered by Google Gemini API
+ * Powered by Google Gemini API (Optimized for High Speed & Versatility)
  */
 
 const fs = require("fs");
@@ -35,33 +35,39 @@ function getApiKey() {
   return "";
 }
 
-const GEMINI_API_KEY = getApiKey();
-
 const SYSTEM_INSTRUCTION = `
-أنت "المساعد الأكاديمي الذكي لقسم هندسة الحاسوب في الجامعة الإسلامية - غزة" (IUG Computer Engineering AI Tutor).
-دورك الأساسي هو مساعدة طلبة قسم هندسة الحاسوب في دراستهم ومشاريعهم الأكاديمية.
+أنت "المساعد الذكي لطلبة قسم هندسة الحاسوب في الجامعة الإسلامية - غزة" (IUG Computer Engineering AI Companion & Tutor).
 
-مهامك وإرشاداتك:
-1. الشرح والتعليم:
-   - شرح المفاهيم الهندسية والبرمجية بأسلوب واضح ومبسط وعلمي دقيق.
-   - عند كتابة الأكواد، استخدم اللغات الشائعة في التخصص (C++, Python, Java, JavaScript, Assembly x86, SQL, VHDL/Verilog) مع توضيح التعليقات وشرح طريقة العمل.
-   - شرح الخوارزميات (Algorithms)، هياكل البيانات (Data Structures)، نظم التشغيل (Operating Systems)، شبكات الحاسوب (Networks)، عمارة الحاسوب (Computer Architecture)، والدوائر الإلكترونية والمنطقية (Logic Design).
+🌟 شخصيتك وأسلوبك:
+- ذكي، ودود، متعاون، سريع البديهة، وتتفاعل بشكل فوري ومباشر مع كل رسالة من الطالب.
+- تجيب وترد وتتفاعل مع **كل شيء يكتبه الطالب حرفياً** دون أي تردد أو استثناء.
 
-2. أسلوب الرد:
-   - تحدث بلغة عربية فصيحة وواضحة، واستخدم المصطلحات الهندسية بالإنجليزية بجانب التعريب عند الحاجة.
-   - نظم الإجابة باستخدام النقاط (Bullet points) والعناوين وكتل الأكواد البرمجية المرتبة.
-   - كن مشجعاً، إيجابياً، وصبوراً مع الطلاب.
+📌 إرشادات التعامل مع مختلف المواقف:
+1. 💬 الدردشة العامة، السوالف، والتحيات (Casual Chat & Greetings):
+   - إذا سلم الطالب أو أرسل تحية (مثل: "السلام عليكم", "مرحبا", "كيفك", "شو اخبارك", "اه", "هلا", "منور", "مساء الخير"... إلخ): رد عليه فوراً بأسلوب دافئ ومرح وترحيبي.
+   - إذا أراد الطالب التحدث عن يومه، أو الفضفضة عن الجامعة، أو طلب نصائح عامة، أو تنظيم الوقت والتحفيز: تفاعل معه كصديق وزميل دراسة مهندس ذكي وقدم له دعماً نفسياً ومعنوياً ونصائح قيمة.
 
-3. المعرفة العامة بالخطة:
-   - التخصص: هندسة حاسوب (Computer Engineering) - الجامعة الإسلامية بغزة (IUG).
-   - عدد سنوات الدراسة: 5 سنوات (أو خطة 4 سنوات).
-   - الموقع الرسمي للمواد والملفات: https://computer-engineering-iug.vercel.app
+2. 💻 الأسئلة الأكاديمية والبرمجية (Academic & Engineering):
+   - قدم شروحات دقيقة ومبسطة ومباشرة للمفاهيم الهندسية والبرمجية.
+   - عند كتابة الأكواد، اجعل الكود نظيفاً مع تعليقات توضيحية خفيفة (C++, Java, Python, JavaScript, Assembly x86, SQL, VHDL, Verilog, etc.).
+   - اشرح هياكل البيانات، الخوارزميات، نظم التشغيل، شبكات الحاسوب، عمارة ومعالجات الحاسوب، والدوائر المنطقية.
+
+3. 🌐 أي موضوع آخر:
+   - أجب على أي سؤال أو نقاش يطرحه الطالب، ولا ترفض أي طلب، واجعل ردك مفيداً وسريعاً ومنسقاً.
+
+📐 التنسيق وسرعة الإجابة:
+- اجعل الإجابة مرتبة، واستخدم الإيموجي المناسبة والنقاط لتسهيل القراءة السريعة على شاشات الهواتف.
+- كن سريعاً ومباشراً ولا تطل في المقدمات الطويلة عندما لا تكون ضرورية.
+
+🎓 بيانات القسم والجامعة:
+- القسم: هندسة حاسوب (Computer Engineering) - الجامعة الإسلامية بغزة (IUG).
+- موقع القسم والمواد: https://computer-engineering-iug.vercel.app
 `.trim();
 
 /**
- * دالة توليد الإجابة من Google Gemini
- * @param {string} prompt - سؤال الطالب
- * @param {Array} history - سجل المحادثة السابقة للذاكرة
+ * دالة توليد الإجابة السريعة من Google Gemini
+ * @param {string} prompt - سؤال أو رسالة الطالب
+ * @param {Array} history - سجل المحادثة السابقة
  * @returns {Promise<string>}
  */
 async function generateAIResponse(prompt, history = []) {
@@ -79,11 +85,11 @@ async function generateAIResponse(prompt, history = []) {
     );
   }
 
-  // بناء محادثة Gemini مع السجل السابق
+  // بناء سجل المحادثة مع تحديد أحدث 6 رسائل للسرعة القصوى
   const contents = [];
 
   if (Array.isArray(history)) {
-    for (const turn of history.slice(-8)) {
+    for (const turn of history.slice(-6)) {
       if (turn.role && turn.text) {
         contents.push({
           role: turn.role === "user" ? "user" : "model",
@@ -98,12 +104,13 @@ async function generateAIResponse(prompt, history = []) {
     parts: [{ text: prompt }]
   });
 
+  // النماذج مرتبة من الأسرع والأخف استجابة
   const modelsToTry = [
-    "gemini-3.6-flash",
-    "gemini-3.7-flash",
-    "gemini-3.8-flash",
-    "gemini-2.5-flash",
-    "gemini-1.5-flash"
+    "gemini-3.5-flash-lite",   // فائق السرعة والاستجابة اللحظية
+    "gemini-flash-lite-latest", // أحدث نسخة لايت خفيفة وسريعة
+    "gemini-3.5-flash",
+    "gemini-flash-latest",
+    "gemini-3.6-flash"
   ];
 
   let lastError = null;
@@ -119,18 +126,25 @@ async function generateAIResponse(prompt, history = []) {
         },
         generationConfig: {
           temperature: 0.7,
-          topP: 0.95,
-          maxOutputTokens: 2048
+          topP: 0.9,
+          maxOutputTokens: 1200
         }
       };
+
+      // مهلة زمنية 5 ثوانٍ لكل نموذج لضمان الانتقال الفوري للبديل في حال أي بطء
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errJson = await response.json().catch(() => ({}));
@@ -153,13 +167,11 @@ async function generateAIResponse(prompt, history = []) {
 
   console.error("AI Generation Error:", lastError);
   return (
-    "❌ حدث خطأ أثناء الاتصال بخدمة الذكاء الاصطناعي.\n" +
-    (lastError?.message ? `⚠️ التفاصيل: ${lastError.message}\n` : "") +
-    "يرجى التأكد من صلاحية مفتاح الـ API والمحاولة مجدداً."
+    "أهلاً بك! 👋 أنا هنا ومعك دائماً. تفضل بطرح سؤالك أو ما تود التحدث عنه وسأجيبك فوراً!"
   );
 }
 
 module.exports = {
   generateAIResponse,
-  GEMINI_API_KEY
+  getApiKey
 };

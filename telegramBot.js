@@ -961,30 +961,41 @@ bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
     return;
   }
 
-  bot.sendChatAction(chatId, "typing");
-  const history = userState[chatId]?.aiHistory || [];
-  const answer = await generateAIResponse(query, history);
+  const typingTimer = setInterval(() => {
+    bot.sendChatAction(chatId, "typing").catch(() => {});
+  }, 3000);
+  bot.sendChatAction(chatId, "typing").catch(() => {});
 
-  if (!userState[chatId]) userState[chatId] = {};
-  if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
-  userState[chatId].aiHistory.push({ role: "user", text: query });
-  userState[chatId].aiHistory.push({ role: "model", text: answer });
+  try {
+    const history = userState[chatId]?.aiHistory || [];
+    const answer = await generateAIResponse(query, history);
 
-  const aiButtons = {
-    inline_keyboard: [
-      [{ text: "🤖 مواصلة المحادثة الذكية", callback_data: "start_ai_chat" }],
-      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
-    ]
-  };
+    if (!userState[chatId]) userState[chatId] = {};
+    if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+    userState[chatId].aiHistory.push({ role: "user", text: query });
+    userState[chatId].aiHistory.push({ role: "model", text: answer });
 
-  bot.sendMessage(chatId, answer, {
-    parse_mode: "Markdown",
-    reply_markup: aiButtons
-  }).catch(() => {
-    bot.sendMessage(chatId, answer, {
+    const aiButtons = {
+      inline_keyboard: [
+        [{ text: "🤖 مواصلة المحادثة الذكية", callback_data: "start_ai_chat" }],
+        [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+      ]
+    };
+
+    await bot.sendMessage(chatId, answer, {
+      parse_mode: "Markdown",
       reply_markup: aiButtons
+    }).catch(async () => {
+      await bot.sendMessage(chatId, answer, {
+        reply_markup: aiButtons
+      });
     });
-  });
+  } catch (err) {
+    console.error("AI command error:", err);
+    bot.sendMessage(chatId, "أهلاً بك! تفضل بطرح سؤالك وسأجيبك فوراً.");
+  } finally {
+    clearInterval(typingTimer);
+  }
 });
 
 // أوامر الإذاعة والإحصائيات للأدمن
@@ -1518,29 +1529,43 @@ bot.on("message", async (msg) => {
 
   // حالة: الطالب في وضع المحادثة التفاعلية مع المساعد الذكي
   if (userState[chatId]?.inAiChat && msg.text && !msg.text.startsWith("/")) {
-    bot.sendChatAction(chatId, "typing");
-    const history = userState[chatId].aiHistory || [];
-    const answer = await generateAIResponse(msg.text, history);
+    const typingTimer = setInterval(() => {
+      bot.sendChatAction(chatId, "typing").catch(() => {});
+    }, 3000);
+    bot.sendChatAction(chatId, "typing").catch(() => {});
 
-    if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
-    userState[chatId].aiHistory.push({ role: "user", text: msg.text });
-    userState[chatId].aiHistory.push({ role: "model", text: answer });
+    try {
+      const history = userState[chatId].aiHistory || [];
+      const answer = await generateAIResponse(msg.text, history);
 
-    const aiKeyboard = {
-      inline_keyboard: [
-        [{ text: "🧹 مسح الذاكرة", callback_data: "clear_ai_chat" }],
-        [{ text: "❌ إنهاء المحادثة الذكية", callback_data: "exit_ai_chat" }]
-      ]
-    };
+      if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+      userState[chatId].aiHistory.push({ role: "user", text: msg.text });
+      userState[chatId].aiHistory.push({ role: "model", text: answer });
+      if (userState[chatId].aiHistory.length > 10) {
+        userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-10);
+      }
 
-    bot.sendMessage(chatId, answer, {
-      parse_mode: "Markdown",
-      reply_markup: aiKeyboard
-    }).catch(() => {
-      bot.sendMessage(chatId, answer, {
+      const aiKeyboard = {
+        inline_keyboard: [
+          [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
+          [{ text: "❌ إنهاء المحادثة والعودة للقائمة الرئيسية", callback_data: "exit_ai_chat" }]
+        ]
+      };
+
+      await bot.sendMessage(chatId, answer, {
+        parse_mode: "Markdown",
         reply_markup: aiKeyboard
+      }).catch(async () => {
+        await bot.sendMessage(chatId, answer, {
+          reply_markup: aiKeyboard
+        });
       });
-    });
+    } catch (err) {
+      console.error("AI Error:", err);
+      bot.sendMessage(chatId, "أهلاً بك! أنا هنا ومعك دائماً، تفضل بطرح سؤالك وسأجيبك فوراً! 🚀");
+    } finally {
+      clearInterval(typingTimer);
+    }
     return;
   }
 
