@@ -1,10 +1,14 @@
 [
   {
     "id": 5687891184,
-    "name": "Test Admin",
-    "username": "@testadmin",
+    "name": "Admin",
+    "username": "",
     "joinedAt": "2026-09-02T10:23:07.048Z",
-    "lastActive": "2026-09-02T10:23:07.048Z",
-    "active": true
+    "lastActive": "2026-09-10T06:55:45.845Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 1
+    }
   }
 ]

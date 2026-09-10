@@ -16,65 +16,26 @@ const adminMessageMap = new Map();
 
 const ADMIN_ID = 5687891184;
 
-// ==========================================
-// ==========================================
-// إدارة المستخدمين ونظام الإذاعة والإشعارات
-// ==========================================
-const usersFilePath = path.join(__dirname, "data", "users.json");
-
-function loadUsers() {
-  try {
-    if (!fs.existsSync(usersFilePath)) {
-      const dataDir = path.dirname(usersFilePath);
-      if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-      fs.writeFileSync(usersFilePath, JSON.stringify([], null, 2), "utf8");
-      return [];
-    }
-    const data = fs.readFileSync(usersFilePath, "utf8");
-    return JSON.parse(data || "[]");
-  } catch (err) {
-    console.error("Error loading users:", err);
-    return [];
-  }
-}
+const {
+  loadUsers,
+  saveUsersList,
+  isUserBanned,
+  trackFeatureUse,
+  banUser,
+  unbanUser,
+  addUserManually,
+  getUserProfile,
+  getFeatureStats,
+  FEATURE_LABELS,
+  renderMainDashboard,
+  renderFeatureStats,
+  renderFeatureUsers,
+  renderBannedList,
+  renderUserProfile
+} = require("./data/adminDashboard");
 
 function saveUser(msgUser, chatId) {
-  try {
-    const rawId = chatId || msgUser?.id;
-    if (!rawId) return;
-    const id = Number(rawId);
-    if (!id || isNaN(id)) return;
-
-    const users = loadUsers();
-    const existingIndex = users.findIndex((u) => Number(u.id) === id);
-    const firstName = msgUser?.first_name || "";
-    const lastName = msgUser?.last_name || "";
-    const fullName = (firstName + " " + lastName).trim() || (existingIndex >= 0 ? users[existingIndex].name : "طالب");
-    const username = msgUser?.username ? `@${msgUser.username}` : (existingIndex >= 0 ? users[existingIndex].username : "");
-    const now = new Date().toISOString();
-
-    if (existingIndex >= 0) {
-      if (fullName && fullName !== "طالب") users[existingIndex].name = fullName;
-      if (username) users[existingIndex].username = username;
-      users[existingIndex].lastActive = now;
-      users[existingIndex].active = true;
-    } else {
-      users.push({
-        id: id,
-        name: fullName || "طالب",
-        username: username || "",
-        joinedAt: now,
-        lastActive: now,
-        active: true
-      });
-    }
-
-    const dataDir = path.dirname(usersFilePath);
-    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), "utf8");
-  } catch (err) {
-    console.error("Error saving user:", err);
-  }
+  trackFeatureUse(chatId, "active", msgUser);
 }
 
 function markUserInactive(chatId) {
@@ -83,7 +44,7 @@ function markUserInactive(chatId) {
     const user = users.find((u) => Number(u.id) === Number(chatId));
     if (user) {
       user.active = false;
-      fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), "utf8");
+      saveUsersList(users);
     }
   } catch (err) {
     console.error("Error updating user status:", err);
@@ -91,38 +52,7 @@ function markUserInactive(chatId) {
 }
 
 function sendStatsReport(botInstance, adminChatId) {
-  const users = loadUsers();
-  const activeUsers = users.filter((u) => u.active !== false);
-  const inactiveUsers = users.filter((u) => u.active === false);
-
-  let text = `📊 *إحصائيات مستخدمي ومشتركي البوت*\n━━━━━━━━━━━━━━━━━━━━\n\n`;
-  text += `👥 *إجمالي الطلاب المسجلين:* \`${users.length}\`\n`;
-  text += `✅ *الطلاب النشطين:* \`${activeUsers.length}\`\n`;
-  text += `❌ *غير النشطين (حظر البوت):* \`${inactiveUsers.length}\`\n\n`;
-
-  if (users.length > 0) {
-    text += `📋 *أحدث الطلاب المتفاعلين:* \n`;
-    const recent = users.slice(-10).reverse();
-    recent.forEach((u, i) => {
-      const uName = u.name || "طالب";
-      const uTag = u.username ? ` (${u.username})` : "";
-      text += `${i + 1}. *${uName}*${uTag} - \`ID: ${u.id}\`\n`;
-    });
-  } else {
-    text += `ℹ️ *لا يوجد مستخدمين مسجلين بعد.* سيتم تسجيل كل طالب فور تفاعله بالبوت.`;
-  }
-
-  const buttons = [
-    [{ text: "📢 إرسال إشعار للجميع", callback_data: "admin_broadcast" }],
-    [{ text: "📄 تصدير وعرض قائمة المشتركين كاملة", callback_data: "export_users_list" }],
-    [{ text: "🔄 تحديث الإحصائيات", callback_data: "bot_stats" }],
-    [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
-  ];
-
-  botInstance.sendMessage(adminChatId, text, {
-    parse_mode: "Markdown",
-    reply_markup: { inline_keyboard: buttons }
-  });
+  renderMainDashboard(adminChatId, botInstance);
 }
 
 async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset = false) {
@@ -958,8 +888,9 @@ function showMainMenu(chatId, name = "طالب") {
 
   if (chatId === ADMIN_ID) {
     keyboard.push(
-      [{ text: "📢 إرسال إشعار جماعي للطلاب", callback_data: "start_broadcast" }],
-      [{ text: "📊 إحصائيات المشتركين", callback_data: "bot_stats" }]
+      [{ text: "🎛️ لوحة تحكم الإدارة (Admin Dashboard)", callback_data: "admin_dashboard" }],
+      [{ text: "📊 إحصائيات الأيقونات والميزات", callback_data: "admin_feature_stats" }],
+      [{ text: "📢 إرسال إشعار جماعي للطلاب", callback_data: "start_broadcast" }]
     );
   }
 
@@ -971,16 +902,81 @@ function showMainMenu(chatId, name = "طالب") {
 // أمر البدء /start
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
+    bot.sendMessage(chatId, "⛔ *عذراً، تم تقييد وصولك للبوت!*\nتم حظر حسابك من قبل إدارة القسم.", { parse_mode: "Markdown" });
+    return;
+  }
   const name = msg.from.first_name || "طالب";
   saveUser(msg.from, chatId);
   userState[chatId] = { name: name, inAiChat: false };
   showMainMenu(chatId, name);
 });
 
+// أمر لوحة تحكم الأدمن
+bot.onText(/\/(?:admin|dashboard)/, (msg) => {
+  const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID) return;
+  saveUser(msg.from, chatId);
+  renderMainDashboard(chatId, bot);
+});
+
+// أمر حظر طالب /ban
+bot.onText(/\/ban(?:\s+(.+))?/, (msg, match) => {
+  const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID) return;
+  const target = match[1]?.trim();
+  if (!target) {
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBanInput: true };
+    bot.sendMessage(chatId, "🚫 *حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لحظر الطالب من استخدام البوت:", { parse_mode: "Markdown" });
+    return;
+  }
+  const res = banUser(target, "حظر مباشر من الأدمن");
+  if (res.success) {
+    bot.sendMessage(chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, { parse_mode: "Markdown" });
+  } else {
+    bot.sendMessage(chatId, `❌ ${res.error}`);
+  }
+});
+
+// أمر إلغاء حظر طالب /unban
+bot.onText(/\/unban(?:\s+(.+))?/, (msg, match) => {
+  const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID) return;
+  const target = match[1]?.trim();
+  if (!target) {
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingUnbanInput: true };
+    bot.sendMessage(chatId, "🔓 *إلغاء حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لإلغاء الحظر:", { parse_mode: "Markdown" });
+    return;
+  }
+  const res = unbanUser(target);
+  if (res.success) {
+    bot.sendMessage(chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, { parse_mode: "Markdown" });
+  } else {
+    bot.sendMessage(chatId, `❌ ${res.error}`);
+  }
+});
+
+// أمر استعلام عن ملف طالب /user
+bot.onText(/\/user(?:\s+(.+))?/, (msg, match) => {
+  const chatId = msg.chat.id;
+  if (chatId !== ADMIN_ID) return;
+  const target = match[1]?.trim();
+  if (!target) {
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingSearchUserInput: true };
+    bot.sendMessage(chatId, "🔍 *استعلام عن طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لعرض سجله ونشاطه:", { parse_mode: "Markdown" });
+    return;
+  }
+  renderUserProfile(chatId, bot, target);
+});
+
 // أمر المساعد الذكي /ai
 bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
-  saveUser(msg.from, chatId);
+  if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
+    bot.sendMessage(chatId, "⛔ *عذراً، تم تقييد وصولك للبوت!*\nتم حظر حسابك من قبل إدارة القسم.", { parse_mode: "Markdown" });
+    return;
+  }
+  trackFeatureUse(chatId, "ai_chat", msg.from);
   const query = match[1]?.trim();
 
   if (!query) {
@@ -1074,13 +1070,22 @@ bot.onText(/\/stats/, (msg) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
   saveUser(msg.from, chatId);
-  sendStatsReport(bot, chatId);
+  renderFeatureStats(chatId, bot);
 });
 
 // التعامل مع جميع أزرار Callback Queries
 bot.on("callback_query", (query) => {
   const chatId = query.message.chat.id;
   const data = query.data;
+
+  // التحقق من حالة حظر المستخدم
+  if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
+    bot.answerCallbackQuery(query.id, {
+      text: "⛔ عذراً، تم تقييد وصولك للبوت وحظر حسابك من قبل الإدارة.",
+      show_alert: true
+    });
+    return;
+  }
 
   saveUser(query.from, chatId);
 
@@ -1102,8 +1107,127 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // ==========================================
+  // أزرار لوحة تحكم الأدمن (Admin Dashboard)
+  // ==========================================
+  
+  // عرض لوحة التحكم الرئيسية
+  if (data === "admin_dashboard") {
+    if (chatId !== ADMIN_ID) return;
+    renderMainDashboard(chatId, bot);
+    return;
+  }
+
+  // عرض إحصائيات الميزات والأيقونات
+  if (data === "admin_feature_stats") {
+    if (chatId !== ADMIN_ID) return;
+    renderFeatureStats(chatId, bot);
+    return;
+  }
+
+  // معرفة الطلاب الذين استخدموا ميزة محددة
+  if (data.startsWith("admin_who_")) {
+    if (chatId !== ADMIN_ID) return;
+    const featureKey = data.replace("admin_who_", "");
+    renderFeatureUsers(chatId, bot, featureKey);
+    return;
+  }
+
+  // قائمة الطلاب المحظورين
+  if (data === "admin_banned_list") {
+    if (chatId !== ADMIN_ID) return;
+    renderBannedList(chatId, bot);
+    return;
+  }
+
+  // طلب إدخال ID/يوزر للحظر
+  if (data === "admin_ban_prompt") {
+    if (chatId !== ADMIN_ID) return;
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBanInput: true };
+    bot.sendMessage(chatId, "🚫 *حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لحظر الطالب من استخدام البوت:", {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+      }
+    });
+    return;
+  }
+
+  // طلب إضافة طالب يدوياً
+  if (data === "admin_add_user_prompt") {
+    if (chatId !== ADMIN_ID) return;
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingAddUserInput: true };
+    bot.sendMessage(chatId, "➕ *إضافة طالب يدوياً:*\nأرسل معرّف الطالب (ID) مع اسمه ومعرفه كالتالي:\n`123456789 محمد @username`\n\nأو أرسل الآيدي فقط:\n`123456789`", {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+      }
+    });
+    return;
+  }
+
+  // طلب فحص واستعلام عن طالب
+  if (data === "admin_search_user_prompt") {
+    if (chatId !== ADMIN_ID) return;
+    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingSearchUserInput: true };
+    bot.sendMessage(chatId, "🔍 *فحص واستعلام عن طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لعرض سجله ونشاطه:", {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+      }
+    });
+    return;
+  }
+
+  // حظر طالب محدد من زر في ملفه
+  if (data.startsWith("admin_ban_user_")) {
+    if (chatId !== ADMIN_ID) return;
+    const targetId = data.replace("admin_ban_user_", "");
+    const res = banUser(targetId);
+    if (res.success) {
+      bot.sendMessage(chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+            [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
+          ]
+        }
+      });
+    } else {
+      bot.sendMessage(chatId, `❌ ${res.error}`);
+    }
+    return;
+  }
+
+  // إلغاء حظر طالب محدد من زر
+  if (data.startsWith("admin_unban_")) {
+    if (chatId !== ADMIN_ID) return;
+    const targetId = data.replace("admin_unban_", "");
+    const res = unbanUser(targetId);
+    if (res.success) {
+      bot.sendMessage(chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+            [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
+          ]
+        }
+      });
+    } else {
+      bot.sendMessage(chatId, `❌ ${res.error}`);
+    }
+    return;
+  }
+
+  // ==========================================
+  // ميزات الطلاب والأكاديمية
+  // ==========================================
+
   // بدء محادثة مع الذكاء الاصطناعي
   if (data === "start_ai_chat") {
+    trackFeatureUse(chatId, "ai_chat", query.from);
     userState[chatId] = {
       ...userState[chatId],
       inAiChat: true,
@@ -1216,7 +1340,7 @@ bot.on("callback_query", (query) => {
     users.forEach((u, index) => {
       const uName = u.name || "طالب";
       const uTag = u.username ? ` (${u.username})` : " (بدون يوزر)";
-      const status = u.active !== false ? "✅" : "❌";
+      const status = u.banned ? "🚫" : (u.active !== false ? "✅" : "❌");
       listText += `${index + 1}. ${status} *${uName}*${uTag}\n   🆔 \`${u.id}\`\n`;
     });
 
@@ -1225,7 +1349,7 @@ bot.on("callback_query", (query) => {
         parse_mode: "Markdown",
         reply_markup: {
           inline_keyboard: [
-            [{ text: "📊 العودة للإحصائيات", callback_data: "bot_stats" }],
+            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
             [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
           ]
         }
@@ -1237,13 +1361,13 @@ bot.on("callback_query", (query) => {
       fileContent += `التاريخ: ${new Date().toLocaleString()}\n`;
       fileContent += `====================================================\n\n`;
       users.forEach((u, i) => {
-        fileContent += `${i + 1}. Name: ${u.name} | Username: ${u.username || "None"} | ID: ${u.id} | Joined: ${u.joinedAt || "N/A"} | Active: ${u.active !== false}\n`;
+        fileContent += `${i + 1}. Name: ${u.name} | Username: ${u.username || "None"} | ID: ${u.id} | Joined: ${u.joinedAt || "N/A"} | Active: ${u.active !== false} | Banned: ${u.banned || false}\n`;
       });
       fs.writeFileSync(tempPath, fileContent, "utf8");
       bot.sendDocument(chatId, tempPath, {
         caption: `📄 قائمة المشتركين بالكامل (${users.length} طالب)`,
         reply_markup: {
-          inline_keyboard: [[{ text: "📊 العودة للإحصائيات", callback_data: "bot_stats" }]]
+          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
         }
       });
     }
@@ -1252,6 +1376,7 @@ bot.on("callback_query", (query) => {
 
   // تواصل مع الأدمن
   if (data === "contact_admin") {
+    trackFeatureUse(chatId, "contact_admin", query.from);
     userState[chatId] = { ...userState[chatId], waitingAdminMessage: true };
     bot.sendMessage(
       chatId,
@@ -1304,6 +1429,7 @@ bot.on("callback_query", (query) => {
 
   // زر البدء بالبحث
   if (data === "start_search") {
+    trackFeatureUse(chatId, "search", query.from);
     bot.sendMessage(
       chatId,
       "🔍 أرسل اسم المادة أو كود المساق مباشرة في المحادثة:\n(مثال: `ECOM 2401` أو `برمجة` أو `Calculus` أو `شبكات`)",
@@ -1314,6 +1440,7 @@ bot.on("callback_query", (query) => {
 
   // عرض قائمة متطلبات الجامعة
   if (data === "show_uni_reqs") {
+    trackFeatureUse(chatId, "uni_reqs", query.from);
     const buttons = Object.keys(uniRequirements).map((sub) => [
       { text: "📖 " + sub, callback_data: "req_" + sub }
     ]);
@@ -1327,6 +1454,7 @@ bot.on("callback_query", (query) => {
 
   // اختيار مادة من متطلبات الجامعة
   if (data.startsWith("req_")) {
+    trackFeatureUse(chatId, "uni_reqs", query.from);
     const subjectName = data.replace("req_", "");
     const item = uniRequirements[subjectName];
 
@@ -1340,6 +1468,7 @@ bot.on("callback_query", (query) => {
 
   // متطلب جامعة من نتائج البحث
   if (data.startsWith("find_req_")) {
+    trackFeatureUse(chatId, "uni_reqs", query.from);
     const reqName = data.replace("find_req_", "");
     const item = uniRequirements[reqName];
     if (item) {
@@ -1350,6 +1479,7 @@ bot.on("callback_query", (query) => {
 
   // برنامج مختبر من نتائج البحث
   if (data.startsWith("find_lab_")) {
+    trackFeatureUse(chatId, "lab_programs", query.from);
     const labName = data.replace("find_lab_", "");
     const item = labPrograms[labName];
     if (item) {
@@ -1360,6 +1490,7 @@ bot.on("callback_query", (query) => {
 
   // ملف المعدل
   if (data === "gpa_file") {
+    trackFeatureUse(chatId, "gpa_file", query.from);
     const filePath = path.join(__dirname, "gpa_calculator.xlsx");
     bot.sendDocument(chatId, filePath, {
       caption: "📊 ملف حساب المعدل الفصلي والتراكمي"
@@ -1369,6 +1500,7 @@ bot.on("callback_query", (query) => {
 
   // خطة 5 سنوات
   if (data === "plan5") {
+    trackFeatureUse(chatId, "plan5", query.from);
     const filePath = path.join(__dirname, "plan_5years.pdf");
     bot.sendDocument(chatId, filePath, {
       caption: "📄 خطة هندسة الحاسوب - نظام 5 سنوات"
@@ -1378,6 +1510,7 @@ bot.on("callback_query", (query) => {
 
   // خطة 4 سنوات
   if (data === "plan4") {
+    trackFeatureUse(chatId, "plan4", query.from);
     const img1 = path.join(__dirname, "plan4_1.png");
     const img2 = path.join(__dirname, "plan4_2.png");
     bot.sendPhoto(chatId, img1);
@@ -1387,6 +1520,7 @@ bot.on("callback_query", (query) => {
 
   // المتطلبات المعتمدة
   if (data === "show_prerequisites") {
+    trackFeatureUse(chatId, "prerequisites", query.from);
     const imagePath = path.join(__dirname, "prerequisites.png");
     bot.sendPhoto(chatId, imagePath, {
       caption: "📷 المواد المعتمدة على بعضها"
@@ -1396,6 +1530,7 @@ bot.on("callback_query", (query) => {
 
   // عرض السنوات
   if (data === "show_years" || data === "back_years") {
+    trackFeatureUse(chatId, "show_years", query.from);
     const buttons = Object.keys(courses).map((year) => [
       { text: year, callback_data: "year_" + year }
     ]);
@@ -1409,6 +1544,7 @@ bot.on("callback_query", (query) => {
 
   // جهات الاتصال
   if (data === "show_contacts") {
+    trackFeatureUse(chatId, "contacts", query.from);
     const buttons = Object.keys(contacts).map((c) => [
       { text: c, callback_data: "contact_" + c }
     ]);
@@ -1422,6 +1558,7 @@ bot.on("callback_query", (query) => {
 
   // تفاصيل جهة الاتصال
   if (data.startsWith("contact_")) {
+    trackFeatureUse(chatId, "contacts", query.from);
     const name = data.replace("contact_", "");
     const buttons = contacts[name].map((c) => [
       { text: c.name, url: "https://wa.me/" + c.phone.replace(/\D/g, "") }
@@ -1439,6 +1576,7 @@ bot.on("callback_query", (query) => {
 
   // عرض مواد المختبرات
   if (data === "open_lab_programs") {
+    trackFeatureUse(chatId, "lab_programs", query.from);
     const buttons = Object.keys(labPrograms).map((name) => [
       { text: name, callback_data: "labItem_" + name }
     ]);
@@ -1452,6 +1590,7 @@ bot.on("callback_query", (query) => {
 
   // اختيار مادة من المختبر
   if (data.startsWith("labItem_")) {
+    trackFeatureUse(chatId, "lab_programs", query.from);
     const name = data.replace("labItem_", "");
     const item = labPrograms[name];
 
@@ -1465,6 +1604,7 @@ bot.on("callback_query", (query) => {
 
   // اختيار السنة
   if (data.startsWith("year_")) {
+    trackFeatureUse(chatId, "show_years", query.from);
     const year = data.replace("year_", "");
     userState[chatId] = { year: year };
 
@@ -1503,6 +1643,7 @@ bot.on("callback_query", (query) => {
 
   // اختيار فصل
   if (data.startsWith("semester_")) {
+    trackFeatureUse(chatId, "show_years", query.from);
     const semester = data.replace("semester_", "");
     const year = userState[chatId]?.year;
 
@@ -1529,6 +1670,7 @@ bot.on("callback_query", (query) => {
 
   // اختيار مادة من شجرة السنوات
   if (data.startsWith("subject_")) {
+    trackFeatureUse(chatId, "show_years", query.from);
     const subject = data.replace("subject_", "");
     const state = userState[chatId];
 
@@ -1560,6 +1702,7 @@ bot.on("callback_query", (query) => {
 
   // اختيار مادة من فهرس نتائج البحث عبر المعرّف
   if (data.startsWith("find_c_")) {
+    trackFeatureUse(chatId, "show_years", query.from);
     const courseId = parseInt(data.replace("find_c_", ""), 10);
     const courseItem = courseCatalog[courseId];
 
@@ -1576,6 +1719,7 @@ bot.on("callback_query", (query) => {
 
   // للتوافق مع أزرار البحث القديمة
   if (data.startsWith("find_subject_")) {
+    trackFeatureUse(chatId, "show_years", query.from);
     const subjectName = data.replace("find_subject_", "");
     const match = courseCatalog.find(
       (c) => c.name.toLowerCase() === subjectName.toLowerCase() || c.arName === subjectName
@@ -1599,6 +1743,12 @@ bot.on("callback_query", (query) => {
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
 
+  // التحقق من حالة حظر المستخدم
+  if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
+    bot.sendMessage(chatId, "⛔ *عذراً، تم تقييد وصولك للبوت!*\nتم حظر حسابك من قبل إدارة القسم.", { parse_mode: "Markdown" });
+    return;
+  }
+
   // حفظ بيانات المستخدم فور تفاعله
   saveUser(msg.from, chatId);
 
@@ -1612,8 +1762,103 @@ bot.on("message", async (msg) => {
     return;
   }
 
+  // حالة: الأدمن في وضع إدخال معرّف لحظر طالب
+  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingBanInput && msg.text) {
+    userState[ADMIN_ID].waitingBanInput = false;
+    const target = msg.text.trim();
+    const res = banUser(target, "حظر بواسطة الأدمن");
+    if (res.success) {
+      bot.sendMessage(chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+            [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
+          ]
+        }
+      });
+    } else {
+      bot.sendMessage(chatId, `❌ ${res.error}`, {
+        reply_markup: {
+          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+        }
+      });
+    }
+    return;
+  }
+
+  // حالة: الأدمن في وضع إدخال معرّف لإلغاء حظر طالب
+  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingUnbanInput && msg.text) {
+    userState[ADMIN_ID].waitingUnbanInput = false;
+    const target = msg.text.trim();
+    const res = unbanUser(target);
+    if (res.success) {
+      bot.sendMessage(chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+            [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
+          ]
+        }
+      });
+    } else {
+      bot.sendMessage(chatId, `❌ ${res.error}`, {
+        reply_markup: {
+          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+        }
+      });
+    }
+    return;
+  }
+
+  // حالة: الأدمن في وضع فحص واستعلام عن طالب
+  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingSearchUserInput && msg.text) {
+    userState[ADMIN_ID].waitingSearchUserInput = false;
+    const target = msg.text.trim();
+    renderUserProfile(chatId, bot, target);
+    return;
+  }
+
+  // حالة: الأدمن في وضع إضافة طالب يدوياً
+  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingAddUserInput && msg.text) {
+    userState[ADMIN_ID].waitingAddUserInput = false;
+    const parts = msg.text.trim().split(/\s+/);
+    const targetId = parts[0];
+    let name = "طالب";
+    let username = "";
+
+    if (parts.length > 1) {
+      const rest = parts.slice(1);
+      const userIdx = rest.findIndex(p => p.startsWith("@"));
+      if (userIdx !== -1) {
+        username = rest[userIdx];
+        rest.splice(userIdx, 1);
+      }
+      if (rest.length > 0) name = rest.join(" ");
+    }
+
+    const res = addUserManually(targetId, name, username);
+    if (res.success) {
+      bot.sendMessage(chatId, `✅ *تمت إضافة/تحديث الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+        }
+      });
+    } else {
+      bot.sendMessage(chatId, `❌ ${res.error}`, {
+        reply_markup: {
+          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+        }
+      });
+    }
+    return;
+  }
+
   // حالة: الطالب في وضع المحادثة التفاعلية مع المساعد الذكي
   if (userState[chatId]?.inAiChat && msg.text && !msg.text.startsWith("/")) {
+    trackFeatureUse(chatId, "ai_chat", msg.from);
     const typingTimer = setInterval(() => {
       bot.sendChatAction(chatId, "typing").catch(() => {});
     }, 3000);
@@ -1745,6 +1990,7 @@ bot.on("message", async (msg) => {
 
   if (userState[chatId]?.waitingAdminMessage || isMediaOrDoc) {
     try {
+      trackFeatureUse(chatId, isMediaOrDoc ? "upload" : "contact_admin", msg.from);
       const studentName = ((msg.from?.first_name || "") + " " + (msg.from?.last_name || "")).trim() || "طالب";
       const username = msg.from?.username ? `@${msg.from.username}` : "لا يوجد معرف";
       const header = `📨 رسالة/ملف جديد من طالب:
@@ -1848,6 +2094,7 @@ bot.on("message", async (msg) => {
 
   // 3. حالة: رسالة نصية عادية للبحث عن المواد
   if (msg.text) {
+    trackFeatureUse(chatId, "search", msg.from);
     const text = msg.text.trim();
     const results = searchAll(text);
 
