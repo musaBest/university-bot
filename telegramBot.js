@@ -16,6 +16,19 @@ const adminMessageMap = new Map();
 
 const ADMIN_ID = 5687891184;
 
+function resetAdminState(chatId = ADMIN_ID) {
+  if (chatId !== ADMIN_ID) return;
+  if (!userState[ADMIN_ID]) userState[ADMIN_ID] = {};
+  userState[ADMIN_ID].replyingToStudent = null;
+  userState[ADMIN_ID].waitingBroadcastMessage = false;
+  userState[ADMIN_ID].waitingBanInput = false;
+  userState[ADMIN_ID].waitingUnbanInput = false;
+  userState[ADMIN_ID].waitingSearchUserInput = false;
+  userState[ADMIN_ID].waitingAddUserInput = false;
+  userState[ADMIN_ID].waitingAdminMessage = false;
+  userState[ADMIN_ID].inAiChat = false;
+}
+
 const {
   loadUsers,
   saveUsersList,
@@ -902,13 +915,15 @@ function showMainMenu(chatId, name = "طالب") {
 // أمر البدء /start
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
+  if (chatId === ADMIN_ID) {
+    resetAdminState(ADMIN_ID);
+  } else if (isUserBanned(chatId)) {
     bot.sendMessage(chatId, "⛔ *عذراً، تم تقييد وصولك للبوت!*\nتم حظر حسابك من قبل إدارة القسم.", { parse_mode: "Markdown" });
     return;
   }
   const name = msg.from.first_name || "طالب";
   saveUser(msg.from, chatId);
-  userState[chatId] = { name: name, inAiChat: false };
+  userState[chatId] = { ...userState[chatId], name: name, inAiChat: false };
   showMainMenu(chatId, name);
 });
 
@@ -916,6 +931,7 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/(?:admin|dashboard)/, (msg) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
+  resetAdminState(ADMIN_ID);
   saveUser(msg.from, chatId);
   renderMainDashboard(chatId, bot);
 });
@@ -924,10 +940,16 @@ bot.onText(/\/(?:admin|dashboard)/, (msg) => {
 bot.onText(/\/ban(?:\s+(.+))?/, (msg, match) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
+  resetAdminState(ADMIN_ID);
   const target = match[1]?.trim();
   if (!target) {
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBanInput: true };
-    bot.sendMessage(chatId, "🚫 *حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لحظر الطالب من استخدام البوت:", { parse_mode: "Markdown" });
+    userState[ADMIN_ID].waitingBanInput = true;
+    bot.sendMessage(chatId, "🚫 *حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لحظر الطالب من استخدام البوت:", {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+      }
+    });
     return;
   }
   const res = banUser(target, "حظر مباشر من الأدمن");
@@ -942,10 +964,16 @@ bot.onText(/\/ban(?:\s+(.+))?/, (msg, match) => {
 bot.onText(/\/unban(?:\s+(.+))?/, (msg, match) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
+  resetAdminState(ADMIN_ID);
   const target = match[1]?.trim();
   if (!target) {
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingUnbanInput: true };
-    bot.sendMessage(chatId, "🔓 *إلغاء حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لإلغاء الحظر:", { parse_mode: "Markdown" });
+    userState[ADMIN_ID].waitingUnbanInput = true;
+    bot.sendMessage(chatId, "🔓 *إلغاء حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لإلغاء الحظر:", {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+      }
+    });
     return;
   }
   const res = unbanUser(target);
@@ -960,10 +988,16 @@ bot.onText(/\/unban(?:\s+(.+))?/, (msg, match) => {
 bot.onText(/\/user(?:\s+(.+))?/, (msg, match) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
+  resetAdminState(ADMIN_ID);
   const target = match[1]?.trim();
   if (!target) {
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingSearchUserInput: true };
-    bot.sendMessage(chatId, "🔍 *استعلام عن طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لعرض سجله ونشاطه:", { parse_mode: "Markdown" });
+    userState[ADMIN_ID].waitingSearchUserInput = true;
+    bot.sendMessage(chatId, "🔍 *استعلام عن طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لعرض سجله ونشاطه:", {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+      }
+    });
     return;
   }
   renderUserProfile(chatId, bot, target);
@@ -976,6 +1010,7 @@ bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
     bot.sendMessage(chatId, "⛔ *عذراً، تم تقييد وصولك للبوت!*\nتم حظر حسابك من قبل إدارة القسم.", { parse_mode: "Markdown" });
     return;
   }
+  if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
   trackFeatureUse(chatId, "ai_chat", msg.from);
   const query = match[1]?.trim();
 
@@ -1047,10 +1082,11 @@ bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
 bot.onText(/\/broadcast/, (msg) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
+  resetAdminState(ADMIN_ID);
   const users = loadUsers();
   const activeCount = users.filter((u) => u.active !== false).length;
 
-  userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBroadcastMessage: true };
+  userState[ADMIN_ID].waitingBroadcastMessage = true;
   bot.sendMessage(
     chatId,
     `📢 *لوحة الإذاعة والإشعارات الجماعية*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *عدد المشتركين النشطين:* ${activeCount} طالب\n\nاختر من الأزرار أدناه أو أرسل رسالتك/صورتك/ملفك فوراً في المحادثة ليتم بثها للجميع:`,
@@ -1069,6 +1105,7 @@ bot.onText(/\/broadcast/, (msg) => {
 bot.onText(/\/stats/, (msg) => {
   const chatId = msg.chat.id;
   if (chatId !== ADMIN_ID) return;
+  resetAdminState(ADMIN_ID);
   saveUser(msg.from, chatId);
   renderFeatureStats(chatId, bot);
 });
@@ -1097,9 +1134,10 @@ bot.on("callback_query", (query) => {
 
   // القائمة الرئيسية
   if (data === "main_menu") {
-    if (userState[chatId]) {
+    if (chatId === ADMIN_ID) {
+      resetAdminState(ADMIN_ID);
+    } else if (userState[chatId]) {
       userState[chatId].waitingAdminMessage = false;
-      userState[chatId].waitingBroadcastMessage = false;
       userState[chatId].inAiChat = false;
     }
     const name = userState[chatId]?.name || "طالب";
@@ -1114,6 +1152,7 @@ bot.on("callback_query", (query) => {
   // عرض لوحة التحكم الرئيسية
   if (data === "admin_dashboard") {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     renderMainDashboard(chatId, bot);
     return;
   }
@@ -1121,6 +1160,7 @@ bot.on("callback_query", (query) => {
   // عرض إحصائيات الميزات والأيقونات
   if (data === "admin_feature_stats") {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     renderFeatureStats(chatId, bot);
     return;
   }
@@ -1128,6 +1168,7 @@ bot.on("callback_query", (query) => {
   // معرفة الطلاب الذين استخدموا ميزة محددة
   if (data.startsWith("admin_who_")) {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     const featureKey = data.replace("admin_who_", "");
     renderFeatureUsers(chatId, bot, featureKey);
     return;
@@ -1136,6 +1177,7 @@ bot.on("callback_query", (query) => {
   // قائمة الطلاب المحظورين
   if (data === "admin_banned_list") {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     renderBannedList(chatId, bot);
     return;
   }
@@ -1143,7 +1185,8 @@ bot.on("callback_query", (query) => {
   // طلب إدخال ID/يوزر للحظر
   if (data === "admin_ban_prompt") {
     if (chatId !== ADMIN_ID) return;
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBanInput: true };
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].waitingBanInput = true;
     bot.sendMessage(chatId, "🚫 *حظر طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لحظر الطالب من استخدام البوت:", {
       parse_mode: "Markdown",
       reply_markup: {
@@ -1156,7 +1199,8 @@ bot.on("callback_query", (query) => {
   // طلب إضافة طالب يدوياً
   if (data === "admin_add_user_prompt") {
     if (chatId !== ADMIN_ID) return;
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingAddUserInput: true };
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].waitingAddUserInput = true;
     bot.sendMessage(chatId, "➕ *إضافة طالب يدوياً:*\nأرسل معرّف الطالب (ID) مع اسمه ومعرفه كالتالي:\n`123456789 محمد @username`\n\nأو أرسل الآيدي فقط:\n`123456789`", {
       parse_mode: "Markdown",
       reply_markup: {
@@ -1169,7 +1213,8 @@ bot.on("callback_query", (query) => {
   // طلب فحص واستعلام عن طالب
   if (data === "admin_search_user_prompt") {
     if (chatId !== ADMIN_ID) return;
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingSearchUserInput: true };
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].waitingSearchUserInput = true;
     bot.sendMessage(chatId, "🔍 *فحص واستعلام عن طالب:*\nأرسل معرّف التليجرام (ID) أو اليوزر (@username) لعرض سجله ونشاطه:", {
       parse_mode: "Markdown",
       reply_markup: {
@@ -1182,6 +1227,7 @@ bot.on("callback_query", (query) => {
   // حظر طالب محدد من زر في ملفه
   if (data.startsWith("admin_ban_user_")) {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     const targetId = data.replace("admin_ban_user_", "");
     const res = banUser(targetId);
     if (res.success) {
@@ -1203,6 +1249,7 @@ bot.on("callback_query", (query) => {
   // إلغاء حظر طالب محدد من زر
   if (data.startsWith("admin_unban_")) {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     const targetId = data.replace("admin_unban_", "");
     const res = unbanUser(targetId);
     if (res.success) {
@@ -1227,6 +1274,7 @@ bot.on("callback_query", (query) => {
 
   // بدء محادثة مع الذكاء الاصطناعي
   if (data === "start_ai_chat") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
     trackFeatureUse(chatId, "ai_chat", query.from);
     userState[chatId] = {
       ...userState[chatId],
@@ -1285,10 +1333,11 @@ bot.on("callback_query", (query) => {
   // لوحة الإذاعة
   if (data === "start_broadcast") {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     const users = loadUsers();
     const activeCount = users.filter((u) => u.active !== false).length;
 
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], waitingBroadcastMessage: true };
+    userState[ADMIN_ID].waitingBroadcastMessage = true;
     bot.sendMessage(
       chatId,
       `📢 *لوحة الإذاعة والإشعارات الجماعية*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *عدد المشتركين النشطين:* ${activeCount} طالب\n\nاختر من الأزرار أدناه أو أرسل رسالتك/صورتك/ملفك فوراً في المحادثة ليتم بثها للجميع:`,
@@ -1308,14 +1357,15 @@ bot.on("callback_query", (query) => {
   // إرسال الإشعار الجاهز للتحديثات
   if (data === "send_preset_broadcast") {
     if (chatId !== ADMIN_ID) return;
-    if (userState[ADMIN_ID]) userState[ADMIN_ID].waitingBroadcastMessage = false;
+    resetAdminState(ADMIN_ID);
     broadcastMessage(bot, ADMIN_ID, null, true);
     return;
   }
 
   // إلغاء الإذاعة
   if (data === "cancel_broadcast") {
-    if (userState[ADMIN_ID]) userState[ADMIN_ID].waitingBroadcastMessage = false;
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     bot.sendMessage(chatId, "تم إلغاء عملية الإذاعة.");
     return;
   }
@@ -1323,6 +1373,7 @@ bot.on("callback_query", (query) => {
   // إحصائيات البوت
   if (data === "bot_stats") {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     sendStatsReport(bot, chatId);
     return;
   }
@@ -1330,6 +1381,7 @@ bot.on("callback_query", (query) => {
   // تصدير وعرض قائمة المشتركين بالكامل
   if (data === "export_users_list") {
     if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
     const users = loadUsers();
     if (users.length === 0) {
       bot.sendMessage(chatId, "⚠️ لا يوجد طلاب مسجلين حتى الآن.");
@@ -1404,7 +1456,8 @@ bot.on("callback_query", (query) => {
   // ضغط الأدمن على زر الرد على الطالب
   if (data.startsWith("admin_reply_")) {
     const studentChatId = data.replace("admin_reply_", "");
-    userState[ADMIN_ID] = { ...userState[ADMIN_ID], replyingToStudent: studentChatId };
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].replyingToStudent = studentChatId;
     bot.sendMessage(
       chatId,
       `✍️ *الرد على الطالب:*\n🆔 الآيدي: \`${studentChatId}\`\n\nأرسل الآن ردك (رسالة نصية، صورة، ملف، تسجيل صوتي) وسيتم تسليمها للطالب مباشرة:`,
@@ -1422,7 +1475,7 @@ bot.on("callback_query", (query) => {
 
   // إلغاء رد الأدمن
   if (data === "cancel_admin_reply") {
-    if (userState[ADMIN_ID]) userState[ADMIN_ID].replyingToStudent = null;
+    resetAdminState(ADMIN_ID);
     bot.sendMessage(chatId, "تم إلغاء عملية الرد.");
     return;
   }
@@ -1755,163 +1808,22 @@ bot.on("message", async (msg) => {
   // تجاهل الأوامر الرسمية مثل /start
   if (msg.text && msg.text.startsWith("/")) return;
 
-  // حالة: الأدمن في وضع إرسال إشعار إذاعي جماعي للطلاب
-  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingBroadcastMessage) {
-    userState[ADMIN_ID].waitingBroadcastMessage = false;
-    broadcastMessage(bot, ADMIN_ID, msg, false);
-    return;
-  }
-
-  // حالة: الأدمن في وضع إدخال معرّف لحظر طالب
-  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingBanInput && msg.text) {
-    userState[ADMIN_ID].waitingBanInput = false;
-    const target = msg.text.trim();
-    const res = banUser(target, "حظر بواسطة الأدمن");
-    if (res.success) {
-      bot.sendMessage(chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
-        parse_mode: "Markdown",
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
-            [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
-          ]
-        }
-      });
-    } else {
-      bot.sendMessage(chatId, `❌ ${res.error}`, {
-        reply_markup: {
-          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
-        }
-      });
-    }
-    return;
-  }
-
-  // حالة: الأدمن في وضع إدخال معرّف لإلغاء حظر طالب
-  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingUnbanInput && msg.text) {
-    userState[ADMIN_ID].waitingUnbanInput = false;
-    const target = msg.text.trim();
-    const res = unbanUser(target);
-    if (res.success) {
-      bot.sendMessage(chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, {
-        parse_mode: "Markdown",
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
-            [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
-          ]
-        }
-      });
-    } else {
-      bot.sendMessage(chatId, `❌ ${res.error}`, {
-        reply_markup: {
-          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
-        }
-      });
-    }
-    return;
-  }
-
-  // حالة: الأدمن في وضع فحص واستعلام عن طالب
-  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingSearchUserInput && msg.text) {
-    userState[ADMIN_ID].waitingSearchUserInput = false;
-    const target = msg.text.trim();
-    renderUserProfile(chatId, bot, target);
-    return;
-  }
-
-  // حالة: الأدمن في وضع إضافة طالب يدوياً
-  if (chatId === ADMIN_ID && userState[ADMIN_ID]?.waitingAddUserInput && msg.text) {
-    userState[ADMIN_ID].waitingAddUserInput = false;
-    const parts = msg.text.trim().split(/\s+/);
-    const targetId = parts[0];
-    let name = "طالب";
-    let username = "";
-
-    if (parts.length > 1) {
-      const rest = parts.slice(1);
-      const userIdx = rest.findIndex(p => p.startsWith("@"));
-      if (userIdx !== -1) {
-        username = rest[userIdx];
-        rest.splice(userIdx, 1);
-      }
-      if (rest.length > 0) name = rest.join(" ");
-    }
-
-    const res = addUserManually(targetId, name, username);
-    if (res.success) {
-      bot.sendMessage(chatId, `✅ *تمت إضافة/تحديث الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
-        parse_mode: "Markdown",
-        reply_markup: {
-          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
-        }
-      });
-    } else {
-      bot.sendMessage(chatId, `❌ ${res.error}`, {
-        reply_markup: {
-          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
-        }
-      });
-    }
-    return;
-  }
-
-  // حالة: الطالب في وضع المحادثة التفاعلية مع المساعد الذكي
-  if (userState[chatId]?.inAiChat && msg.text && !msg.text.startsWith("/")) {
-    trackFeatureUse(chatId, "ai_chat", msg.from);
-    const typingTimer = setInterval(() => {
-      bot.sendChatAction(chatId, "typing").catch(() => {});
-    }, 3000);
-    bot.sendChatAction(chatId, "typing").catch(() => {});
-
-    try {
-      const history = userState[chatId].aiHistory || [];
-      const answer = await generateAIResponse(msg.text, history);
-
-      if (!answer.startsWith("⚠️")) {
-        if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
-        userState[chatId].aiHistory.push({ role: "user", text: msg.text });
-        userState[chatId].aiHistory.push({ role: "model", text: answer });
-        if (userState[chatId].aiHistory.length > 8) {
-          userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-8);
-        }
-      }
-
-      const aiKeyboard = {
-        inline_keyboard: [
-          [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
-          [{ text: "❌ إنهاء المحادثة والعودة للقائمة الرئيسية", callback_data: "exit_ai_chat" }]
-        ]
-      };
-
-      await bot.sendMessage(chatId, answer, {
-        parse_mode: "Markdown",
-        reply_markup: aiKeyboard
-      }).catch(async () => {
-        await bot.sendMessage(chatId, answer, {
-          reply_markup: aiKeyboard
-        });
-      });
-    } catch (err) {
-      console.error("AI Error:", err);
-      bot.sendMessage(chatId, "أهلاً بك! أنا هنا ومعك دائماً، تفضل بطرح سؤالك وسأجيبك فوراً! 🚀");
-    } finally {
-      clearInterval(typingTimer);
-    }
-    return;
-  }
-
-  // 1. حالة: الأدمن يقوم بالرد على طالب (سواء بعمل Reply على رسالة أو بالضغط على زر الرد)
+  // =========================================================================
+  // 1. الأولوية المطلقة للأدمن: الرد المباشر على طالب (زر الرد أو ميزة Reply التليجرام)
+  // =========================================================================
   let targetStudentId = null;
   if (chatId === ADMIN_ID) {
     if (userState[ADMIN_ID]?.replyingToStudent) {
       targetStudentId = userState[ADMIN_ID].replyingToStudent;
-    } else if (msg.reply_to_message) {
+    } else if (msg.reply_to_message && adminMessageMap.has(msg.reply_to_message.message_id)) {
       targetStudentId = adminMessageMap.get(msg.reply_to_message.message_id);
     }
   }
 
   if (targetStudentId) {
+    // تصفير جميع حالات الأدمن فوراً لضمان عدم حدوث أي تداخل
+    resetAdminState(ADMIN_ID);
+
     try {
       const studentKeyboard = {
         inline_keyboard: [
@@ -1961,15 +1873,15 @@ bot.on("message", async (msg) => {
           reply_markup: studentKeyboard
         });
       } else if (msg.audio) {
-        const caption = `📩 ملف صوتي من إدارة البوت / الأدمن:\n━━━━━━━━━━━━━━━━━━━━\n` + (msg.caption ? `📝 الوصف: ${msg.caption}` : "");
+        const audioName = msg.audio.title || msg.audio.file_name || "ملف صوتي";
+        const captionText = `📩 ملف صوتي من إدارة البوت / الأدمن:\n━━━━━━━━━━━━━━━━━━━━\n` + (msg.caption ? `📝 الوصف: ${msg.caption}` : "");
         await bot.sendAudio(targetStudentId, msg.audio.file_id, {
-          caption: caption,
+          caption: captionText,
           reply_markup: studentKeyboard
         });
       }
 
-      bot.sendMessage(ADMIN_ID, "✅ تم إرسال الرد والمرفقات إلى الطالب بنجاح.");
-      if (userState[ADMIN_ID]) userState[ADMIN_ID].replyingToStudent = null;
+      bot.sendMessage(ADMIN_ID, "✅ تم إرسال الرد إلى الطالب بنجاح!");
     } catch (err) {
       console.error("Error sending reply to student:", err.message);
       bot.sendMessage(ADMIN_ID, "❌ تعذر إرسال الرد إلى الطالب (قد يكون قام بحظر البوت أو حذف المحادثة).");
@@ -1977,7 +1889,163 @@ bot.on("message", async (msg) => {
     return;
   }
 
-  // 2. حالة: إرسال الطالب لملفات بجميع أنواعها أو رسائل للأدمن
+  // =========================================================================
+  // 2. عمليات الإدارة الأخرى (الإذاعة الجماعية، الحظر، الفحص، الإضافة)
+  // =========================================================================
+  if (chatId === ADMIN_ID) {
+    // حالة: الأدمن في وضع إرسال إشعار إذاعي جماعي للطلاب
+    if (userState[ADMIN_ID]?.waitingBroadcastMessage) {
+      userState[ADMIN_ID].waitingBroadcastMessage = false;
+      broadcastMessage(bot, ADMIN_ID, msg, false);
+      return;
+    }
+
+    // حالة: الأدمن في وضع إدخال معرّف لحظر طالب
+    if (userState[ADMIN_ID]?.waitingBanInput && msg.text) {
+      userState[ADMIN_ID].waitingBanInput = false;
+      const target = msg.text.trim();
+      const res = banUser(target, "حظر بواسطة الأدمن");
+      if (res.success) {
+        bot.sendMessage(chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+              [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
+            ]
+          }
+        });
+      } else {
+        bot.sendMessage(chatId, `❌ ${res.error}`, {
+          reply_markup: {
+            inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+          }
+        });
+      }
+      return;
+    }
+
+    // حالة: الأدمن في وضع إدخال معرّف لإلغاء حظر طالب
+    if (userState[ADMIN_ID]?.waitingUnbanInput && msg.text) {
+      userState[ADMIN_ID].waitingUnbanInput = false;
+      const target = msg.text.trim();
+      const res = unbanUser(target);
+      if (res.success) {
+        bot.sendMessage(chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+              [{ text: "🚫 قائمة المحظورين", callback_data: "admin_banned_list" }]
+            ]
+          }
+        });
+      } else {
+        bot.sendMessage(chatId, `❌ ${res.error}`, {
+          reply_markup: {
+            inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+          }
+        });
+      }
+      return;
+    }
+
+    // حالة: الأدمن في وضع فحص واستعلام عن طالب
+    if (userState[ADMIN_ID]?.waitingSearchUserInput && msg.text) {
+      userState[ADMIN_ID].waitingSearchUserInput = false;
+      const target = msg.text.trim();
+      renderUserProfile(chatId, bot, target);
+      return;
+    }
+
+    // حالة: الأدمن في وضع إضافة طالب يدوياً
+    if (userState[ADMIN_ID]?.waitingAddUserInput && msg.text) {
+      userState[ADMIN_ID].waitingAddUserInput = false;
+      const parts = msg.text.trim().split(/\s+/);
+      const targetId = parts[0];
+      let name = "طالب";
+      let username = "";
+
+      if (parts.length > 1) {
+        const rest = parts.slice(1);
+        const userIdx = rest.findIndex(p => p.startsWith("@"));
+        if (userIdx !== -1) {
+          username = rest[userIdx];
+          rest.splice(userIdx, 1);
+        }
+        if (rest.length > 0) name = rest.join(" ");
+      }
+
+      const res = addUserManually(targetId, name, username);
+      if (res.success) {
+        bot.sendMessage(chatId, `✅ *تمت إضافة/تحديث الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+          }
+        });
+      } else {
+        bot.sendMessage(chatId, `❌ ${res.error}`, {
+          reply_markup: {
+            inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+          }
+        });
+      }
+      return;
+    }
+  }
+
+  // =========================================================================
+  // 3. حالة: المستخدم في وضع المحادثة التفاعلية مع المساعد الذكي (AI Chatbot)
+  // =========================================================================
+  if (userState[chatId]?.inAiChat && msg.text && !msg.text.startsWith("/")) {
+    trackFeatureUse(chatId, "ai_chat", msg.from);
+    const typingTimer = setInterval(() => {
+      bot.sendChatAction(chatId, "typing").catch(() => {});
+    }, 3000);
+    bot.sendChatAction(chatId, "typing").catch(() => {});
+
+    try {
+      const history = userState[chatId].aiHistory || [];
+      const answer = await generateAIResponse(msg.text, history);
+
+      if (!answer.startsWith("⚠️")) {
+        if (!userState[chatId]) userState[chatId] = {};
+        if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
+        userState[chatId].aiHistory.push({ role: "user", text: msg.text });
+        userState[chatId].aiHistory.push({ role: "model", text: answer });
+        if (userState[chatId].aiHistory.length > 8) {
+          userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-8);
+        }
+      }
+
+      const aiKeyboard = {
+        inline_keyboard: [
+          [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
+          [{ text: "❌ إنهاء المحادثة والعودة للقائمة الرئيسية", callback_data: "exit_ai_chat" }]
+        ]
+      };
+
+      await bot.sendMessage(chatId, answer, {
+        parse_mode: "Markdown",
+        reply_markup: aiKeyboard
+      }).catch(async () => {
+        await bot.sendMessage(chatId, answer, {
+          reply_markup: aiKeyboard
+        });
+      });
+    } catch (err) {
+      console.error("AI Error:", err);
+      bot.sendMessage(chatId, "أهلاً بك! أنا هنا ومعك دائماً، تفضل بطرح سؤالك وسأجيبك فوراً! 🚀");
+    } finally {
+      clearInterval(typingTimer);
+    }
+    return;
+  }
+
+  // =========================================================================
+  // 4. حالة: إرسال الطالب لملفات بجميع أنواعها أو رسائل للأدمن
+  // =========================================================================
   const isMediaOrDoc = Boolean(
     msg.document ||
     msg.photo ||
@@ -1988,7 +2056,7 @@ bot.on("message", async (msg) => {
     msg.audio
   );
 
-  if (userState[chatId]?.waitingAdminMessage || isMediaOrDoc) {
+  if (chatId !== ADMIN_ID && (userState[chatId]?.waitingAdminMessage || isMediaOrDoc)) {
     try {
       trackFeatureUse(chatId, isMediaOrDoc ? "upload" : "contact_admin", msg.from);
       const studentName = ((msg.from?.first_name || "") + " " + (msg.from?.last_name || "")).trim() || "طالب";
