@@ -5,7 +5,18 @@ const { uniRequirements } = require("./uniRequirements");
 const courseCodes = require("./courseCodes");
 const path = require("path");
 const fs = require("fs");
+const http = require("http");
 const { generateAIResponse } = require("./data/aiService");
+
+// خادم صحة بسيط (Health Check & Keep-Alive) لربط البوت بالاستضافات السحابية وضمان عمله 24/7
+const PORT = process.env.PORT || 3000;
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+  res.end("🤖 بوت هندسة الحاسوب يعمل بنجاح وبأعلى سرعة 24/7!");
+});
+server.listen(PORT, () => {
+  console.log(`Keep-alive server is listening on port ${PORT}`);
+});
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
