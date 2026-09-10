@@ -2,13 +2,14 @@
   {
     "id": 5687891184,
     "name": "Admin",
-    "username": "",
+    "username": "@admin_test",
     "joinedAt": "2026-09-02T10:23:07.048Z",
     "lastActive": "2026-09-10T06:55:45.845Z",
     "active": true,
     "banned": false,
     "featuresUsed": {
-      "active": 1
+      "active": 1,
+      "show_years": 2
     }
   }
 ]

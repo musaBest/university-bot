@@ -26,12 +26,14 @@ function resetAdminState(chatId = ADMIN_ID) {
   userState[ADMIN_ID].waitingSearchUserInput = false;
   userState[ADMIN_ID].waitingAddUserInput = false;
   userState[ADMIN_ID].waitingAdminMessage = false;
+  userState[ADMIN_ID].waitingRestoreBackup = false;
   userState[ADMIN_ID].inAiChat = false;
 }
 
 const {
   loadUsers,
   saveUsersList,
+  mergeUsersData,
   isUserBanned,
   trackFeatureUse,
   banUser,
@@ -40,6 +42,9 @@ const {
   getUserProfile,
   getFeatureStats,
   FEATURE_LABELS,
+  safeEscape,
+  safeSend,
+  safeSendDocument,
   renderMainDashboard,
   renderFeatureStats,
   renderFeatureUsers,
@@ -1384,27 +1389,31 @@ bot.on("callback_query", (query) => {
     resetAdminState(ADMIN_ID);
     const users = loadUsers();
     if (users.length === 0) {
-      bot.sendMessage(chatId, "⚠️ لا يوجد طلاب مسجلين حتى الآن.");
+      safeSend(bot, chatId, "⚠️ لا يوجد طلاب مسجلين حتى الآن.", {
+        reply_markup: {
+          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+        }
+      });
       return;
     }
 
     let listText = `📋 *قائمة جميع المشتركين المسجلين (${users.length} طالب)*:\n━━━━━━━━━━━━━━━━━━━━\n\n`;
     users.forEach((u, index) => {
-      const uName = u.name || "طالب";
-      const uTag = u.username ? ` (${u.username})` : " (بدون يوزر)";
-      const status = u.banned ? "🚫" : (u.active !== false ? "✅" : "❌");
+      const uName = safeEscape(u.name || "طالب");
+      const uTag = u.username ? ` (${safeEscape(u.username)})` : " (بدون يوزر)";
+      const status = u.banned ? "🚫" : u.active !== false ? "✅" : "❌";
       listText += `${index + 1}. ${status} *${uName}*${uTag}\n   🆔 \`${u.id}\`\n`;
     });
 
+    const exportButtons = [
+      [{ text: "💾 تنزيل كملف JSON كامل", callback_data: "admin_download_backup" }],
+      [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+      [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+    ];
+
     if (listText.length < 3900) {
-      bot.sendMessage(chatId, listText, {
-        parse_mode: "Markdown",
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
-            [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
-          ]
-        }
+      safeSend(bot, chatId, listText, {
+        reply_markup: { inline_keyboard: exportButtons }
       });
     } else {
       const tempPath = path.join(__dirname, "data", "subscribers_list.txt");
@@ -1416,13 +1425,51 @@ bot.on("callback_query", (query) => {
         fileContent += `${i + 1}. Name: ${u.name} | Username: ${u.username || "None"} | ID: ${u.id} | Joined: ${u.joinedAt || "N/A"} | Active: ${u.active !== false} | Banned: ${u.banned || false}\n`;
       });
       fs.writeFileSync(tempPath, fileContent, "utf8");
-      bot.sendDocument(chatId, tempPath, {
+      safeSendDocument(bot, chatId, tempPath, {
         caption: `📄 قائمة المشتركين بالكامل (${users.length} طالب)`,
-        reply_markup: {
-          inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
-        }
+        reply_markup: { inline_keyboard: exportButtons }
       });
     }
+    return;
+  }
+
+  // تنزيل نسخة احتياطية من قاعدة بيانات الطلاب JSON
+  if (data === "admin_download_backup") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    const users = loadUsers();
+    saveUsersList(users);
+    const backupFile = path.join(__dirname, "data", "users.json");
+
+    const caption = `💾 *نسخة احتياطية لقاعدة بيانات المشتركين*\n━━━━━━━━━━━━━━━━━━━━\n👥 *إجمالي الطلاب المسجلين:* ${users.length} طالب\n📅 *تاريخ التصدير:* ${new Date().toLocaleString("ar-EG")}\n\n💡 *ملاحظة مهمة:* احتفظ بهذا الملف لديك. عند تحديث السيرفر أو نقله يمكنك إعادة إرسال هذا الملف للبوت في أي وقت لاستعادة ودمج كل المشتركين فوراً بنقرة واحدة!`;
+
+    safeSendDocument(bot, chatId, backupFile, {
+      caption: caption,
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // طلب استعادة أو دمج بيانات المشتركين
+  if (data === "admin_restore_prompt") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].waitingRestoreBackup = true;
+    safeSend(
+      bot,
+      chatId,
+      `📥 *استعادة أو دمج بيانات المشتركين (Restore / Merge)*\n━━━━━━━━━━━━━━━━━━━━\n\nأرسل الآن ملف النسخة الاحتياطية (\`users.json\` أو أي ملف \`.json\`) مباشرة هنا في المحادثة.\n\n⚡ *ملاحظة:* لن يتم مسح أي مستخدم حالي، بل سيقوم البوت تلقائياً بدمج جميع الطلاب القدامى والجدد وتحديث نشاطهم وإحصائياتهم بدقة!`,
+      {
+        reply_markup: {
+          inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
+        }
+      }
+    );
     return;
   }
 
@@ -1900,14 +1947,50 @@ bot.on("message", async (msg) => {
       return;
     }
 
+    // حالة: الأدمن يرسل ملف JSON لاستعادة أو دمج قاعدة بيانات المشتركين
+    if (msg.document && (userState[ADMIN_ID]?.waitingRestoreBackup || (msg.document.file_name && msg.document.file_name.toLowerCase().endsWith(".json")))) {
+      userState[ADMIN_ID].waitingRestoreBackup = false;
+      try {
+        const downloadDir = path.join(__dirname, "data");
+        const downloadedPath = await bot.downloadFile(msg.document.file_id, downloadDir);
+        const jsonText = fs.readFileSync(downloadedPath, "utf8");
+        try { fs.unlinkSync(downloadedPath); } catch (e) {}
+
+        const parsed = JSON.parse(jsonText);
+        if (Array.isArray(parsed)) {
+          const mergeResult = mergeUsersData(parsed);
+          safeSend(
+            bot,
+            chatId,
+            `✅ *تم استعادة ودمج البيانات بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n➕ *طلاب جدد تمت إضافتهم:* ${mergeResult.addedCount}\n🔄 *طلاب تم تحديث بياناتهم:* ${mergeResult.updatedCount}\n👥 *إجمالي المشتركين الحالي:* ${mergeResult.total} طالب`,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+                  [{ text: "📄 تصدير القائمة", callback_data: "export_users_list" }]
+                ]
+              }
+            }
+          );
+          return;
+        } else {
+          safeSend(bot, chatId, "❌ الملف المرسل لا يحتوي على مصفوفة بيانات مشترين بصيغة JSON صحيحة.");
+          return;
+        }
+      } catch (err) {
+        console.error("Error restoring backup:", err);
+        safeSend(bot, chatId, `❌ حدث خطأ أثناء قراءة ملف النسخة الاحتياطية: ${safeEscape(err.message)}`);
+        return;
+      }
+    }
+
     // حالة: الأدمن في وضع إدخال معرّف لحظر طالب
     if (userState[ADMIN_ID]?.waitingBanInput && msg.text) {
       userState[ADMIN_ID].waitingBanInput = false;
       const target = msg.text.trim();
       const res = banUser(target, "حظر بواسطة الأدمن");
       if (res.success) {
-        bot.sendMessage(chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
-          parse_mode: "Markdown",
+        safeSend(bot, chatId, `✅ *تم حظر الطالب بنجاح!*\n• الاسم: ${safeEscape(res.user.name)}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${safeEscape(res.user.username || "بدون يوزر")}`, {
           reply_markup: {
             inline_keyboard: [
               [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
@@ -1916,7 +1999,7 @@ bot.on("message", async (msg) => {
           }
         });
       } else {
-        bot.sendMessage(chatId, `❌ ${res.error}`, {
+        safeSend(bot, chatId, `❌ ${res.error}`, {
           reply_markup: {
             inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
           }
@@ -1931,8 +2014,7 @@ bot.on("message", async (msg) => {
       const target = msg.text.trim();
       const res = unbanUser(target);
       if (res.success) {
-        bot.sendMessage(chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\``, {
-          parse_mode: "Markdown",
+        safeSend(bot, chatId, `✅ *تم إلغاء حظر الطالب بنجاح!*\n• الاسم: ${safeEscape(res.user.name)}\n• الـ ID: \`${res.user.id}\``, {
           reply_markup: {
             inline_keyboard: [
               [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
@@ -1941,7 +2023,7 @@ bot.on("message", async (msg) => {
           }
         });
       } else {
-        bot.sendMessage(chatId, `❌ ${res.error}`, {
+        safeSend(bot, chatId, `❌ ${res.error}`, {
           reply_markup: {
             inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
           }
@@ -1978,14 +2060,13 @@ bot.on("message", async (msg) => {
 
       const res = addUserManually(targetId, name, username);
       if (res.success) {
-        bot.sendMessage(chatId, `✅ *تمت إضافة/تحديث الطالب بنجاح!*\n• الاسم: ${res.user.name}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${res.user.username || "بدون يوزر"}`, {
-          parse_mode: "Markdown",
+        safeSend(bot, chatId, `✅ *تمت إضافة/تحديث الطالب بنجاح!*\n• الاسم: ${safeEscape(res.user.name)}\n• الـ ID: \`${res.user.id}\`\n• المعرف: ${safeEscape(res.user.username || "بدون يوزر")}`, {
           reply_markup: {
             inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
           }
         });
       } else {
-        bot.sendMessage(chatId, `❌ ${res.error}`, {
+        safeSend(bot, chatId, `❌ ${res.error}`, {
           reply_markup: {
             inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
           }
