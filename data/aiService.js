@@ -42,24 +42,30 @@ const SYSTEM_INSTRUCTION = `
 
 🌟 شخصيتك وأسلوبك:
 - ذكي، ودود، متعاون، سريع البديهة، وتتفاعل بشكل فوري ومباشر مع كل رسالة من الطالب.
-- تجيب وترد وتتفاعل مع **كل شيء يكتبه الطالب حرفياً** دون أي تردد أو استثناء.
+- تجيب وترد وتتفاعل مع **كل شيء يكتبه أو يرسله الطالب حرفياً** دون أي تردد أو استثناء.
 
 📌 إرشادات التعامل مع مختلف المواقف:
-1. 🔗 توفير الروابط والمصادر والبرامج المعملية (Course Links & Software):
+1. 📸 تحليل الصور والملفات والمسائل والمخططات الهندسية (Multimodal Vision & Documents):
+   - إذا أرسل الطالب **صورة** أو **ملفاً** (مثل: أسئلة امتحانات، واجبات، دوائر منطقية Logic Gates، جداول حقيقة Truth Tables، مخططات توقيت Timing Diagrams، كروت كارنوف K-Maps، دوائر كهربائية وإلكترونية، صور أخطاء برمجية Error Screenshots، مستندات PDF، أو ملفات أكواد):
+     • اقرأ السؤال أو المسألة من الصورة بدقة متناهية.
+     • اشرح الحل خطوة بخطوة بطريقة هندسية أكاديمية واضحة ومبسطة جداً.
+     • قدم النتيجة النهائية بدقة مع توضيح القوانين والخطوات المستخدمة.
+
+2. 🔗 توفير الروابط والمصادر والبرامج المعملية (Course Links & Software):
    - إذا سأل الطالب عن روابط أو سلايدات أو شروحات أو مذكرات أو امتحانات لمادة معينة، أو روابط تنزيل برامج معملية (مثل Logisim, MATLAB, LTSpice, NetBeans, Proteus, Packet Tracer, LabVIEW...):
      • قدم له الروابط المباشرة بشكل منسق ومرتب بصيغة Markdown links مثل \`[اسم الرابط](URL)\`.
      • وضح للطالب أيضاً أنه يستطيع الوصول لكافة المواد والملفات مباشرة من الموقع الرسمي: https://computer-engineering-iug.vercel.app أو عبر البحث بكود المساق في البوت.
    - إذا سأل عن نصائح لدراسة المادة، ادمج النصائح وقدم له الروابط المتاحة.
 
-2. 💬 الدردشة العامة، السوالف، والتحيات (Casual Chat & Greetings):
+3. 💬 الدردشة العامة، السوالف، والتحيات (Casual Chat & Greetings):
    - إذا سلم الطالب أو أرسل تحية (مثل: "السلام عليكم", "مرحبا", "كيفك", "شو اخبارك", "اه", "هلا", "منور", "مساء الخير"... إلخ): رد عليه فوراً بأسلوب دافئ ومرح وترحيبي دون إقحام روابط ما لم يطلبها.
    - إذا أراد الطالب التحدث عن يومه، أو الفضفضة عن الجامعة، أو طلب نصائح عامة، أو تنظيم الوقت والتحفيز: تفاعل معه كصديق وزميل دراسة مهندس ذكي وقدم له دعماً نفسياً ومعنوياً ونصائح قيمة.
 
-3. 💻 الأسئلة الأكاديمية والبرمجية (Academic & Engineering):
+4. 💻 الأسئلة الأكاديمية والبرمجية (Academic & Engineering):
    - قدم شروحات دقيقة ومبسطة ومباشرة للمفاهيم الهندسية والبرمجية مع كتل أكواد مرتبة (C++, Java, Python, JavaScript, Assembly x86, SQL, VHDL, Verilog, etc.).
    - اشرح هياكل البيانات، الخوارزميات، نظم التشغيل، شبكات الحاسوب، عمارة ومعالجات الحاسوب، والدوائر المنطقية.
 
-4. 🌐 أي موضوع آخر:
+5. 🌐 أي موضوع آخر:
    - أجب على أي سؤال أو نقاش يطرحه الطالب، ولا ترفض أي طلب، واجعل ردك مفيداً وسريعاً ومنسقاً.
 
 📐 التنسيق وسرعة الإجابة:
@@ -72,12 +78,13 @@ const SYSTEM_INSTRUCTION = `
 `.trim();
 
 /**
- * دالة توليد الإجابة السريعة من Google Gemini
+ * دالة توليد الإجابة السريعة من Google Gemini (تدعم النصوص والصور والمستندات والملفات الصوتية)
  * @param {string} prompt - سؤال أو رسالة الطالب
  * @param {Array} history - سجل المحادثة السابقة
+ * @param {Array} attachments - المرفقات (صور، مستندات، ملفات) [{ mimeType, data }]
  * @returns {Promise<string>}
  */
-async function generateAIResponse(prompt, history = []) {
+async function generateAIResponse(prompt = "", history = [], attachments = []) {
   const apiKey = getApiKey();
 
   if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE" || apiKey.trim() === "") {
@@ -88,12 +95,12 @@ async function generateAIResponse(prompt, history = []) {
       "1. ادخل إلى: https://aistudio.google.com/\n" +
       "2. سجّل دخولك بحساب Google واضغط **Get API key**.\n" +
       "3. ضع المفتاح في ملف `.env` كالتالي: `GEMINI_API_KEY=your_key` أو كمتغير بيئة (Environment Variable).\n\n" +
-      "💡 *الخدمة مجانية بالكامل من Google وتدعم كافة أسئلة التخصص والبرمجة!*"
+      "💡 *الخدمة مجانية بالكامل من Google وتدعم كافة أسئلة التخصص والبرمجة وتحليل الصور والملفات!*"
     );
   }
 
   // فحص واستخراج المصادر والروابط ذات الصلة بسؤال الطالب من قاعدة بيانات القسم
-  const deptContext = getDepartmentContext(prompt);
+  const deptContext = getDepartmentContext(prompt || "");
   const activeSystemInstruction = deptContext ? `${SYSTEM_INSTRUCTION}\n\n${deptContext}` : SYSTEM_INSTRUCTION;
 
   // بناء سجل المحادثة المنضبط لـ Gemini بالتناوب الدقيق (user -> model)
@@ -120,17 +127,46 @@ async function generateAIResponse(prompt, history = []) {
     contents.pop();
   }
 
+  // إعداد محتويات رسالة المستخدم الحالية (نصوص + صور/ملفات مرفقة)
+  const userParts = [];
+  const textPrompt = (prompt || "").trim();
+
+  if (textPrompt) {
+    userParts.push({ text: textPrompt });
+  } else if (Array.isArray(attachments) && attachments.length > 0) {
+    userParts.push({ text: "اشرح وحلل محتوى المرفق (الصورة/الملف) بالتفصيل، وساعدني في فهم وحل المسألة أو السؤال الوارد فيها خطوة بخطوة." });
+  }
+
+  if (Array.isArray(attachments)) {
+    for (const att of attachments) {
+      if (att && att.data && att.mimeType) {
+        userParts.push({
+          inlineData: {
+            mimeType: att.mimeType,
+            data: att.data
+          }
+        });
+      } else if (att && att.text) {
+        userParts.push({ text: att.text });
+      }
+    }
+  }
+
+  if (userParts.length === 0) {
+    userParts.push({ text: "مرحبا" });
+  }
+
   contents.push({
     role: "user",
-    parts: [{ text: prompt.trim() }]
+    parts: userParts
   });
 
-  // النماذج مرتبة من الأسرع والأخف استجابة
+  // النماذج مرتبة من الأحدث والأقوى والأسرع استجابة
   const modelsToTry = [
-    "gemini-3.5-flash-lite",   // فائق السرعة والاستجابة اللحظية
-    "gemini-flash-lite-latest", // أحدث نسخة لايت
-    "gemini-3.5-flash",        // فلاش القياسي
-    "gemini-flash-latest"      // فلاش المحدث
+    "gemini-3.6-flash",         // أحدث وأقوى نموذج فلاش متعدد الوسائط
+    "gemini-3.5-flash",         // فلاش 3.5 الفائق
+    "gemini-3.5-flash-lite",    // فلاش لايت فائق السرعة
+    "gemini-flash-latest"       // فلاش المحدث
   ];
 
   let lastError = null;
@@ -147,12 +183,12 @@ async function generateAIResponse(prompt, history = []) {
         generationConfig: {
           temperature: 0.7,
           topP: 0.9,
-          maxOutputTokens: 1100
+          maxOutputTokens: 1500
         }
       };
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       const response = await fetch(url, {
         method: "POST",
@@ -186,7 +222,7 @@ async function generateAIResponse(prompt, history = []) {
 
   console.error("AI Generation Error:", lastError);
   return (
-    "⚠️ واجهت بطئاً مؤقتاً في الاتصال بالسيرفر. تفضل بإعادة إرسال رسالتك الآن وسأجيبك فوراً! 🚀"
+    "⚠️ واجهت بطئاً مؤقتاً في الاتصال بالسيرفر. تفضل بإعادة إرسال رسالتك أو صورتك الآن وسأجيبك فوراً! 🚀"
   );
 }
 

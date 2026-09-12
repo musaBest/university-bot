@@ -1302,16 +1302,16 @@ bot.on("callback_query", (query) => {
     const aiWelcome = `🤖 *المساعد الأكاديمي الذكي لقسم هندسة الحاسوب*
 ━━━━━━━━━━━━━━━━━━━━
 
-أهلاً بك! أنا مساعدك الأكاديمي الذكي المعتمد 🎓
-أنا هنا لمساعدتك في فهم موادك وتجاوز صعوبات البرمجة والدراسة:
+أهلاً بك! أنا مساعدك الأكاديمي والمهندس الذكي المعتمد 🎓
+أنا هنا لمساعدتك في فهم موادك وحل المسائل وتجاوز صعوبات البرمجة والدراسة:
 
-💡 *أمثلة على ما يمكنك سؤاله:*
-• *شرح المفاهيم:* "اشرح لي خوارزمية Dijkstra بالتفصيل مع مثال"
-• *البرمجة والأكواد:* "اكتب لي كود Binary Search Tree بلغة C++"
-• *نصائح للمواد:* "كيف أدرس لمادة نظم التشغيل وما هي أهم المواضيع؟"
-• *حل المسائل:* "اشرح لي طريقة تبسيط دوائر K-Map"
+💡 *ما يمكنك سؤاله وإرساله:*
+• 📸 *حل وشرح الصور والواجبات:* صوّر وأرسل أي مسألة، دائرة منطقية (Logic Gates)، مخطط توقيت (Timing Diagram)، جدول كارنوف (K-Map)، دائرة كهربائية، أو سكرين شوت خطأ برمجي وسأشرحه وأحله لك فوراً خطوة بخطوة!
+• 💻 *البرمجة والأكواد:* "اكتب لي كود Binary Search Tree بلغة C++" أو أرسل ملفات برمجية لفحصها وتصحيحها.
+• 📑 *شرح المفاهيم والملفات:* "اشرح لي خوارزمية Dijkstra بالتفصيل" أو أرسل ملف PDF لتلخيصه وشرحه.
+• 📊 *نصائح للمواد والروابط:* اطلب روابط أي مادة، سلايدات، امتحانات، أو برامج معملية وسأزودك بها فوراً.
 
-👇 *اكتب سؤالك أو استفسارك هنا مباشرة في المحادثة:*`;
+👇 *أرسل سؤالك، صورتك، أو ملفك الآن في المحادثة مباشرة:*`;
 
     bot.sendMessage(chatId, aiWelcome, {
       parse_mode: "Markdown",
@@ -2089,8 +2089,9 @@ bot.on("message", async (msg) => {
 
   // =========================================================================
   // 3. حالة: المستخدم في وضع المحادثة التفاعلية مع المساعد الذكي (AI Chatbot)
+  // يدعم: النصوص، الصور، المستندات، ملفات الأكواد، ملفات PDF، والتسجيلات الصوتية
   // =========================================================================
-  if (userState[chatId]?.inAiChat && msg.text && !msg.text.startsWith("/")) {
+  if (userState[chatId]?.inAiChat && (!msg.text || !msg.text.startsWith("/"))) {
     trackFeatureUse(chatId, "ai_chat", msg.from);
     const typingTimer = setInterval(() => {
       bot.sendChatAction(chatId, "typing").catch(() => {});
@@ -2098,13 +2099,81 @@ bot.on("message", async (msg) => {
     bot.sendChatAction(chatId, "typing").catch(() => {});
 
     try {
+      let promptText = (msg.text || msg.caption || "").trim();
+      const attachments = [];
+
+      // 1. معالجة الصور المرسلة للمساعد الذكي
+      if (msg.photo && msg.photo.length > 0) {
+        const photo = msg.photo[msg.photo.length - 1];
+        try {
+          const downloadDir = path.join(__dirname, "data");
+          const downloadedPath = await bot.downloadFile(photo.file_id, downloadDir);
+          const buffer = fs.readFileSync(downloadedPath);
+          try { fs.unlinkSync(downloadedPath); } catch (e) {}
+          const base64 = buffer.toString("base64");
+          attachments.push({ mimeType: "image/jpeg", data: base64 });
+          if (!promptText) promptText = "اشرح هذا السؤال أو المسألة من الصورة بالتفصيل، وساعدني في حلها خطوة بخطوة.";
+        } catch (imgErr) {
+          console.error("Error downloading photo for AI:", imgErr.message);
+        }
+      }
+      // 2. معالجة المستندات والملفات (PDF، أكواد، صور، نصوص)
+      else if (msg.document) {
+        try {
+          const fileName = msg.document.file_name || "file";
+          const ext = path.extname(fileName).toLowerCase();
+          const mime = msg.document.mime_type || "";
+          const downloadDir = path.join(__dirname, "data");
+          const downloadedPath = await bot.downloadFile(msg.document.file_id, downloadDir);
+          const buffer = fs.readFileSync(downloadedPath);
+          try { fs.unlinkSync(downloadedPath); } catch (e) {}
+
+          const codeExts = [".txt", ".cpp", ".c", ".h", ".hpp", ".java", ".py", ".js", ".ts", ".html", ".css", ".sql", ".v", ".vhd", ".vhdl", ".asm", ".s", ".json", ".csv", ".md"];
+          const isImage = mime.startsWith("image/") || [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"].includes(ext);
+
+          if (isImage) {
+            attachments.push({ mimeType: mime || "image/jpeg", data: buffer.toString("base64") });
+            if (!promptText) promptText = "اشرح محتوى هذه الصورة وحل المسألة أو السؤال الموجود فيها بالتفصيل.";
+          } else if (ext === ".pdf" || mime === "application/pdf") {
+            attachments.push({ mimeType: "application/pdf", data: buffer.toString("base64") });
+            if (!promptText) promptText = `اشرح ولخص محتوى هذا الملف (${fileName}) وساعدني في حل أي أسئلة فيه.`;
+          } else if (codeExts.includes(ext) || mime.startsWith("text/")) {
+            const fileCode = buffer.toString("utf8");
+            attachments.push({ text: `محتوى الملف (${fileName}):\n\`\`\`\n${fileCode.slice(0, 40000)}\n\`\`\`` });
+            if (!promptText) promptText = `افحص واشرح كود هذا الملف (${fileName}) ووضح كيفية عمله أو أصلح أي أخطاء فيه.`;
+          } else {
+            attachments.push({ mimeType: mime || "application/octet-stream", data: buffer.toString("base64") });
+            if (!promptText) promptText = `اشرح هذا الملف (${fileName}) وساعدني فيه.`;
+          }
+        } catch (docErr) {
+          console.error("Error downloading document for AI:", docErr.message);
+        }
+      }
+      // 3. معالجة التسجيلات الصوتية والملفات الصوتية
+      else if (msg.voice || msg.audio) {
+        try {
+          const fileId = msg.voice ? msg.voice.file_id : msg.audio.file_id;
+          const mime = msg.voice ? "audio/ogg" : (msg.audio?.mime_type || "audio/mp3");
+          const downloadDir = path.join(__dirname, "data");
+          const downloadedPath = await bot.downloadFile(fileId, downloadDir);
+          const buffer = fs.readFileSync(downloadedPath);
+          try { fs.unlinkSync(downloadedPath); } catch (e) {}
+          attachments.push({ mimeType: mime, data: buffer.toString("base64") });
+          if (!promptText) promptText = "استمع إلى هذا التسجيل الصوتي وأجب على سؤالي وساعدني فيه.";
+        } catch (audErr) {
+          console.error("Error downloading audio for AI:", audErr.message);
+        }
+      }
+
+      // طلب الإجابة من الذكاء الاصطناعي مع المرفقات وسجل المحادثة
       const history = userState[chatId].aiHistory || [];
-      const answer = await generateAIResponse(msg.text, history);
+      const answer = await generateAIResponse(promptText, history, attachments);
 
       if (!answer.startsWith("⚠️")) {
         if (!userState[chatId]) userState[chatId] = {};
         if (!userState[chatId].aiHistory) userState[chatId].aiHistory = [];
-        userState[chatId].aiHistory.push({ role: "user", text: msg.text });
+        const userTurnText = (attachments.length > 0 ? "📷 [مرفق/صورة] " : "") + promptText;
+        userState[chatId].aiHistory.push({ role: "user", text: userTurnText });
         userState[chatId].aiHistory.push({ role: "model", text: answer });
         if (userState[chatId].aiHistory.length > 8) {
           userState[chatId].aiHistory = userState[chatId].aiHistory.slice(-8);
@@ -2128,7 +2197,7 @@ bot.on("message", async (msg) => {
       });
     } catch (err) {
       console.error("AI Error:", err);
-      bot.sendMessage(chatId, "أهلاً بك! أنا هنا ومعك دائماً، تفضل بطرح سؤالك وسأجيبك فوراً! 🚀");
+      bot.sendMessage(chatId, "أهلاً بك! أنا هنا ومعك دائماً، تفضل بطرح سؤالك أو إرسال صورتك وسأجيبك فوراً! 🚀");
     } finally {
       clearInterval(typingTimer);
     }
