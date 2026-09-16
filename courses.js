@@ -737,6 +737,7 @@ year4: {
       "Book & Solutions": "https://drive.google.com/drive/folders/1hhOgx5g5OkOnsb82uJttZlVfpTPqV0K6",
       "Lectures":{  
       "Dr. Ayman Abu Samra ":"https://youtube.com/playlist?list=PLhidj2WdRnd-rq5dHEjZ4VQQsQKJuX5Fw&feature=shared",
+      "Eng. Abdullah Ouda ":"https://youtube.com/playlist?list=PLeUQfhtb87pJEQdthiFf5tNc-lxpbR1zh&si=OucCCEaHASUqTm0g",
       "Dr. Mohammed Boukhari":"https://youtube.com/playlist?list=PLVl2wY_uRKfpMuHCDe56Ma-6Knk3viQdF&feature=shared",
       "Discussion":"https://youtube.com/playlist?list=PLn9Q0FC7RMxLIIyIWe98WiOQRVyITK8my&feature=shared",
       },
@@ -747,7 +748,7 @@ year4: {
     "Data Communication Lab": {
       "Lab": "https://drive.google.com/drive/folders/1x_adf8apcrNQNqdFNbXGG203WNsVujyg",
       "Recorded Videos":{ 
-      "Eng. Abdullah Ouda ":"https://youtu.be/HdaikxbmgwU?si=JlSw694RDLpevQbX",
+      "Eng. Abdullah Ouda ":"https://youtube.com/playlist?list=PLeUQfhtb87pJEQdthiFf5tNc-lxpbR1zh&si=OucCCEaHASUqTm0g",
       "Discussion":"https://youtube.com/playlist?list=PLDnSyw7TIc55E2OiXsozDZ-Ztdqas_6lD&si=paggZRkEOSIJ7GSX",
      },
       "Tips": "المعيد شرحه كافي"
