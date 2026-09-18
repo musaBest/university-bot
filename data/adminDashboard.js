@@ -23,7 +23,12 @@ const FEATURE_LABELS = {
   prerequisites: { title: "📷 المواد المعتمدة على بعض", icon: "📷" },
   plan5: { title: "📄 خطة هندسة الحاسوب 5 سنوات", icon: "📄" },
   plan4: { title: "🖼 خطة هندسة الحاسوب 4 سنوات", icon: "🖼" },
-  upload: { title: "📤 رفع ومشاركة الملفات", icon: "📤" }
+  upload: { title: "📤 رفع ومشاركة الملفات", icon: "📤" },
+  code_debugger: { title: "🐞 مصحح ومفسر الأكواد الذكي", icon: "🐞" },
+  exam_planner: { title: "⏳ عداد ومخطط الامتحانات", icon: "⏳" },
+  ai_quiz: { title: "📝 مولّد الكويزات الذكي", icon: "📝" },
+  past_papers: { title: "📂 بنك الامتحانات السابقة", icon: "📂" },
+  marketplace: { title: "🔄 سوق تبادل الأدوات والكتب", icon: "🔄" }
 };
 
 /**
@@ -409,7 +414,12 @@ function renderMainDashboard(chatId, botInstance) {
 
   const keyboard = [
     [
-      { text: "📊 إحصائيات الأيقونات والميزات", callback_data: "admin_feature_stats" }
+      { text: "📊 إحصائيات الأيقونات والميزات", callback_data: "admin_feature_stats" },
+      { text: "📈 المواد الأكثر بحثاً وطلباً", callback_data: "admin_course_search_stats" }
+    ],
+    [
+      { text: "🗳️ إرسال استطلاع رأي (Poll)", callback_data: "admin_poll_prompt" },
+      { text: "📢 إرسال إشعار جماعي", callback_data: "start_broadcast" }
     ],
     [
       { text: "🔍 فحص واستعلام عن طالب", callback_data: "admin_search_user_prompt" },
@@ -421,14 +431,11 @@ function renderMainDashboard(chatId, botInstance) {
     ],
     [
       { text: "📄 تصدير قائمة المشتركين كاملة", callback_data: "export_users_list" },
-      { text: "📢 إرسال إشعار جماعي", callback_data: "start_broadcast" }
+      { text: "🔑 مفتاح الذكاء الاصطناعي", callback_data: "admin_gemini_key_prompt" }
     ],
     [
       { text: "💾 تنزيل نسخة احتياطية (JSON)", callback_data: "admin_download_backup" },
       { text: "📥 استعادة / دمج بيانات", callback_data: "admin_restore_prompt" }
-    ],
-    [
-      { text: "🔑 مفتاح الذكاء الاصطناعي (Gemini Key)", callback_data: "admin_gemini_key_prompt" }
     ],
     [
       { text: "🔄 تحديث اللوحة", callback_data: "admin_dashboard" },
@@ -628,12 +635,71 @@ function renderUserProfile(chatId, botInstance, query) {
   });
 }
 
+const SEARCH_STATS_FILE = path.join(__dirname, "course_searches.json");
+
+function trackCourseSearch(query) {
+  if (!query || typeof query !== "string") return;
+  const term = query.trim();
+  if (term.length < 2) return;
+
+  try {
+    let stats = {};
+    if (fs.existsSync(SEARCH_STATS_FILE)) {
+      stats = JSON.parse(fs.readFileSync(SEARCH_STATS_FILE, "utf8")) || {};
+    }
+    stats[term] = (stats[term] || 0) + 1;
+    fs.writeFileSync(SEARCH_STATS_FILE, JSON.stringify(stats, null, 2), "utf8");
+  } catch (e) {}
+}
+
+function getCourseSearchStats() {
+  try {
+    if (fs.existsSync(SEARCH_STATS_FILE)) {
+      const stats = JSON.parse(fs.readFileSync(SEARCH_STATS_FILE, "utf8")) || {};
+      const sorted = Object.entries(stats).sort((a, b) => b[1] - a[1]);
+      return sorted;
+    }
+  } catch (e) {}
+  return [];
+}
+
+function renderCourseSearchStats(chatId, botInstance) {
+  const stats = getCourseSearchStats();
+
+  let text = `📈 *تقرير المواد الأكثر بحثاً وطلباً بين الطلاب:*\n`;
+  text += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  if (stats.length === 0) {
+    text += `لم يتم تسجيل عمليات بحث كافية بعد.\nيبدأ النظام بتسجيل وتصنيف المواد تلقائياً فور بحث الطلاب!`;
+  } else {
+    text += `💡 *أكثر المواد والكلمات التي بحث عنها الطلاب:*\n\n`;
+    for (let i = 0; i < Math.min(stats.length, 15); i++) {
+      const [term, count] = stats[i];
+      const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `🔹 ${i + 1}.`;
+      text += `${rank} *${safeEscape(term)}:* \`${count}\` مرة بحث\n`;
+    }
+    text += `\n📊 يساعدك هذا التقرير في معرفة المواد التي يواجه فيها الطلاب صعوبة لتقديم الدعم أو توفير مذكرات ومراجعات إضافية لها.`;
+  }
+
+  const buttons = [
+    [{ text: "🔄 تحديث الإحصائيات", callback_data: "admin_course_search_stats" }],
+    [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]
+  ];
+
+  safeSend(botInstance, chatId, text, {
+    reply_markup: { inline_keyboard: buttons }
+  });
+}
+
 module.exports = {
   loadUsers,
   saveUsersList,
   mergeUsersData,
   isUserBanned,
   trackFeatureUse,
+  trackCourseSearch,
+  getCourseSearchStats,
+  renderCourseSearchStats,
   banUser,
   unbanUser,
   addUserManually,
@@ -649,4 +715,5 @@ module.exports = {
   renderBannedList,
   renderUserProfile
 };
+
 

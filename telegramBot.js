@@ -7,6 +7,11 @@ const path = require("path");
 const fs = require("fs");
 const http = require("http");
 const { generateAIResponse, getApiKey, setApiKey, testApiKey } = require("./data/aiService");
+const { renderCodeDebuggerMenu, handleCodeDebuggerInput } = require("./data/codeDebugger");
+const { renderExamCountdown, generateSmartStudyPlan, calculateRequiredGrade } = require("./data/examPlanner");
+const { renderQuizSubjectMenu, generateQuizQuestions, sendCurrentQuestion, handleQuizAnswer, finishQuiz, POPULAR_QUIZ_COURSES } = require("./data/quizGenerator");
+const { renderPastPapersMenu, renderYearExams, searchPastPapers } = require("./data/pastPapersBank");
+const { renderMarketplaceMenu, renderCategoryListings, renderMyListings, addListing, deleteListing } = require("./data/marketplace");
 
 // خادم صحة بسيط (Health Check & Keep-Alive) لربط البوت بالاستضافات السحابية وضمان عمله 24/7
 const PORT = process.env.PORT || 3000;
@@ -40,6 +45,13 @@ function resetAdminState(chatId = ADMIN_ID) {
   userState[ADMIN_ID].waitingRestoreBackup = false;
   userState[ADMIN_ID].waitingGeminiKeyInput = false;
   userState[ADMIN_ID].inAiChat = false;
+  userState[ADMIN_ID].inCodeDebugger = false;
+  userState[ADMIN_ID].waitingExamPlanInput = false;
+  userState[ADMIN_ID].waitingCalcGradeInput = false;
+  userState[ADMIN_ID].waitingCustomQuizInput = false;
+  userState[ADMIN_ID].waitingPastPaperSearch = false;
+  userState[ADMIN_ID].waitingMarketAdd = false;
+  userState[ADMIN_ID].waitingPollInput = false;
 }
 
 const {
@@ -48,6 +60,9 @@ const {
   mergeUsersData,
   isUserBanned,
   trackFeatureUse,
+  trackCourseSearch,
+  getCourseSearchStats,
+  renderCourseSearchStats,
   banUser,
   unbanUser,
   addUserManually,
@@ -288,6 +303,60 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
       reply_markup: { inline_keyboard: adminButtons }
     });
   }
+}
+
+/**
+ * إرسال استطلاع رأي (Telegram Poll) لجميع الطلاب
+ */
+async function broadcastPollToStudents(botInstance, question, options, adminChatId = ADMIN_ID) {
+  const users = loadUsers();
+  const targetUsers = users.filter((u) => u.active !== false && !u.banned);
+  const totalUsers = targetUsers.length;
+
+  if (totalUsers === 0) {
+    safeSend(botInstance, adminChatId, "⚠️ لا يوجد طلاب نشطين حالياً لإرسال الاستطلاع.");
+    return;
+  }
+
+  const cleanQuestion = (question || "استطلاع رأي لطلبة قسم هندسة الحاسوب").trim().slice(0, 290);
+  const cleanOptions = (options || ["نعم", "لا"]).map(o => o.trim().slice(0, 95)).filter(Boolean).slice(0, 10);
+
+  if (cleanOptions.length < 2) {
+    safeSend(botInstance, adminChatId, "❌ يجب توفير خيارين على الأقل لإنشاء الاستطلاع.");
+    return;
+  }
+
+  await safeSend(
+    botInstance,
+    adminChatId,
+    `⏳ *جاري إرسال استطلاع الرأي لجميع الطلاب (${totalUsers} طالب)...*\n\n📊 *السؤال:* ${cleanQuestion}`
+  );
+
+  let successCount = 0;
+  let failCount = 0;
+
+  for (const user of targetUsers) {
+    try {
+      await botInstance.sendPoll(user.id, cleanQuestion, cleanOptions, {
+        is_anonymous: false
+      });
+      successCount++;
+    } catch (err) {
+      failCount++;
+      if (err.response && (err.response.statusCode === 403 || err.response.statusCode === 400)) {
+        markUserInactive(user.id);
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 40));
+  }
+
+  const resultMsg = `🗳️ *اكتمل إرسال استطلاع الرأي بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n\n📊 *السؤال:* ${cleanQuestion}\n👥 *إجمالي المستهدفين:* ${totalUsers}\n✅ *تم الإرسال بنجاح إلى:* ${successCount} طالب\n❌ *تعذر الإرسال إلى:* ${failCount} طالب\n\n💡 سيتمكن الطلاب الآن من التصويت مباشرة وتظهر النتائج المحدثة في شات التليجرام.`;
+
+  await safeSend(botInstance, adminChatId, resultMsg, {
+    reply_markup: {
+      inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+    }
+  });
 }
 
 require("./data/rating")(bot, userState);
@@ -1009,6 +1078,11 @@ const contacts = {
 function showMainMenu(chatId, name = "طالب") {
   const keyboard = [
     [{ text: "🤖 المساعد الأكاديمي الذكي (AI Chatbot)", callback_data: "start_ai_chat" }],
+    [{ text: "🐞 مصحح ومفسر الأكواد الذكي (Code Debugger)", callback_data: "start_code_debugger" }],
+    [{ text: "📝 مولّد الكويزات الذكي (AI Quiz Generator)", callback_data: "start_ai_quiz" }],
+    [{ text: "⏳ عداد ومخطط الامتحانات (Exam Countdown)", callback_data: "exam_countdown" }],
+    [{ text: "📂 بنك الامتحانات السابقة (Past Papers Bank)", callback_data: "open_past_papers" }],
+    [{ text: "🔄 سوق تبادل الأدوات والكتب (Hardware & Books)", callback_data: "open_marketplace" }],
     [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
     [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
     [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
@@ -1288,6 +1362,63 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // عرض تقرير المواد الأكثر بحثاً
+  if (data === "admin_course_search_stats") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    renderCourseSearchStats(chatId, bot);
+    return;
+  }
+
+  // طلب إنشاء وإرسال استطلاع رأي (Poll)
+  if (data === "admin_poll_prompt") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].waitingPollInput = true;
+
+    bot.sendMessage(chatId, `🗳️ *إرسال استطلاع رأي (Telegram Poll) لجميع الطلاب:*
+━━━━━━━━━━━━━━━━━━━━
+
+أرسل السؤال والخيارات مفصولة بشرطة مائلة \`/\` كالتالي:
+\`ما رأيكم بصعوبة الامتحان؟ / سهل / متوسط / صعب / غير واضح\`
+
+📌 *أو أرسل استطلاعاً سريعاً جاهزاً بنقرة واحدة:*`, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "📊 استطلاع: تقييم الامتحانات النصفية", callback_data: "admin_preset_poll_1" }],
+          [{ text: "📚 استطلاع: المواد التي تحتاج دعماً وشرحاً", callback_data: "admin_preset_poll_2" }],
+          [{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // إرسال استطلاع جاهز 1
+  if (data === "admin_preset_poll_1") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    broadcastPollToStudents(
+      bot,
+      "📊 كيف تقيم مستوى وصعوبة الامتحانات النصفية حتى الآن؟",
+      ["سهلة ومباشرة جداً", "متوسطة ومناسبة للوقت", "صعبة وتتطلب وقتاً أطول", "صعبة ومعقدة جداً"]
+    );
+    return;
+  }
+
+  // إرسال استطلاع جاهز 2
+  if (data === "admin_preset_poll_2") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    broadcastPollToStudents(
+      bot,
+      "📚 ما هي المادة التي تحتاجون فيها مراجعات وسلايدات إضافية أكثر؟",
+      ["هياكل بيانات وخوارزميات (C++)", "دوائر منطقية وتصميم رقمي", "معمارية حاسوب وأسمبلي", "كالكولس وفيزياء هندسية"]
+    );
+    return;
+  }
+
   // معرفة الطلاب الذين استخدموا ميزة محددة
   if (data.startsWith("admin_who_")) {
     if (chatId !== ADMIN_ID) return;
@@ -1490,6 +1621,319 @@ bot.on("callback_query", (query) => {
     const name = userState[chatId]?.name || "طالب";
     bot.sendMessage(chatId, "تم إنهاء المحادثة مع المساعد الذكي. يمكنك اختيار أي خدمة أخرى من القائمة:");
     showMainMenu(chatId, name);
+    return;
+  }
+
+  // ==========================================
+  // مصحح ومفسر الأكواد الذكي (Code Debugger)
+  // ==========================================
+
+  // فتح واجهة مصحح ومفسر الأكواد
+  if (data === "start_code_debugger") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    trackFeatureUse(chatId, "code_debugger", query.from);
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].inAiChat = false;
+    userState[chatId].inCodeDebugger = true;
+    userState[chatId].waitingAdminMessage = false;
+    userState[chatId].codeDebugger = { mode: "debug", history: [] };
+    renderCodeDebuggerMenu(chatId, bot, "debug");
+    return;
+  }
+
+  // تغيير وضع مصحح الأكواد (فحص / شرح / تحسين / حالات اختبار)
+  if (data.startsWith("cd_mode_")) {
+    const newMode = data.replace("cd_mode_", "");
+    if (!userState[chatId]) userState[chatId] = {};
+    if (!userState[chatId].codeDebugger) userState[chatId].codeDebugger = { mode: newMode, history: [] };
+    userState[chatId].codeDebugger.mode = newMode;
+    userState[chatId].inCodeDebugger = true;
+    userState[chatId].inAiChat = false;
+    renderCodeDebuggerMenu(chatId, bot, newMode);
+    return;
+  }
+
+  // مسح ذاكرة مصحح الأكواد
+  if (data === "cd_clear") {
+    if (userState[chatId]?.codeDebugger) {
+      userState[chatId].codeDebugger.history = [];
+    }
+    bot.sendMessage(chatId, "🧹 تم تنظيف جلسة الأكواد بنجاح. أرسل كودك أو ملفك الآن وسأبدأ تحليله فوراً:");
+    return;
+  }
+
+  // الخروج من مصحح الأكواد
+  if (data === "cd_exit") {
+    if (userState[chatId]) {
+      userState[chatId].inCodeDebugger = false;
+      userState[chatId].codeDebugger = { mode: "debug", history: [] };
+    }
+    const studentName = query.from?.first_name || "طالب";
+    bot.sendMessage(chatId, "✅ تم إنهاء جلسة تصحيح الأكواد. مرحباً بك دائماً!");
+    showMainMenu(chatId, studentName);
+    return;
+  }
+
+  // ==========================================
+  // عداد ومخطط الامتحانات (Exam Countdown & Planner)
+  // ==========================================
+
+  // عرض عداد ومخطط الامتحانات
+  if (data === "exam_countdown") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    trackFeatureUse(chatId, "exam_planner", query.from);
+    renderExamCountdown(chatId, bot);
+    return;
+  }
+
+  // طلب إدخال بيانات لإنشاء خطة دراسية ذكية
+  if (data === "exam_create_plan_prompt") {
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].waitingExamPlanInput = true;
+    userState[chatId].waitingCalcGradeInput = false;
+    userState[chatId].inAiChat = false;
+    userState[chatId].inCodeDebugger = false;
+
+    bot.sendMessage(chatId, `📅 *إنشاء خطة وجدول دراسة ومراجعة ذكي (AI Study Plan)*
+━━━━━━━━━━━━━━━━━━━━
+
+أرسل تفاصيل موادك والوقت المتبقي وسأصمم لك جدولاً مفصلاً يوماً بيوم:
+
+📌 *مثال يمكنك نسخه والتعديل عليه:*
+\`عندي 3 مواد: هياكل بيانات، دوائر رقمية، وفيزياء 2. الامتحان بعد أسبوعين وعندي 5 ساعات يومياً للمذاكرة، وبدي أركز عالهياكل لأنها صعبة.\``, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة لعداد الامتحانات", callback_data: "exam_countdown" }]]
+      }
+    });
+    return;
+  }
+
+  // طلب إدخال لحساب الدرجة المطلوبة في النهائي
+  if (data === "exam_calc_grade_prompt") {
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].waitingCalcGradeInput = true;
+    userState[chatId].waitingExamPlanInput = false;
+    userState[chatId].inAiChat = false;
+    userState[chatId].inCodeDebugger = false;
+
+    bot.sendMessage(chatId, `🎯 *حاسبة الدرجة المطلوبة في الامتحان النهائي*
+━━━━━━━━━━━━━━━━━━━━
+
+أرسل علامتك المجمعة في أعمال الفصل (نصفي + كويزات + نشاط) من **50**، والتقدير الذي تطمح إليه:
+
+📌 *أمثلة للإرسال:*
+• \`38 A\` (إذا مجمع 38 وبدك امتياز 90+)
+• \`30 B+\` (إذا مجمع 30 وبدك جيد جداً مرتفع 85+)
+• \`25 B\` (إذا مجمع 25 وبدك جيد جداً 80+)
+• \`15 PASS\` (إذا بدك بس تضمن النجاح 60+)
+
+👇 *اكتب درجتك والتقدير الآن في المحادثة:*`, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة لعداد الامتحانات", callback_data: "exam_countdown" }]]
+      }
+    });
+    return;
+  }
+
+  // ==========================================
+  // مولّد الكويزات التفاعلي الذكي (AI Quiz)
+  // ==========================================
+
+  // عرض قائمة الكويزات والمواد
+  if (data === "start_ai_quiz") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    trackFeatureUse(chatId, "ai_quiz", query.from);
+    renderQuizSubjectMenu(chatId, bot);
+    return;
+  }
+
+  // بدء كويز لمادة محددة من القائمة
+  if (data.startsWith("quiz_subject_")) {
+    const idx = parseInt(data.replace("quiz_subject_", ""));
+    const courseObj = POPULAR_QUIZ_COURSES[idx] || { name: "هندسة الحاسوب", key: "Computer Engineering" };
+    trackFeatureUse(chatId, "ai_quiz", query.from);
+
+    bot.sendMessage(chatId, `⏳ *جاري إعداد وتوليد أسئلة الكويز الذكي لمادة (${courseObj.name})...*\nانتظر لحظات 🚀`, { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const questions = await generateQuizQuestions(courseObj.name, 4, "متوسط");
+      if (!userState[chatId]) userState[chatId] = {};
+      userState[chatId].activeQuiz = {
+        subject: courseObj.name,
+        questions: questions,
+        currentIndex: 0,
+        score: 0
+      };
+
+      try { await bot.deleteMessage(chatId, waitMsg.message_id); } catch (e) {}
+      sendCurrentQuestion(chatId, bot, userState);
+    });
+    return;
+  }
+
+  // طلب إدخال اسم مادة أو موضوع مخصص للكويز
+  if (data === "quiz_custom_subject_prompt") {
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].waitingCustomQuizInput = true;
+    userState[chatId].waitingExamPlanInput = false;
+    userState[chatId].waitingCalcGradeInput = false;
+    userState[chatId].inAiChat = false;
+    userState[chatId].inCodeDebugger = false;
+
+    bot.sendMessage(chatId, `✍️ *كتابة موضوع مخصص للكويز:*
+━━━━━━━━━━━━━━━━━━━━
+
+أرسل اسم أي مادة، موضوع، أو خوارزمية تريد اختبار نفسك فيها:
+*(مثال: "معمارية معالج 8086" أو "أشجار البحث الثنائي BST" أو "خوارزمية Bellman-Ford")*`, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة", callback_data: "start_ai_quiz" }]]
+      }
+    });
+    return;
+  }
+
+  // الإجابة على سؤال في الكويز
+  if (data.startsWith("quiz_ans_")) {
+    const selectedIdx = parseInt(data.replace("quiz_ans_", ""));
+    handleQuizAnswer(chatId, bot, selectedIdx, userState);
+    return;
+  }
+
+  // الانتقال للسؤال التالي
+  if (data === "quiz_next_question") {
+    sendCurrentQuestion(chatId, bot, userState);
+    return;
+  }
+
+  // إلغاء الكويز
+  if (data === "quiz_cancel") {
+    if (userState[chatId]) delete userState[chatId].activeQuiz;
+    const sName = query.from?.first_name || "طالب";
+    bot.sendMessage(chatId, "❌ تم إلغاء الكويز. يمكنك المحاولة في أي وقت آخر!");
+    showMainMenu(chatId, sName);
+    return;
+  }
+
+  // ==========================================
+  // بنك الامتحانات والأسئلة السابقة (Past Papers)
+  // ==========================================
+
+  // فتح القائمة الرئيسية لبنك الامتحانات
+  if (data === "open_past_papers") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    trackFeatureUse(chatId, "past_papers", query.from);
+    renderPastPapersMenu(chatId, bot);
+    return;
+  }
+
+  // عرض امتحانات سنة معينة
+  if (data.startsWith("pp_year_")) {
+    const yKey = data.replace("pp_year_", "");
+    trackFeatureUse(chatId, "past_papers", query.from);
+    renderYearExams(chatId, bot, yKey);
+    return;
+  }
+
+  // طلب البحث في بنك الامتحانات
+  if (data === "pp_search_prompt") {
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].waitingPastPaperSearch = true;
+    userState[chatId].waitingCustomQuizInput = false;
+    userState[chatId].waitingExamPlanInput = false;
+    userState[chatId].waitingCalcGradeInput = false;
+    userState[chatId].inAiChat = false;
+    userState[chatId].inCodeDebugger = false;
+
+    bot.sendMessage(chatId, `🔍 *البحث في بنك الامتحانات والنماذج السابقة:*
+━━━━━━━━━━━━━━━━━━━━
+
+أرسل اسم المادة بالإنجليزية أو العربية (مثل: Calculus A أو Digital Logic أو Algorithms):`, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة", callback_data: "open_past_papers" }]]
+      }
+    });
+    return;
+  }
+
+  // ==========================================
+  // سوق تبادل الأدوات والكتب (Marketplace)
+  // ==========================================
+
+  // القائمة الرئيسية لسوق التبادل
+  if (data === "open_marketplace") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    trackFeatureUse(chatId, "marketplace", query.from);
+    renderMarketplaceMenu(chatId, bot);
+    return;
+  }
+
+  // عرض إعلانات قسم معين
+  if (data === "market_cat_hardware") {
+    trackFeatureUse(chatId, "marketplace", query.from);
+    renderCategoryListings(chatId, bot, "hardware", ADMIN_ID);
+    return;
+  }
+  if (data === "market_cat_books") {
+    trackFeatureUse(chatId, "marketplace", query.from);
+    renderCategoryListings(chatId, bot, "books", ADMIN_ID);
+    return;
+  }
+  if (data === "market_cat_other") {
+    trackFeatureUse(chatId, "marketplace", query.from);
+    renderCategoryListings(chatId, bot, "other", ADMIN_ID);
+    return;
+  }
+
+  // عرض إعلاناتي
+  if (data === "market_my_listings") {
+    trackFeatureUse(chatId, "marketplace", query.from);
+    renderMyListings(chatId, bot);
+    return;
+  }
+
+  // حذف إعلان
+  if (data.startsWith("market_del_")) {
+    const listId = data.replace("market_del_", "");
+    const res = deleteListing(listId, chatId, ADMIN_ID);
+    if (res.success) {
+      bot.sendMessage(chatId, "✅ تم حذف الإعلان بنجاح.");
+      renderMyListings(chatId, bot);
+    } else {
+      bot.sendMessage(chatId, `❌ ${res.error}`);
+    }
+    return;
+  }
+
+  // طلب إضافة إعلان
+  if (data.startsWith("market_add_prompt")) {
+    let cat = "hardware";
+    if (data.includes("_books")) cat = "books";
+    else if (data.includes("_other")) cat = "other";
+
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].waitingMarketAdd = cat;
+    userState[chatId].waitingPastPaperSearch = false;
+    userState[chatId].waitingCustomQuizInput = false;
+    userState[chatId].waitingExamPlanInput = false;
+    userState[chatId].waitingCalcGradeInput = false;
+    userState[chatId].inAiChat = false;
+    userState[chatId].inCodeDebugger = false;
+
+    bot.sendMessage(chatId, `➕ *إضافة إعلان جديد في سوق التبادل:*
+━━━━━━━━━━━━━━━━━━━━
+
+أرسل تفاصيل إعلانك بالصيغة التالية في رسالة واحدة:
+\`اسم القطعة أو الكتاب - الوصف والتفاصيل - السعر أو (مجاناً/للبدل) - رقم أو يوزر التواصل\`
+
+📌 *مثال يمكنك نسخه:*
+\`كيت أردوينو كامل مع حساسات - مستعمل بحالة ممتازة لفصل واحد - 30 شيكل - @my_username\``, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [[{ text: "❌ إلغاء والعودة للسوق", callback_data: "open_marketplace" }]]
+      }
+    });
     return;
   }
 
@@ -2287,6 +2731,30 @@ bot.on("message", async (msg) => {
       });
       return;
     }
+
+    // حالة: الأدمن في وضع إدخال وتخصيص استطلاع رأي (Poll)
+    if (userState[ADMIN_ID]?.waitingPollInput && msg.text) {
+      userState[ADMIN_ID].waitingPollInput = false;
+      const text = msg.text.trim();
+      const parts = text.split(/[/|]/).map(p => p.trim()).filter(Boolean);
+
+      if (parts.length < 3) {
+        safeSend(bot, chatId, "❌ صيغة الاستطلاع غير صحيحة. يجب كتابة السؤال متبوعاً بخيارين على الأقل مفصولة بشرطة مائلة `/`.\n\n*مثال:* `هل المحتوى واضح؟ / نعم ممتاز / يحتاج تفصيل أكثر / لا`", {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "🔄 إعادة المحاولة", callback_data: "admin_poll_prompt" }],
+              [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]
+            ]
+          }
+        });
+        return;
+      }
+
+      const question = parts[0];
+      const options = parts.slice(1, 11); // أقصى حد 10 خيارات في التليجرام
+      broadcastPollToStudents(bot, question, options);
+      return;
+    }
   }
 
   // =========================================================================
@@ -2407,7 +2875,156 @@ bot.on("message", async (msg) => {
   }
 
   // =========================================================================
-  // 4. حالة: إرسال الطالب لملفات بجميع أنواعها أو رسائل للأدمن
+  // 4. حالة: المستخدم في وضع مصحح ومفسر الأكواد الذكي (Code Debugger & Explainer)
+  // =========================================================================
+  if (userState[chatId]?.inCodeDebugger && (!msg.text || !msg.text.startsWith("/"))) {
+    trackFeatureUse(chatId, "code_debugger", msg.from);
+    handleCodeDebuggerInput(chatId, bot, msg, userState);
+    return;
+  }
+
+  // =========================================================================
+  // 5. حالة: إنشاء جدول وخطة دراسة ومراجعة ذكية للامتحانات
+  // =========================================================================
+  if (userState[chatId]?.waitingExamPlanInput && msg.text) {
+    userState[chatId].waitingExamPlanInput = false;
+    trackFeatureUse(chatId, "exam_planner", msg.from);
+    generateSmartStudyPlan(chatId, bot, msg.text.trim());
+    return;
+  }
+
+  // =========================================================================
+  // 6. حالة: حاسبة الدرجة المطلوبة في الامتحان النهائي
+  // =========================================================================
+  if (userState[chatId]?.waitingCalcGradeInput && msg.text) {
+    userState[chatId].waitingCalcGradeInput = false;
+    trackFeatureUse(chatId, "exam_planner", msg.from);
+
+    const input = msg.text.trim();
+    const parts = input.split(/\s+/);
+    const score = parseFloat(parts[0]);
+    let targetLetter = (parts[1] || "A").toUpperCase();
+
+    if (isNaN(score) || score < 0 || score > 50) {
+      bot.sendMessage(chatId, "⚠️ يرجى إدخال درجة أعمال فصل صحيحة بين 0 و 50 مع التقدير المطلوب.\n\n*مثال:* `35 A` أو `20 B` أو `15 PASS`", {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🔄 إعادة المحاولة", callback_data: "exam_calc_grade_prompt" }],
+            [{ text: "⏳ عداد الامتحانات", callback_data: "exam_countdown" }]
+          ]
+        }
+      });
+      return;
+    }
+
+    const calc = calculateRequiredGrade(score, targetLetter);
+    let resultMsg = "";
+
+    if (calc.neededInFinal > 50) {
+      resultMsg = `❌ *للأسف، لا يمكنك الوصول لتقدير (${calc.targetLetter}) حسابياً.*\n• أعلى علامة نهائي ممكنة هي: 50\n• أقصى مجموع يمكنك الوصول إليه: *${score + 50}/100*`;
+    } else if (calc.neededInFinal === 0) {
+      resultMsg = `🎉 *مبروك! لقد حققت مجموع ${calc.requiredTotal} بالفعل قبل الامتحان النهائي!*`;
+    } else {
+      resultMsg = `🎯 *أنت تحتاج للحصول على:* \`${calc.neededInFinal.toFixed(1)} / 50\` في الامتحان النهائي لتحقيق تقدير *(${calc.targetLetter})* بمجموع *${calc.requiredTotal}%* فما فوق! 🚀`;
+    }
+
+    const response = `📊 *نتيجة حاسبة الدرجة المطلوبة في النهائي:*
+━━━━━━━━━━━━━━━━━━━━
+• علامتك المجمعة من 50: *${score}*
+• التقدير المستهدف: *${calc.targetLetter}* (مجموع ${calc.requiredTotal}%)
+
+${resultMsg}
+
+💪 شد حيلك وربنا يوفقك ويسدد خطاك!`;
+
+    bot.sendMessage(chatId, response, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🎯 حساب تقدير آخر", callback_data: "exam_calc_grade_prompt" }],
+          [{ text: "📅 إنشاء خطة دراسية ذكية", callback_data: "exam_create_plan_prompt" }],
+          [{ text: "⏳ عداد الامتحانات", callback_data: "exam_countdown" }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // =========================================================================
+  // 7. حالة: توليد كويز ذكي لموضوع أو مادة مخصصة
+  // =========================================================================
+  if (userState[chatId]?.waitingCustomQuizInput && msg.text) {
+    userState[chatId].waitingCustomQuizInput = false;
+    trackFeatureUse(chatId, "ai_quiz", msg.from);
+    const customSubject = msg.text.trim();
+
+    bot.sendMessage(chatId, `⏳ *جاري إعداد وتوليد أسئلة الكويز الذكي في (${customSubject})...*\nانتظر لحظات 🚀`, { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const questions = await generateQuizQuestions(customSubject, 4, "متوسط");
+      if (!userState[chatId]) userState[chatId] = {};
+      userState[chatId].activeQuiz = {
+        subject: customSubject,
+        questions: questions,
+        currentIndex: 0,
+        score: 0
+      };
+
+      try { await bot.deleteMessage(chatId, waitMsg.message_id); } catch (e) {}
+      sendCurrentQuestion(chatId, bot, userState);
+    });
+    return;
+  }
+
+  // =========================================================================
+  // 8. حالة: البحث في بنك الامتحانات السابقة
+  // =========================================================================
+  if (userState[chatId]?.waitingPastPaperSearch && msg.text) {
+    userState[chatId].waitingPastPaperSearch = false;
+    trackFeatureUse(chatId, "past_papers", msg.from);
+    searchPastPapers(chatId, bot, msg.text.trim());
+    return;
+  }
+
+  // =========================================================================
+  // 9. حالة: نشر إعلان جديد في سوق التبادل
+  // =========================================================================
+  if (userState[chatId]?.waitingMarketAdd && msg.text) {
+    const category = userState[chatId].waitingMarketAdd;
+    userState[chatId].waitingMarketAdd = false;
+    trackFeatureUse(chatId, "marketplace", msg.from);
+
+    const input = msg.text.trim();
+    const parts = input.split(/[-–—|،,]/).map(p => p.trim()).filter(Boolean);
+
+    const title = parts[0] || "إعلان طالب";
+    const details = parts[1] || "تفاصيل الإعلان";
+    const priceOrType = parts[2] || "مجاناً / للبدل";
+    const contact = parts[3] || (msg.from?.username ? `@${msg.from.username}` : "عبر التليجرام");
+    const studentName = ((msg.from?.first_name || "") + " " + (msg.from?.last_name || "")).trim() || "طالب";
+    const userHandle = msg.from?.username ? `@${msg.from.username}` : "";
+
+    const added = addListing(chatId, studentName, userHandle, category, title, details, priceOrType, contact);
+
+    bot.sendMessage(chatId, `✅ *تم نشر إعلانك بنجاح في سوق التبادل!*
+━━━━━━━━━━━━━━━━━━━━
+📌 *العنوان:* ${added.title}
+📝 *التفاصيل:* ${added.details}
+💰 *السعر/النوع:* ${added.priceOrType}
+📞 *للتواصل:* \`${added.contact}\``, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "📦 تصفح الإعلانات", callback_data: `market_cat_${category}` }],
+          [{ text: "📋 إعلاناتي", callback_data: "market_my_listings" }],
+          [{ text: "🔄 سوق التبادل", callback_data: "open_marketplace" }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // =========================================================================
+  // 10. حالة: إرسال الطالب لملفات بجميع أنواعها أو رسائل للأدمن
   // =========================================================================
   const isMediaOrDoc = Boolean(
     msg.document ||
@@ -2527,6 +3144,7 @@ bot.on("message", async (msg) => {
   if (msg.text) {
     trackFeatureUse(chatId, "search", msg.from);
     const text = msg.text.trim();
+    trackCourseSearch(text);
     const results = searchAll(text);
 
     // في حال عدم وجود نتائج
