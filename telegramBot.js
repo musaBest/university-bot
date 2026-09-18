@@ -1078,21 +1078,21 @@ const contacts = {
 function showMainMenu(chatId, name = "طالب") {
   const keyboard = [
     [{ text: "🤖 المساعد الأكاديمي الذكي (AI Chatbot)", callback_data: "start_ai_chat" }],
-    [{ text: "🐞 مصحح ومفسر الأكواد الذكي (Code Debugger)", callback_data: "start_code_debugger" }],
-    [{ text: "📝 مولّد الكويزات الذكي (AI Quiz Generator)", callback_data: "start_ai_quiz" }],
-    [{ text: "⏳ عداد ومخطط الامتحانات (Exam Countdown)", callback_data: "exam_countdown" }],
-    [{ text: "📂 بنك الامتحانات السابقة (Past Papers Bank)", callback_data: "open_past_papers" }],
-    [{ text: "🔄 سوق تبادل الأدوات والكتب (Hardware & Books)", callback_data: "open_marketplace" }],
-    [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
-    [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
-    [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
     [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
+    [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
+    [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
+    [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
     [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "open_lab_programs" }],
     [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
     [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
     [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
     [{ text: "📄 خطة هندسة الحاسوب 5 سنوات", callback_data: "plan5" }],
     [{ text: "🖼 خطة هندسة الحاسوب 4 سنوات", callback_data: "plan4" }],
+    [{ text: "🐞 مصحح ومفسر الأكواد الذكي (Code Debugger)", callback_data: "start_code_debugger" }],
+    [{ text: "📝 مولّد الكويزات الذكي (AI Quiz Generator)", callback_data: "start_ai_quiz" }],
+    [{ text: "⏳ عداد ومخطط الامتحانات (Exam Countdown)", callback_data: "exam_countdown" }],
+    [{ text: "📂 بنك الامتحانات السابقة (Past Papers Bank)", callback_data: "open_past_papers" }],
+    [{ text: "🔄 سوق تبادل الأدوات والكتب (Hardware & Books)", callback_data: "open_marketplace" }],
     [{ text: "🌐 يمكنك استخدام الموقع الالكتروني", url: "https://computer-engineering-iug.vercel.app" }]
   ];
 
