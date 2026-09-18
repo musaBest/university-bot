@@ -428,6 +428,9 @@ function renderMainDashboard(chatId, botInstance) {
       { text: "📥 استعادة / دمج بيانات", callback_data: "admin_restore_prompt" }
     ],
     [
+      { text: "🔑 مفتاح الذكاء الاصطناعي (Gemini Key)", callback_data: "admin_gemini_key_prompt" }
+    ],
+    [
       { text: "🔄 تحديث اللوحة", callback_data: "admin_dashboard" },
       { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
     ]

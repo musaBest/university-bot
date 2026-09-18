@@ -6,12 +6,25 @@
 const fs = require("fs");
 const path = require("path");
 
-const DEFAULT_KEY_B64 = "QVEuQWI4Uk42THU4TnRUWmZzNEFMeGFTUlBRNWRVemJnQXd6cG81T3YyOVo0NEhfMXRRSWc=";
+const configFilePath = path.join(__dirname, "ai_config.json");
 
 function getApiKey() {
+  // 1. فحص ملف الإعدادات الديناميكي المحفوظ من لوحة تحكم الأدمن
+  try {
+    if (fs.existsSync(configFilePath)) {
+      const cfg = JSON.parse(fs.readFileSync(configFilePath, "utf8"));
+      if (cfg && cfg.apiKey && cfg.apiKey.trim()) {
+        return cfg.apiKey.trim();
+      }
+    }
+  } catch (e) {}
+
+  // 2. فحص متغيرات البيئة process.env
   if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim()) {
     return process.env.GEMINI_API_KEY.trim();
   }
+
+  // 3. فحص ملف .env
   try {
     const envPath = path.join(__dirname, "..", ".env");
     if (fs.existsSync(envPath)) {
@@ -28,11 +41,63 @@ function getApiKey() {
     }
   } catch (e) {}
 
-  try {
-    return Buffer.from(DEFAULT_KEY_B64, "base64").toString("utf-8");
-  } catch (e) {}
-
   return "";
+}
+
+function setApiKey(newKey) {
+  try {
+    const key = (newKey || "").trim();
+    if (!key) return false;
+
+    // حفظ في ملف config
+    fs.writeFileSync(
+      configFilePath,
+      JSON.stringify({ apiKey: key, updatedAt: new Date().toISOString() }, null, 2),
+      "utf8"
+    );
+
+    // تحديث ملف .env
+    const envPath = path.join(__dirname, "..", ".env");
+    fs.writeFileSync(envPath, `GEMINI_API_KEY=${key}\n`, "utf8");
+
+    process.env.GEMINI_API_KEY = key;
+    return true;
+  } catch (e) {
+    console.error("Error setting API key:", e);
+    return false;
+  }
+}
+
+async function testApiKey(keyToTest) {
+  const key = (keyToTest || getApiKey()).trim();
+  if (!key) return { success: false, error: "لا يوجد مفتاح مدخل." };
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(key)}`;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: "ping" }] }]
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      return { success: true };
+    } else {
+      const errMsg = data?.error?.message || `HTTP ${res.status}`;
+      return { success: false, error: errMsg };
+    }
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
 }
 
 const { getDepartmentContext } = require("./resourceFinder");
@@ -163,10 +228,10 @@ async function generateAIResponse(prompt = "", history = [], attachments = []) {
 
   // النماذج مرتبة من الأحدث والأقوى والأسرع استجابة
   const modelsToTry = [
-    "gemini-3.6-flash",         // أحدث وأقوى نموذج فلاش متعدد الوسائط
-    "gemini-3.5-flash",         // فلاش 3.5 الفائق
-    "gemini-3.5-flash-lite",    // فلاش لايت فائق السرعة
-    "gemini-flash-latest"       // فلاش المحدث
+    "gemini-2.0-flash",         // فلاش 2.0 فائق السرعة
+    "gemini-1.5-flash",         // فلاش 1.5 المتوازن والسريع
+    "gemini-1.5-flash-8b",      // فلاش خفيف وعالي السرعة
+    "gemini-1.5-pro"            // نموذج برو للأسئلة المعقدة
   ];
 
   let lastError = null;
@@ -228,5 +293,7 @@ async function generateAIResponse(prompt = "", history = [], attachments = []) {
 
 module.exports = {
   generateAIResponse,
-  getApiKey
+  getApiKey,
+  setApiKey,
+  testApiKey
 };

@@ -6,7 +6,7 @@ const courseCodes = require("./courseCodes");
 const path = require("path");
 const fs = require("fs");
 const http = require("http");
-const { generateAIResponse } = require("./data/aiService");
+const { generateAIResponse, getApiKey, setApiKey, testApiKey } = require("./data/aiService");
 
 // خادم صحة بسيط (Health Check & Keep-Alive) لربط البوت بالاستضافات السحابية وضمان عمله 24/7
 const PORT = process.env.PORT || 3000;
@@ -38,6 +38,7 @@ function resetAdminState(chatId = ADMIN_ID) {
   userState[ADMIN_ID].waitingAddUserInput = false;
   userState[ADMIN_ID].waitingAdminMessage = false;
   userState[ADMIN_ID].waitingRestoreBackup = false;
+  userState[ADMIN_ID].waitingGeminiKeyInput = false;
   userState[ADMIN_ID].inAiChat = false;
 }
 
@@ -1346,6 +1347,46 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // طلب فحص وإدارة مفتاح Gemini API
+  if (data === "admin_gemini_key_prompt") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    userState[ADMIN_ID].waitingGeminiKeyInput = true;
+
+    bot.sendMessage(chatId, "⏳ *جاري فحص حالة مفتاح الذكاء الاصطناعي الحالي...*", { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const testRes = await testApiKey();
+      let statusMsg = "";
+      if (testRes.success) {
+        statusMsg = "✅ *حالة المفتاح الحالي:* شغال ويعمل بنجاح ومستقر! 🚀\n\nإذا أردت استبداله بمفتاح آخر، أرسل المفتاح الجديد الآن في المحادثة مباشرة:";
+      } else {
+        statusMsg = `⚠️ *حالة المفتاح الحالي:* غير شغال أو معطل!\n*سبب الخطأ:* ${safeEscape(testRes.error)}\n\n📌 *خطوات الحصول على مفتاح مجاني جديد وسريع (خلال 30 ثانية):*\n1️⃣ ادخل للرابط: https://aistudio.google.com/app/apikey\n2️⃣ سجّل بحساب Google واضغط **Create API key**.\n3️⃣ انسخ المفتاح وأرسله هنا في المحادثة مباشرة وسيتم تفعيله واختباره فوراً!`;
+      }
+
+      bot.editMessageText(`🔑 *إدارة واختبار مفتاح الذكاء الاصطناعي (Gemini Key)*\n━━━━━━━━━━━━━━━━━━━━\n\n${statusMsg}`, {
+        chat_id: chatId,
+        message_id: waitMsg.message_id,
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🔄 إعادة فحص المفتاح الحالي", callback_data: "admin_gemini_key_prompt" }],
+            [{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]
+          ]
+        }
+      }).catch(() => {
+        bot.sendMessage(chatId, `🔑 *إدارة واختبار مفتاح الذكاء الاصطناعي (Gemini Key)*\n━━━━━━━━━━━━━━━━━━━━\n\n${statusMsg}`, {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: "🔄 إعادة فحص المفتاح الحالي", callback_data: "admin_gemini_key_prompt" }],
+              [{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]
+            ]
+          }
+        });
+      });
+    });
+    return;
+  }
+
   // حظر طالب محدد من زر في ملفه
   if (data.startsWith("admin_ban_user_")) {
     if (chatId !== ADMIN_ID) return;
@@ -2210,6 +2251,40 @@ bot.on("message", async (msg) => {
           }
         });
       }
+      return;
+    }
+
+    // حالة: الأدمن في وضع إدخال مفتاح Gemini API جديد
+    if (userState[ADMIN_ID]?.waitingGeminiKeyInput && msg.text) {
+      userState[ADMIN_ID].waitingGeminiKeyInput = false;
+      const newKey = msg.text.trim();
+      safeSend(bot, chatId, "⏳ *جاري اختبار وتفعيل مفتاح الذكاء الاصطناعي الجديد...*", { parse_mode: "Markdown" });
+
+      testApiKey(newKey).then((testRes) => {
+        if (testRes.success) {
+          setApiKey(newKey);
+          safeSend(bot, chatId, "✅ *تم تفعيل واختبار مفتاح الذكاء الاصطناعي بنجاح!*\nالمساعد الذكي يعمل الآن بأعلى كفاءة وسرعة فائقة 🚀", {
+            reply_markup: {
+              inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+            }
+          });
+        } else {
+          safeSend(bot, chatId, `❌ *فشل تفعيل المفتاح الجديد:*\n${safeEscape(testRes.error)}\n\nيرجى التأكد من نسخ مفتاح صحيح من:\nhttps://aistudio.google.com/app/apikey`, {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: "🔄 إعادة المحاولة", callback_data: "admin_gemini_key_prompt" }],
+                [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]
+              ]
+            }
+          });
+        }
+      }).catch((err) => {
+        safeSend(bot, chatId, `❌ حدث خطأ أثناء الاختبار: ${safeEscape(err.message)}`, {
+          reply_markup: {
+            inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+          }
+        });
+      });
       return;
     }
   }
