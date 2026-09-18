@@ -89,14 +89,14 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
   const totalUsers = users.length;
 
   if (totalUsers === 0) {
-    botInstance.sendMessage(adminChatId, "⚠️ لا يوجد طلاب مسجلين في قاعدة البيانات حالياً.");
+    safeSend(botInstance, adminChatId, "⚠️ لا يوجد طلاب مسجلين في قاعدة البيانات حالياً.");
     return;
   }
 
-  await botInstance.sendMessage(adminChatId, `⏳ جاري بدء الإذاعة وإرسال الإشعار إلى ${totalUsers} طالب...`);
+  await safeSend(botInstance, adminChatId, `⏳ *جاري بدء الإذاعة وإرسال الإشعار إلى ${totalUsers} طالب...*`);
 
-  let successCount = 0;
-  let failedCount = 0;
+  const deliveredUsers = [];
+  const failedUsers = [];
   const startTime = Date.now();
 
   const presetText = `🔔 *تحديثات جديدة وإضافات مهمة في البوت!*
@@ -124,8 +124,12 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
   };
 
   for (const user of users) {
-    if (user.id === adminChatId) {
-      successCount++;
+    if (Number(user.id) === Number(adminChatId)) {
+      deliveredUsers.push({
+        id: user.id,
+        name: user.name || "الأدمن (أنت)",
+        username: user.username || ""
+      });
       continue;
     }
 
@@ -165,22 +169,124 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
           reply_markup: keyboard
         });
       }
-      successCount++;
+
+      deliveredUsers.push({
+        id: user.id,
+        name: user.name || "طالب",
+        username: user.username || ""
+      });
     } catch (err) {
-      failedCount++;
+      let failureReason = "خطأ غير معروف في الإرسال";
       if (err.response && err.response.statusCode === 403) {
+        failureReason = "قام بحظر البوت أو حذف الحساب (403 Forbidden)";
         markUserInactive(user.id);
+      } else if (err.response && err.response.statusCode === 400) {
+        failureReason = "المحادثة غير موجودة أو معطوبة (400 Bad Request)";
+      } else if (err.response && err.response.statusCode === 429) {
+        failureReason = "تجاوز حد الإرسال المؤقت للتليجرام (429 Flood Wait)";
+      } else if (err.message) {
+        failureReason = err.message;
       }
+
+      failedUsers.push({
+        id: user.id,
+        name: user.name || "طالب",
+        username: user.username || "",
+        reason: failureReason
+      });
     }
 
     await new Promise((resolve) => setTimeout(resolve, 35));
   }
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-  botInstance.sendMessage(
-    adminChatId,
-    `✅ *اكتملت عملية الإذاعة بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *إجمالي المستلمين:* ${successCount}\n❌ *تعذر الإرسال:* ${failedCount} (حظر البوت أو حذف الحساب)\n⏱️ *المدة الزمنية:* ${duration} ثانية.`
-  );
+
+  // إعداد نص تقرير الإذاعة
+  let summaryText = `✅ *اكتملت عملية الإذاعة والإشعار الجماعي!*\n`;
+  summaryText += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  summaryText += `📊 *إحصائيات الإرسال:*\n`;
+  summaryText += `👥 *إجمالي المستهدفين:* ${totalUsers} طالب\n`;
+  summaryText += `📥 *تم الاستلام بنجاح:* ${deliveredUsers.length} طالب\n`;
+  summaryText += `❌ *تعذر الإرسال:* ${failedUsers.length} طالب\n`;
+  summaryText += `⏱️ *المدة الزمنية:* ${duration} ثانية\n\n`;
+
+  // 1. تفاصيل المتعذرين وأسباب التعذر
+  if (failedUsers.length > 0) {
+    summaryText += `❌ *الطلاب الذين تعذر الإرسال إليهم (${failedUsers.length}):*\n`;
+    failedUsers.forEach((u, i) => {
+      const uName = safeEscape(u.name || "طالب");
+      const uTag = u.username ? ` (${safeEscape(u.username)})` : "";
+      summaryText += `${i + 1}. *${uName}*${uTag} - \`ID: ${u.id}\`\n   ⚠️ *السبب:* ${safeEscape(u.reason)}\n`;
+    });
+    summaryText += `\n`;
+  }
+
+  // 2. تفاصيل المستلمين
+  summaryText += `✅ *الطلاب الذين استلموا الإشعار بنجاح (${deliveredUsers.length}):*\n`;
+  if (deliveredUsers.length <= 35) {
+    deliveredUsers.forEach((u, i) => {
+      const uName = safeEscape(u.name || "طالب");
+      const uTag = u.username ? ` (${safeEscape(u.username)})` : " (بدون يوزر)";
+      summaryText += `${i + 1}. *${uName}*${uTag}\n`;
+    });
+  } else {
+    deliveredUsers.slice(0, 25).forEach((u, i) => {
+      const uName = safeEscape(u.name || "طالب");
+      const uTag = u.username ? ` (${safeEscape(u.username)})` : " (بدون يوزر)";
+      summaryText += `${i + 1}. *${uName}*${uTag}\n`;
+    });
+    summaryText += `... وغيرهم (+${deliveredUsers.length - 25} طالب آخرين بالتفصيل في الملف المرفق)\n`;
+  }
+
+  // حفظ التقرير في ملف TXT للأرشفة والتنزيل
+  const reportPath = path.join(__dirname, "data", "last_broadcast_report.txt");
+  let fileData = `تقرير الإذاعة والإشعارات الجماعية - بوت هندسة الحاسوب\n`;
+  fileData += `التاريخ والوقت: ${new Date().toLocaleString("ar-EG")}\n`;
+  fileData += `المدة المستغرقة: ${duration} ثانية\n`;
+  fileData += `إجمالي المستهدفين: ${totalUsers} طالب\n`;
+  fileData += `تم الاستلام بنجاح: ${deliveredUsers.length} طالب\n`;
+  fileData += `تعذر الإرسال: ${failedUsers.length} طالب\n`;
+  fileData += `========================================================\n\n`;
+
+  if (failedUsers.length > 0) {
+    fileData += `[1] قائمة الطلاب الذين تعذر الإرسال إليهم والسبب:\n`;
+    fileData += `--------------------------------------------------------\n`;
+    failedUsers.forEach((u, i) => {
+      fileData += `${i + 1}. Name: ${u.name} | Username: ${u.username || "None"} | ID: ${u.id}\n   -> السبب: ${u.reason}\n`;
+    });
+    fileData += `\n========================================================\n\n`;
+  }
+
+  fileData += `[2] قائمة الطلاب الذين استلموا الإشعار بنجاح:\n`;
+  fileData += `--------------------------------------------------------\n`;
+  deliveredUsers.forEach((u, i) => {
+    fileData += `${i + 1}. Name: ${u.name} | Username: ${u.username || "None"} | ID: ${u.id}\n`;
+  });
+
+  try {
+    fs.writeFileSync(reportPath, fileData, "utf8");
+  } catch (e) {
+    console.error("Error writing broadcast report file:", e);
+  }
+
+  const adminButtons = [
+    [{ text: "📄 تنزيل تقرير الإذاعة الكامل كملف", callback_data: "admin_download_broadcast_report" }],
+    [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+    [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+  ];
+
+  if (summaryText.length < 3900) {
+    await safeSend(botInstance, adminChatId, summaryText, {
+      reply_markup: { inline_keyboard: adminButtons }
+    });
+  } else {
+    let shortSummary = `✅ *اكتملت عملية الإذاعة بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *إجمالي المستهدفين:* ${totalUsers}\n📥 *تم الاستلام بنجاح:* ${deliveredUsers.length}\n❌ *تعذر الإرسال:* ${failedUsers.length}\n⏱️ *المدة الزمنية:* ${duration} ثانية.\n\n📄 تجد في الملف المرفق أدناه تفاصيل وأسماء جميع المستلمين والمتعذرين وأسباب التعذر بالتفصيل.`;
+    await safeSend(botInstance, adminChatId, shortSummary);
+    await safeSendDocument(botInstance, adminChatId, reportPath, {
+      caption: `📄 تقرير الإذاعة الكامل (${deliveredUsers.length} مستلم | ${failedUsers.length} متعذر)`,
+      reply_markup: { inline_keyboard: adminButtons }
+    });
+  }
 }
 
 require("./data/rating")(bot, userState);
@@ -1383,6 +1489,27 @@ bot.on("callback_query", (query) => {
     if (chatId !== ADMIN_ID) return;
     resetAdminState(ADMIN_ID);
     bot.sendMessage(chatId, "تم إلغاء عملية الإذاعة.");
+    return;
+  }
+
+  // تنزيل تقرير الإذاعة الأخير كملف
+  if (data === "admin_download_broadcast_report") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    const reportPath = path.join(__dirname, "data", "last_broadcast_report.txt");
+    if (fs.existsSync(reportPath)) {
+      safeSendDocument(bot, chatId, reportPath, {
+        caption: "📄 تقرير الإذاعة والإشعار الأخير بالتفصيل (المستلمين والمتعذرين)",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+            [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+          ]
+        }
+      });
+    } else {
+      safeSend(bot, chatId, "⚠️ لم يتم العثور على تقرير إذاعة سابق.");
+    }
     return;
   }
 
