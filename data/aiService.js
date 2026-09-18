@@ -72,7 +72,7 @@ async function testApiKey(keyToTest) {
   const key = (keyToTest || getApiKey()).trim();
   if (!key) return { success: false, error: "لا يوجد مفتاح مدخل." };
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(key)}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${encodeURIComponent(key)}`;
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -228,10 +228,13 @@ async function generateAIResponse(prompt = "", history = [], attachments = []) {
 
   // النماذج مرتبة من الأحدث والأقوى والأسرع استجابة
   const modelsToTry = [
-    "gemini-2.0-flash",         // فلاش 2.0 فائق السرعة
-    "gemini-1.5-flash",         // فلاش 1.5 المتوازن والسريع
-    "gemini-1.5-flash-8b",      // فلاش خفيف وعالي السرعة
-    "gemini-1.5-pro"            // نموذج برو للأسئلة المعقدة
+    "gemini-3.6-flash",         // أحدث وأسرع نموذج فلاش متعدد الوسائط
+    "gemini-3.5-flash",         // فلاش 3.5 الفائق
+    "gemini-flash-latest",      // فلاش المحدث
+    "gemini-3.5-flash-lite",    // فلاش لايت خفيف وسريع
+    "gemini-flash-lite-latest", // أحدث فلاش لايت
+    "gemini-3.7-flash",         // فلاش 3.7 المتقدم
+    "gemini-3.8-flash"          // فلاش 3.8
   ];
 
   let lastError = null;
