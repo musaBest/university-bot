@@ -9,7 +9,7 @@ const http = require("http");
 const { generateAIResponse, getApiKey, setApiKey, testApiKey } = require("./data/aiService");
 const { renderCodeDebuggerMenu, handleCodeDebuggerInput } = require("./data/codeDebugger");
 const { renderExamCountdown, generateSmartStudyPlan, calculateRequiredGrade } = require("./data/examPlanner");
-const { renderQuizSubjectMenu, generateQuizQuestions, sendCurrentQuestion, handleQuizAnswer, finishQuiz, POPULAR_QUIZ_COURSES } = require("./data/quizGenerator");
+const { renderQuizSubjectMenu, fetchQuizBatch, sendCurrentQuestion, handleQuizAnswer, finishQuiz, POPULAR_QUIZ_COURSES } = require("./data/quizGenerator");
 const { renderPastPapersMenu, renderYearExams, searchPastPapers } = require("./data/pastPapersBank");
 const { renderMarketplaceMenu, renderCategoryListings, renderMyListings, addListing, deleteListing } = require("./data/marketplace");
 
@@ -1756,10 +1756,32 @@ bot.on("callback_query", (query) => {
     trackFeatureUse(chatId, "ai_quiz", query.from);
 
     bot.sendMessage(chatId, `⏳ *جاري إعداد وتوليد أسئلة الكويز الذكي لمادة (${courseObj.name})...*\nانتظر لحظات 🚀`, { parse_mode: "Markdown" }).then(async (waitMsg) => {
-      const questions = await generateQuizQuestions(courseObj.name, 4, "متوسط");
+      const questions = await fetchQuizBatch(courseObj.name, 4, []);
       if (!userState[chatId]) userState[chatId] = {};
       userState[chatId].activeQuiz = {
         subject: courseObj.name,
+        questions: questions,
+        currentIndex: 0,
+        score: 0
+      };
+
+      try { await bot.deleteMessage(chatId, waitMsg.message_id); } catch (e) {}
+      sendCurrentQuestion(chatId, bot, userState);
+    });
+    return;
+  }
+
+  // إعادة كويز لمادة مخصصة أو محددة
+  if (data.startsWith("quiz_subject_custom_retry_")) {
+    const rawSubject = data.replace("quiz_subject_custom_retry_", "");
+    const subject = decodeURIComponent(rawSubject) || "هندسة الحاسوب";
+    trackFeatureUse(chatId, "ai_quiz", query.from);
+
+    bot.sendMessage(chatId, `⏳ *جاري إعداد وتوليد كويز جديد في (${subject})...*\nانتظر لحظات 🚀`, { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const questions = await fetchQuizBatch(subject, 4, []);
+      if (!userState[chatId]) userState[chatId] = {};
+      userState[chatId].activeQuiz = {
+        subject: subject,
         questions: questions,
         currentIndex: 0,
         score: 0
@@ -1803,6 +1825,12 @@ bot.on("callback_query", (query) => {
   // الانتقال للسؤال التالي
   if (data === "quiz_next_question") {
     sendCurrentQuestion(chatId, bot, userState);
+    return;
+  }
+
+  // إنهاء الكويز وعرض التقرير والنتيجة
+  if (data === "quiz_finish_now") {
+    finishQuiz(chatId, bot, userState);
     return;
   }
 
@@ -2960,7 +2988,7 @@ ${resultMsg}
     const customSubject = msg.text.trim();
 
     bot.sendMessage(chatId, `⏳ *جاري إعداد وتوليد أسئلة الكويز الذكي في (${customSubject})...*\nانتظر لحظات 🚀`, { parse_mode: "Markdown" }).then(async (waitMsg) => {
-      const questions = await generateQuizQuestions(customSubject, 4, "متوسط");
+      const questions = await fetchQuizBatch(customSubject, 4, []);
       if (!userState[chatId]) userState[chatId] = {};
       userState[chatId].activeQuiz = {
         subject: customSubject,
