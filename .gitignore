@@ -8,5 +8,7 @@ data/*.txt
 data/ai_config.json
 data/marketplace.json
 data/course_searches.json
+data/broadcast_history.json
+data/polls.json
 
 

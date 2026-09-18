@@ -12,6 +12,8 @@ const { renderExamCountdown, generateSmartStudyPlan, calculateRequiredGrade } = 
 const { renderQuizSubjectMenu, fetchQuizBatch, sendCurrentQuestion, handleQuizAnswer, finishQuiz, POPULAR_QUIZ_COURSES } = require("./data/quizGenerator");
 const { renderPastPapersMenu, renderYearExams, searchPastPapers } = require("./data/pastPapersBank");
 const { renderMarketplaceMenu, renderCategoryListings, renderMyListings, addListing, deleteListing } = require("./data/marketplace");
+const { saveBroadcastRecord, getLastBroadcast, getBroadcastById, unsendBroadcast } = require("./data/broadcastManager");
+const { createPoll, getPoll, loadPolls, savePolls, recordVote, togglePollStatus, unsendPollFromStudents, renderAdminPollDetails, renderAdminPollsList } = require("./data/pollsManager");
 
 // خادم صحة بسيط (Health Check & Keep-Alive) لربط البوت بالاستضافات السحابية وضمان عمله 24/7
 const PORT = process.env.PORT || 3000;
@@ -139,6 +141,8 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
     ]
   };
 
+  const sentMessagesList = [];
+
   for (const user of users) {
     if (Number(user.id) === Number(adminChatId)) {
       deliveredUsers.push({
@@ -150,40 +154,45 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
     }
 
     try {
+      let sentMsg = null;
       if (isPreset) {
-        await botInstance.sendMessage(user.id, presetText, {
+        sentMsg = await botInstance.sendMessage(user.id, presetText, {
           parse_mode: "Markdown",
           reply_markup: keyboard
         });
       } else if (contentMsg.text) {
-        await botInstance.sendMessage(user.id, contentMsg.text, {
+        sentMsg = await botInstance.sendMessage(user.id, contentMsg.text, {
           reply_markup: keyboard
         });
       } else if (contentMsg.photo) {
         const fileId = contentMsg.photo[contentMsg.photo.length - 1].file_id;
-        await botInstance.sendPhoto(user.id, fileId, {
+        sentMsg = await botInstance.sendPhoto(user.id, fileId, {
           caption: contentMsg.caption || "",
           reply_markup: keyboard
         });
       } else if (contentMsg.document) {
-        await botInstance.sendDocument(user.id, contentMsg.document.file_id, {
+        sentMsg = await botInstance.sendDocument(user.id, contentMsg.document.file_id, {
           caption: contentMsg.caption || "",
           reply_markup: keyboard
         });
       } else if (contentMsg.voice) {
-        await botInstance.sendVoice(user.id, contentMsg.voice.file_id, {
+        sentMsg = await botInstance.sendVoice(user.id, contentMsg.voice.file_id, {
           reply_markup: keyboard
         });
       } else if (contentMsg.video) {
-        await botInstance.sendVideo(user.id, contentMsg.video.file_id, {
+        sentMsg = await botInstance.sendVideo(user.id, contentMsg.video.file_id, {
           caption: contentMsg.caption || "",
           reply_markup: keyboard
         });
       } else if (contentMsg.audio) {
-        await botInstance.sendAudio(user.id, contentMsg.audio.file_id, {
+        sentMsg = await botInstance.sendAudio(user.id, contentMsg.audio.file_id, {
           caption: contentMsg.caption || "",
           reply_markup: keyboard
         });
+      }
+
+      if (sentMsg && sentMsg.message_id) {
+        sentMessagesList.push({ chatId: user.id, messageId: sentMsg.message_id });
       }
 
       deliveredUsers.push({
@@ -216,6 +225,13 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
   }
 
   const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+  // حفظ سجل الإعلان لإمكانية التراجع والحذف من جميع الطلاب
+  const broadcastRecord = saveBroadcastRecord({
+    description: isPreset ? "إشعار التحديثات الجديدة" : (contentMsg.text ? contentMsg.text.slice(0, 60) : "إعلان وسائط"),
+    totalSent: deliveredUsers.length,
+    sentMessages: sentMessagesList
+  });
 
   // إعداد نص تقرير الإذاعة
   let summaryText = `✅ *اكتملت عملية الإذاعة والإشعار الجماعي!*\n`;
@@ -286,6 +302,7 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
   }
 
   const adminButtons = [
+    [{ text: "🗑️ تراجع وحذف هذا الإعلان من جميع الطلاب فوراً", callback_data: `admin_unsend_broadcast_${broadcastRecord.id}` }],
     [{ text: "📄 تنزيل تقرير الإذاعة الكامل كملف", callback_data: "admin_download_broadcast_report" }],
     [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
     [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
@@ -306,7 +323,7 @@ async function broadcastMessage(botInstance, adminChatId, contentMsg, isPreset =
 }
 
 /**
- * إرسال استطلاع رأي (Telegram Poll) لجميع الطلاب
+ * إرسال استطلاع رأي خاص وتفاعلي لجميع الطلاب (نتائجه وهوية المصوتين حصرية للأدمن فقط)
  */
 async function broadcastPollToStudents(botInstance, question, options, adminChatId = ADMIN_ID) {
   const users = loadUsers();
@@ -326,6 +343,8 @@ async function broadcastPollToStudents(botInstance, question, options, adminChat
     return;
   }
 
+  const poll = createPoll(cleanQuestion, cleanOptions);
+
   await safeSend(
     botInstance,
     adminChatId,
@@ -334,12 +353,20 @@ async function broadcastPollToStudents(botInstance, question, options, adminChat
 
   let successCount = 0;
   let failCount = 0;
+  const pollKeyboard = cleanOptions.map((opt, idx) => [
+    { text: `▫️ ${opt}`, callback_data: `poll_vote_${poll.id}_${idx}` }
+  ]);
 
   for (const user of targetUsers) {
     try {
-      await botInstance.sendPoll(user.id, cleanQuestion, cleanOptions, {
-        is_anonymous: false
+      const text = `🗳️ *استطلاع رأي لطلبة قسم هندسة الحاسوب*\n━━━━━━━━━━━━━━━━━━━━\n\n📌 *السؤال:* ${cleanQuestion}\n\n👇 *اختر إجابتك من الأزرار أدناه (التصويت سري ومحفوظ للإدارة):*`;
+      const sent = await botInstance.sendMessage(user.id, text, {
+        parse_mode: "Markdown",
+        reply_markup: { inline_keyboard: pollKeyboard }
       });
+      if (sent && sent.message_id) {
+        poll.sentMessages.push({ chatId: user.id, messageId: sent.message_id });
+      }
       successCount++;
     } catch (err) {
       failCount++;
@@ -347,14 +374,26 @@ async function broadcastPollToStudents(botInstance, question, options, adminChat
         markUserInactive(user.id);
       }
     }
-    await new Promise((resolve) => setTimeout(resolve, 40));
+    await new Promise((resolve) => setTimeout(resolve, 35));
   }
 
-  const resultMsg = `🗳️ *اكتمل إرسال استطلاع الرأي بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n\n📊 *السؤال:* ${cleanQuestion}\n👥 *إجمالي المستهدفين:* ${totalUsers}\n✅ *تم الإرسال بنجاح إلى:* ${successCount} طالب\n❌ *تعذر الإرسال إلى:* ${failCount} طالب\n\n💡 سيتمكن الطلاب الآن من التصويت مباشرة وتظهر النتائج المحدثة في شات التليجرام.`;
+  // تحديث حفظ رسائل الاستطلاع في قاعدة البيانات
+  const allPolls = loadPolls();
+  const pollIndex = allPolls.findIndex(p => p.id === poll.id);
+  if (pollIndex !== -1) {
+    allPolls[pollIndex].sentMessages = poll.sentMessages;
+    savePolls(allPolls);
+  }
+
+  const resultMsg = `🗳️ *اكتمل إرسال استطلاع الرأي للطلاب بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n\n📌 *السؤال:* ${cleanQuestion}\n👥 *إجمالي المستهدفين:* ${totalUsers}\n✅ *تم الإرسال بنجاح إلى:* ${successCount} طالب\n❌ *تعذر الإرسال إلى:* ${failCount} طالب\n\n🔒 *ميزة الخصوصية التامة:* الطلاب يصوتون بسرية تامة دون رؤية نسب أو أصوات غيرهم. أنت فقط من يرى النتائج الحية وهوية وتفاصيل من صوّت لكل خيار!`;
 
   await safeSend(botInstance, adminChatId, resultMsg, {
     reply_markup: {
-      inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]]
+      inline_keyboard: [
+        [{ text: "📊 متابعة نتائج وتفاصيل التصويت الحية", callback_data: `admin_poll_view_${poll.id}` }],
+        [{ text: "🗑️ تراجع وحذف الاستطلاع من الطلاب", callback_data: `admin_poll_unsend_${poll.id}` }],
+        [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]
+      ]
     }
   });
 }
@@ -1284,17 +1323,21 @@ bot.onText(/\/broadcast/, (msg) => {
   const activeCount = users.filter((u) => u.active !== false).length;
 
   userState[ADMIN_ID].waitingBroadcastMessage = true;
+  const lastBc = getLastBroadcast();
+  const broadcastKeyboard = [
+    [{ text: "🚀 إرسال إشعار التحديثات الجديدة تلقائياً", callback_data: "send_preset_broadcast" }]
+  ];
+  if (lastBc) {
+    broadcastKeyboard.push([{ text: "🗑️ تراجع وحذف آخر إعلان تم نشره للطلاب", callback_data: "admin_unsend_last_broadcast" }]);
+  }
+  broadcastKeyboard.push([{ text: "❌ إلغاء الإذاعة", callback_data: "cancel_broadcast" }]);
+
   bot.sendMessage(
     chatId,
     `📢 *لوحة الإذاعة والإشعارات الجماعية*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *عدد المشتركين النشطين:* ${activeCount} طالب\n\nاختر من الأزرار أدناه أو أرسل رسالتك/صورتك/ملفك فوراً في المحادثة ليتم بثها للجميع:`,
     {
       parse_mode: "Markdown",
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🚀 إرسال إشعار التحديثات الجديدة تلقائياً", callback_data: "send_preset_broadcast" }],
-          [{ text: "❌ إلغاء الإذاعة", callback_data: "cancel_broadcast" }]
-        ]
-      }
+      reply_markup: { inline_keyboard: broadcastKeyboard }
     }
   );
 });
@@ -1370,17 +1413,108 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // لوحة استطلاعات الرأي وإدارتها للأدمن
+  if (data === "admin_polls_menu") {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    renderAdminPollsList(chatId, bot);
+    return;
+  }
+
+  // عرض تفاصيل ونتائج استطلاع محدد للأدمن
+  if (data.startsWith("admin_poll_view_")) {
+    if (chatId !== ADMIN_ID) return;
+    resetAdminState(ADMIN_ID);
+    const pollId = data.replace("admin_poll_view_", "");
+    renderAdminPollDetails(chatId, bot, pollId);
+    return;
+  }
+
+  // تبديل حالة الاستطلاع (مفتوح / مغلق)
+  if (data.startsWith("admin_poll_toggle_")) {
+    if (chatId !== ADMIN_ID) return;
+    const pollId = data.replace("admin_poll_toggle_", "");
+    togglePollStatus(pollId);
+    renderAdminPollDetails(chatId, bot, pollId);
+    return;
+  }
+
+  // حذف الاستطلاع والتراجع عنه من جميع محادثات الطلاب
+  if (data.startsWith("admin_poll_unsend_")) {
+    if (chatId !== ADMIN_ID) return;
+    const pollId = data.replace("admin_poll_unsend_", "");
+    bot.sendMessage(chatId, "⏳ *جاري حذف الاستطلاع من شات جميع الطلاب...*", { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const res = await unsendPollFromStudents(bot, pollId);
+      try { await bot.deleteMessage(chatId, waitMsg.message_id); } catch (e) {}
+      bot.sendMessage(chatId, `✅ *تم بنجاح حذف الاستطلاع وإزالته من محادثات الطلاب (${res.deletedCount} محادثة)!*`, {
+        parse_mode: "Markdown",
+        reply_markup: { inline_keyboard: [[{ text: "📋 قائمة الاستطلاعات", callback_data: "admin_polls_menu" }]] }
+      });
+    });
+    return;
+  }
+
+  // تراجع وحذف إعلان منشور محدد
+  if (data.startsWith("admin_unsend_broadcast_")) {
+    if (chatId !== ADMIN_ID) return;
+    const bcId = data.replace("admin_unsend_broadcast_", "");
+    bot.sendMessage(chatId, "⏳ *جاري حذف الإعلان والتراجع عنه من جميع محادثات الطلاب...*", { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const res = await unsendBroadcast(bot, bcId);
+      try { await bot.deleteMessage(chatId, waitMsg.message_id); } catch (e) {}
+      if (res.success) {
+        bot.sendMessage(chatId, `✅ *تم بنجاح حذف الإعلان والتراجع عنه!*\n━━━━━━━━━━━━━━━━━━━━\n\n🗑️ تم مسح الرسالة من محادثات *${res.deletedCount}* طالب (من أصل ${res.totalCount}).`, {
+          parse_mode: "Markdown",
+          reply_markup: { inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]] }
+        });
+      } else {
+        bot.sendMessage(chatId, `⚠️ ${res.error || "تعذر حذف الإعلان."}`, {
+          reply_markup: { inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]] }
+        });
+      }
+    });
+    return;
+  }
+
+  // تراجع وحذف آخر إعلان منشور
+  if (data === "admin_unsend_last_broadcast") {
+    if (chatId !== ADMIN_ID) return;
+    const lastBc = getLastBroadcast();
+    if (!lastBc) {
+      bot.sendMessage(chatId, "⚠️ لا يوجد إعلانات منشورة حديثاً لحذفها.", {
+        reply_markup: { inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]] }
+      });
+      return;
+    }
+    bot.sendMessage(chatId, "⏳ *جاري حذف آخر إعلان تم نشره من جميع محادثات الطلاب...*", { parse_mode: "Markdown" }).then(async (waitMsg) => {
+      const res = await unsendBroadcast(bot, lastBc.id);
+      try { await bot.deleteMessage(chatId, waitMsg.message_id); } catch (e) {}
+      if (res.success) {
+        bot.sendMessage(chatId, `✅ *تم بنجاح حذف وتراجع عن آخر إعلان منشور!*\n━━━━━━━━━━━━━━━━━━━━\n\n🗑️ تم مسح الرسالة من محادثات *${res.deletedCount}* طالب (من أصل ${res.totalCount}).`, {
+          parse_mode: "Markdown",
+          reply_markup: { inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]] }
+        });
+      } else {
+        bot.sendMessage(chatId, `⚠️ ${res.error || "تعذر حذف الإعلان."}`, {
+          reply_markup: { inline_keyboard: [[{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }]] }
+        });
+      }
+    });
+    return;
+  }
+
   // طلب إنشاء وإرسال استطلاع رأي (Poll)
   if (data === "admin_poll_prompt") {
     if (chatId !== ADMIN_ID) return;
     resetAdminState(ADMIN_ID);
     userState[ADMIN_ID].waitingPollInput = true;
 
-    bot.sendMessage(chatId, `🗳️ *إرسال استطلاع رأي (Telegram Poll) لجميع الطلاب:*
+    bot.sendMessage(chatId, `🗳️ *إرسال استطلاع رأي خاص لجميع الطلاب:*
 ━━━━━━━━━━━━━━━━━━━━
 
 أرسل السؤال والخيارات مفصولة بشرطة مائلة \`/\` كالتالي:
-\`ما رأيكم بصعوبة الامتحان؟ / سهل / متوسط / صعب / غير واضح\`
+\`ما رأيكم بصعوبة الامتحان؟ / سهل ومباشر / متوسط / صعب / غير واضح\`
+
+🔒 *ملاحظة:* النتائج والتصويت ستكون سرية وخاصة بك كأدمن فقط.
 
 📌 *أو أرسل استطلاعاً سريعاً جاهزاً بنقرة واحدة:*`, {
       parse_mode: "Markdown",
@@ -1388,6 +1522,7 @@ bot.on("callback_query", (query) => {
         inline_keyboard: [
           [{ text: "📊 استطلاع: تقييم الامتحانات النصفية", callback_data: "admin_preset_poll_1" }],
           [{ text: "📚 استطلاع: المواد التي تحتاج دعماً وشرحاً", callback_data: "admin_preset_poll_2" }],
+          [{ text: "📋 قائمة الاستطلاعات السابقة", callback_data: "admin_polls_menu" }],
           [{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]
         ]
       }
@@ -1965,6 +2100,38 @@ bot.on("callback_query", (query) => {
     return;
   }
 
+  // تصويت الطالب في استطلاع رأي خاص (سري للأدمن فقط)
+  if (data.startsWith("poll_vote_")) {
+    const parts = data.split("_");
+    const optionIdx = parseInt(parts[parts.length - 1]);
+    const pollId = parts.slice(2, parts.length - 1).join("_");
+    const studentName = ((query.from?.first_name || "") + " " + (query.from?.last_name || "")).trim() || "طالب";
+    const username = query.from?.username || "";
+
+    const voteRes = recordVote(pollId, chatId, studentName, username, optionIdx);
+    if (!voteRes.success) {
+      bot.answerCallbackQuery(query.id, {
+        text: voteRes.error || "عذراً، لا يمكن التصويت حالياً.",
+        show_alert: true
+      });
+      return;
+    }
+
+    bot.answerCallbackQuery(query.id, {
+      text: "✅ تم تسجيل تصويتك بنجاح، شكراً لمشاركتك!",
+      show_alert: false
+    });
+
+    const updatedText = `🗳️ *استطلاع رأي لطلبة قسم هندسة الحاسوب*\n━━━━━━━━━━━━━━━━━━━━\n\n📌 *السؤال:* ${voteRes.poll.question}\n\n✅ *تم تسجيل اختيارك بنجاح:* \`${voteRes.chosenOption}\`\n\n🔒 *ملاحظة:* التصويت سري ومحفوظ للإدارة فقط، شكراً لمشاركتك الفعالة! ❤️`;
+
+    bot.editMessageText(updatedText, {
+      chat_id: chatId,
+      message_id: query.message.message_id,
+      parse_mode: "Markdown"
+    }).catch(() => {});
+    return;
+  }
+
   // لوحة الإذاعة
   if (data === "start_broadcast") {
     if (chatId !== ADMIN_ID) return;
@@ -1973,17 +2140,21 @@ bot.on("callback_query", (query) => {
     const activeCount = users.filter((u) => u.active !== false).length;
 
     userState[ADMIN_ID].waitingBroadcastMessage = true;
+    const lastBc = getLastBroadcast();
+    const broadcastKeyboard = [
+      [{ text: "🚀 إرسال إشعار التحديثات الجديدة تلقائياً", callback_data: "send_preset_broadcast" }]
+    ];
+    if (lastBc) {
+      broadcastKeyboard.push([{ text: "🗑️ تراجع وحذف آخر إعلان تم نشره للطلاب", callback_data: "admin_unsend_last_broadcast" }]);
+    }
+    broadcastKeyboard.push([{ text: "❌ إلغاء الإذاعة", callback_data: "cancel_broadcast" }]);
+
     bot.sendMessage(
       chatId,
       `📢 *لوحة الإذاعة والإشعارات الجماعية*\n━━━━━━━━━━━━━━━━━━━━\n\n👥 *عدد المشتركين النشطين:* ${activeCount} طالب\n\nاختر من الأزرار أدناه أو أرسل رسالتك/صورتك/ملفك فوراً في المحادثة ليتم بثها للجميع:`,
       {
         parse_mode: "Markdown",
-        reply_markup: {
-          inline_keyboard: [
-            [{ text: "🚀 إرسال إشعار التحديثات الجديدة تلقائياً", callback_data: "send_preset_broadcast" }],
-            [{ text: "❌ إلغاء الإذاعة", callback_data: "cancel_broadcast" }]
-          ]
-        }
+        reply_markup: { inline_keyboard: broadcastKeyboard }
       }
     );
     return;

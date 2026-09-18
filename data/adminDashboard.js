@@ -418,8 +418,8 @@ function renderMainDashboard(chatId, botInstance) {
       { text: "📈 المواد الأكثر بحثاً وطلباً", callback_data: "admin_course_search_stats" }
     ],
     [
-      { text: "🗳️ إرسال استطلاع رأي (Poll)", callback_data: "admin_poll_prompt" },
-      { text: "📢 إرسال إشعار جماعي", callback_data: "start_broadcast" }
+      { text: "🗳️ استطلاعات الرأي والنتائج الحية", callback_data: "admin_polls_menu" },
+      { text: "📢 إشعار جماعي وإعلانات", callback_data: "start_broadcast" }
     ],
     [
       { text: "🔍 فحص واستعلام عن طالب", callback_data: "admin_search_user_prompt" },
