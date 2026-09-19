@@ -5,26 +5,35 @@
 
 const fs = require("fs");
 const path = require("path");
-const { safeEscape, safeSend } = require("./safeMessenger");
+const { safeEscape, safeSend, safeSendDocument } = require("./safeMessenger");
 
 const pollsFilePath = path.join(__dirname, "polls.json");
 
+let cachedPolls = null;
+
 function loadPolls() {
+  if (cachedPolls !== null) return cachedPolls;
   try {
     if (fs.existsSync(pollsFilePath)) {
       const data = fs.readFileSync(pollsFilePath, "utf8");
       const list = JSON.parse(data);
-      if (Array.isArray(list)) return list;
+      if (Array.isArray(list)) {
+        cachedPolls = list;
+        return cachedPolls;
+      }
     }
   } catch (e) {
     console.error("Error loading polls:", e);
   }
-  return [];
+  cachedPolls = [];
+  return cachedPolls;
 }
 
 function savePolls(polls) {
   try {
-    fs.writeFileSync(pollsFilePath, JSON.stringify(polls.slice(-50), null, 2), "utf8");
+    const list = Array.isArray(polls) ? polls.slice(-50) : loadPolls().slice(-50);
+    cachedPolls = list;
+    fs.writeFileSync(pollsFilePath, JSON.stringify(list, null, 2), "utf8");
   } catch (e) {
     console.error("Error saving polls:", e);
   }
@@ -54,9 +63,11 @@ function getPoll(pollId) {
 function recordVote(pollId, userId, studentName, username, optionIndex) {
   const polls = loadPolls();
   const poll = polls.find(p => p.id === pollId);
-  if (!poll) return { success: false, error: "الاستطلاع غير موجود." };
+  if (!poll) return { success: false, error: "الاستطلاع غير موجود أو تم حذفه." };
   if (!poll.active) return { success: false, error: "تم إغلاق هذا الاستطلاع من قبل الإدارة." };
-  if (optionIndex < 0 || optionIndex >= poll.options.length) {
+  
+  const optIdx = parseInt(optionIndex, 10);
+  if (isNaN(optIdx) || optIdx < 0 || optIdx >= poll.options.length) {
     return { success: false, error: "خيار التصويت غير صالح." };
   }
 
@@ -65,12 +76,12 @@ function recordVote(pollId, userId, studentName, username, optionIndex) {
   poll.votes[String(userId)] = {
     name: studentName || "طالب",
     username: username || "",
-    optionIndex: optionIndex,
+    optionIndex: optIdx,
     timestamp: new Date().toISOString()
   };
 
   savePolls(polls);
-  return { success: true, poll, chosenOption: poll.options[optionIndex] };
+  return { success: true, poll, chosenOption: poll.options[optIdx] };
 }
 
 function togglePollStatus(pollId) {
@@ -113,7 +124,7 @@ async function unsendPollFromStudents(bot, pollId) {
 function renderAdminPollDetails(chatId, bot, pollId) {
   const poll = getPoll(pollId);
   if (!poll) {
-    safeSend(bot, chatId, "❌ لم يتم العثور على هذا الاستطلاع.", {
+    safeSend(bot, chatId, "❌ لم يتم العثور على هذا الاستطلاع أو تم حذفه.", {
       reply_markup: {
         inline_keyboard: [[{ text: "🔙 قائمة الاستطلاعات", callback_data: "admin_polls_menu" }]]
       }
@@ -155,11 +166,16 @@ function renderAdminPollDetails(chatId, bot, pollId) {
     if (optionVoters.length === 0) {
       text += `   _لا يوجد أصوات لهذا الخيار بعد_\n`;
     } else {
-      optionVoters.forEach((v, vIdx) => {
+      // إظهار حتى 10 طلاب لكل خيار لتجنب تجاوز حد الرسالة
+      const displayVoters = optionVoters.slice(0, 10);
+      displayVoters.forEach((v, vIdx) => {
         const uName = safeEscape(v.name || "طالب");
         const uHandle = v.username ? ` (@${safeEscape(v.username.replace(/^@/, ""))})` : "";
         text += `   ${vIdx + 1}. *${uName}*${uHandle} - \`ID: ${v.uid}\`\n`;
       });
+      if (optionVoters.length > 10) {
+        text += `   _...و ${optionVoters.length - 10} طلاب آخرين_\n`;
+      }
     }
     text += `\n`;
   });

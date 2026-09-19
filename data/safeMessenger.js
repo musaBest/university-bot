@@ -15,15 +15,24 @@ function safeEscape(str) {
     .replace(/\]/g, "\\]");
 }
 
+function truncateForTelegram(str, maxLen = 3900) {
+  if (!str) return "";
+  const s = String(str);
+  if (s.length <= maxLen) return s;
+  return s.slice(0, maxLen - 15) + "\n\n...(تم الاختصار لكبر حجم الرسالة)...";
+}
+
 async function safeSend(bot, chatId, text, options = {}) {
+  if (!bot || !chatId) return null;
+  const safeText = truncateForTelegram(text);
   try {
-    return await bot.sendMessage(chatId, text, {
+    return await bot.sendMessage(chatId, safeText, {
       parse_mode: "Markdown",
       ...options
     });
   } catch (err) {
     console.warn(`[SafeSend] Markdown send to ${chatId} failed (${err.message}). Retrying with plain text...`);
-    const plainText = String(text || "").replace(/[*_`\[\]\\]/g, "");
+    const plainText = String(safeText || "").replace(/[*_`\[\]\\]/g, "");
     const { parse_mode, ...fallbackOptions } = options;
     try {
       return await bot.sendMessage(chatId, plainText, fallbackOptions);
@@ -35,14 +44,18 @@ async function safeSend(bot, chatId, text, options = {}) {
 }
 
 async function safeSendDocument(bot, chatId, docPath, options = {}) {
+  if (!bot || !chatId) return null;
+  const rawCaption = options.caption ? truncateForTelegram(options.caption, 1000) : "";
   try {
+    const opts = { ...options };
+    if (rawCaption) opts.caption = rawCaption;
     return await bot.sendDocument(chatId, docPath, {
       parse_mode: "Markdown",
-      ...options
+      ...opts
     });
   } catch (err) {
     console.warn(`[SafeSendDoc] Markdown caption failed (${err.message}). Retrying plain caption...`);
-    const plainCaption = options.caption ? String(options.caption).replace(/[*_`\[\]\\]/g, "") : "";
+    const plainCaption = rawCaption ? rawCaption.replace(/[*_`\[\]\\]/g, "") : "";
     const { parse_mode, ...fallbackOptions } = options;
     fallbackOptions.caption = plainCaption;
     try {
@@ -54,8 +67,28 @@ async function safeSendDocument(bot, chatId, docPath, options = {}) {
   }
 }
 
+async function safeEditMessageText(bot, text, options = {}) {
+  if (!bot) return null;
+  const safeText = truncateForTelegram(text);
+  try {
+    return await bot.editMessageText(safeText, {
+      parse_mode: "Markdown",
+      ...options
+    });
+  } catch (err) {
+    const plainText = String(safeText || "").replace(/[*_`\[\]\\]/g, "");
+    const { parse_mode, ...fallbackOptions } = options;
+    try {
+      return await bot.editMessageText(plainText, fallbackOptions);
+    } catch (innerErr) {
+      return null;
+    }
+  }
+}
+
 module.exports = {
   safeEscape,
   safeSend,
-  safeSendDocument
+  safeSendDocument,
+  safeEditMessageText
 };

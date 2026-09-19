@@ -37,6 +37,8 @@ function readJsonFile(filePath, defaultValue = []) {
 
 function writeJsonFile(filePath, data) {
   try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
     return true;
   } catch (err) {
@@ -99,6 +101,7 @@ function restoreDatabaseBundle(bundle) {
       } else {
         const exist = userMap.get(id);
         if (!exist.username && imp.username) exist.username = imp.username;
+        if ((!exist.name || exist.name === "طالب") && imp.name && imp.name !== "طالب") exist.name = imp.name;
         if (imp.featuresUsed) {
           if (!exist.featuresUsed) exist.featuresUsed = {};
           for (const k in imp.featuresUsed) {
@@ -125,7 +128,6 @@ function restoreDatabaseBundle(bundle) {
         results.pollsAdded++;
       } else {
         const exist = pollMap.get(p.id);
-        // دمج الأصوات
         if (p.votes) {
           if (!exist.votes) exist.votes = {};
           for (const uid in p.votes) {
@@ -189,7 +191,7 @@ function scheduleAutoCloudSync(botInstance) {
     } catch (e) {
       console.error("[CloudSync] Auto sync error:", e);
     }
-  }, 10000);
+  }, 5000);
 }
 
 /**
@@ -209,7 +211,7 @@ function initCloudSyncOnBoot(botInstance) {
       const snapshot = readJsonFile(DATA_FILES.master_snapshot, null);
       if (snapshot) {
         restoreDatabaseBundle(snapshot);
-        console.log("[CloudSync] Restored database state from local master snapshot.");
+        console.log("[CloudSync] Restored database state from master snapshot.");
       }
     }
   } catch (err) {

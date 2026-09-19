@@ -5,25 +5,34 @@
 
 const fs = require("fs");
 const path = require("path");
-const { safeEscape, safeSend } = require("./safeMessenger");
+const { safeEscape, safeSend, safeSendDocument } = require("./safeMessenger");
 
 const MARKETPLACE_FILE = path.join(__dirname, "marketplace.json");
 
+let cachedListings = null;
+
 function loadListings() {
+  if (cachedListings !== null) return cachedListings;
   try {
     if (fs.existsSync(MARKETPLACE_FILE)) {
       const data = JSON.parse(fs.readFileSync(MARKETPLACE_FILE, "utf8"));
-      if (Array.isArray(data)) return data;
+      if (Array.isArray(data)) {
+        cachedListings = data;
+        return cachedListings;
+      }
     }
   } catch (e) {
     console.error("Error loading marketplace listings:", e);
   }
-  return [];
+  cachedListings = [];
+  return cachedListings;
 }
 
 function saveListings(listings) {
   try {
-    fs.writeFileSync(MARKETPLACE_FILE, JSON.stringify(listings, null, 2), "utf8");
+    const list = Array.isArray(listings) ? listings : loadListings();
+    cachedListings = list;
+    fs.writeFileSync(MARKETPLACE_FILE, JSON.stringify(list, null, 2), "utf8");
     return true;
   } catch (e) {
     console.error("Error saving marketplace listings:", e);
@@ -38,12 +47,12 @@ function addListing(userId, userName, userHandle, category, title, details, pric
   const listings = loadListings();
   const newListing = {
     id: "item_" + Date.now(),
-    userId,
+    userId: String(userId),
     userName: userName || "طالب",
     userHandle: userHandle ? (userHandle.startsWith("@") ? userHandle : `@${userHandle}`) : "",
-    category, // 'hardware' | 'books' | 'other'
-    title,
-    details,
+    category: category || "hardware", // 'hardware' | 'books' | 'other'
+    title: (title || "إعلان طالب").trim(),
+    details: (details || "تفاصيل الإعلان").trim(),
     priceOrType: priceOrType || "مجاناً / للبدل",
     contact: contact || userHandle || "عبر البوت",
     createdAt: new Date().toISOString()
@@ -60,9 +69,9 @@ function addListing(userId, userName, userHandle, category, title, details, pric
 function deleteListing(listingId, requesterId, adminId) {
   let listings = loadListings();
   const index = listings.findIndex(l => l.id === listingId);
-  if (index === -1) return { success: false, error: "الإعلان غير موجود." };
+  if (index === -1) return { success: false, error: "الإعلان غير موجود أو تم حذفه مسبقاً." };
 
-  if (String(listings[index].userId) !== String(requesterId) && String(requesterId) !== String(adminId)) {
+  if (String(listings[index].userId) !== String(requesterId) && Number(requesterId) !== Number(adminId)) {
     return { success: false, error: "لا تملك صلاحية حذف هذا الإعلان." };
   }
 

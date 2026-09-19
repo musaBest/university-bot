@@ -45,7 +45,7 @@ const adminMessageMap = new Map();
 const ADMIN_ID = 5687891184;
 
 function resetAdminState(chatId = ADMIN_ID) {
-  if (chatId !== ADMIN_ID) return;
+  if (Number(chatId) !== Number(ADMIN_ID)) return;
   if (!userState[ADMIN_ID]) userState[ADMIN_ID] = {};
   userState[ADMIN_ID].replyingToStudent = null;
   userState[ADMIN_ID].waitingBroadcastMessage = false;
@@ -1291,7 +1291,7 @@ function showMainMenu(chatId, name = "طالب") {
     [{ text: "🔍 البحث السريع عن مادة أو كود مساق", callback_data: "start_search" }]
   ];
 
-  if (chatId === ADMIN_ID) {
+  if (Number(chatId) === Number(ADMIN_ID)) {
     keyboard.push(
       [{ text: "🎛️ لوحة تحكم الإدارة (Admin Dashboard)", callback_data: "admin_dashboard" }],
       [{ text: "📊 إحصائيات الأيقونات والميزات", callback_data: "admin_feature_stats" }],
@@ -1408,7 +1408,7 @@ function showStudentServicesMenu(chatId) {
 
 // أمر البدء /start
 bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId === ADMIN_ID) {
     resetAdminState(ADMIN_ID);
   } else if (isUserBanned(chatId)) {
@@ -1423,7 +1423,7 @@ bot.onText(/\/start/, (msg) => {
 
 // أمر لوحة تحكم الأدمن
 bot.onText(/\/(?:admin|dashboard)/, (msg) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID) return;
   resetAdminState(ADMIN_ID);
   saveUser(msg.from, chatId);
@@ -1432,7 +1432,7 @@ bot.onText(/\/(?:admin|dashboard)/, (msg) => {
 
 // أمر حظر طالب /ban
 bot.onText(/\/ban(?:\s+(.+))?/, (msg, match) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID) return;
   resetAdminState(ADMIN_ID);
   const target = match[1]?.trim();
@@ -1456,7 +1456,7 @@ bot.onText(/\/ban(?:\s+(.+))?/, (msg, match) => {
 
 // أمر إلغاء حظر طالب /unban
 bot.onText(/\/unban(?:\s+(.+))?/, (msg, match) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID) return;
   resetAdminState(ADMIN_ID);
   const target = match[1]?.trim();
@@ -1480,7 +1480,7 @@ bot.onText(/\/unban(?:\s+(.+))?/, (msg, match) => {
 
 // أمر استعلام عن ملف طالب /user
 bot.onText(/\/user(?:\s+(.+))?/, (msg, match) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID) return;
   resetAdminState(ADMIN_ID);
   const target = match[1]?.trim();
@@ -1499,7 +1499,7 @@ bot.onText(/\/user(?:\s+(.+))?/, (msg, match) => {
 
 // أمر المساعد الذكي /ai
 bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
     bot.sendMessage(chatId, "⛔ *عذراً، تم تقييد وصولك للبوت!*\nتم حظر حسابك من قبل إدارة القسم.", { parse_mode: "Markdown" });
     return;
@@ -1574,7 +1574,7 @@ bot.onText(/\/ai(?:\s+(.+))?/, async (msg, match) => {
 
 // أوامر الإذاعة والإحصائيات للأدمن
 bot.onText(/\/broadcast/, (msg) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID) return;
   resetAdminState(ADMIN_ID);
   const users = loadUsers();
@@ -1601,7 +1601,7 @@ bot.onText(/\/broadcast/, (msg) => {
 });
 
 bot.onText(/\/stats/, (msg) => {
-  const chatId = msg.chat.id;
+  const chatId = Number(msg.chat.id);
   if (chatId !== ADMIN_ID) return;
   resetAdminState(ADMIN_ID);
   saveUser(msg.from, chatId);
@@ -1611,7 +1611,8 @@ bot.onText(/\/stats/, (msg) => {
 // التعامل مع جميع أزرار Callback Queries
 bot.on("callback_query", async (query) => {
   try {
-    const chatId = query.message ? query.message.chat.id : (query.from ? query.from.id : null);
+    const rawChatId = query.message ? query.message.chat.id : (query.from ? query.from.id : null);
+    const chatId = Number(rawChatId);
     const data = query.data;
     if (!chatId || !data) return;
 
@@ -1628,10 +1629,6 @@ bot.on("callback_query", async (query) => {
     }
 
     try { saveUser(query.from, chatId); } catch (e) {}
-
-    if (processedCallbacks.has(query.id)) return;
-    processedCallbacks.add(query.id);
-    setTimeout(() => processedCallbacks.delete(query.id), 5000);
 
     // القائمة الرئيسية
     if (data === "main_menu") {

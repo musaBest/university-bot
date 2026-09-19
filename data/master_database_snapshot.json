@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "exportedAt": "2026-09-19T17:35:52.305Z",
+  "exportedAt": "2026-09-19T18:32:50.120Z",
   "users": [
     {
       "id": 5687891184,
@@ -17,6 +17,26 @@
     }
   ],
   "polls": [
+    {
+      "id": "poll_1789842770101",
+      "question": "ما رأيكم في اختبار الهياكل؟",
+      "options": [
+        "سهل",
+        "متوسط",
+        "صعب"
+      ],
+      "createdAt": "2026-09-19T18:32:50.101Z",
+      "active": true,
+      "votes": {
+        "12345678": {
+          "name": "أحمد",
+          "username": "ahmed_test",
+          "optionIndex": 0,
+          "timestamp": "2026-09-19T18:32:50.102Z"
+        }
+      },
+      "sentMessages": []
+    },
     {
       "id": "poll_1789775411611",
       "question": "ما رأيكم بمستوى الامتحان؟",
@@ -43,7 +63,20 @@
       "sentMessages": []
     }
   ],
-  "marketplace": [],
+  "marketplace": [
+    {
+      "id": "item_1789842770103",
+      "userId": "12345678",
+      "userName": "أحمد",
+      "userHandle": "@ahmed_test",
+      "category": "hardware",
+      "title": "كيت أردوينو",
+      "details": "بحالة ممتازة",
+      "priceOrType": "30 شيكل",
+      "contact": "@ahmed_test",
+      "createdAt": "2026-09-19T18:32:50.104Z"
+    }
+  ],
   "broadcastHistory": [
     {
       "id": "bc_1789775426347",

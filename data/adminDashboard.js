@@ -1,10 +1,12 @@
 /**
  * Admin Dashboard & User Access Control Module
  * For IUG Computer Engineering Telegram Bot
+ * High-performance in-memory caching with asynchronous disk persistence.
  */
 
 const fs = require("fs");
 const path = require("path");
+const { safeEscape, safeSend, safeSendDocument } = require("./safeMessenger");
 
 const usersFilePath = path.join(__dirname, "users.json");
 const backupFilePath = path.join(__dirname, "users_backup.json");
@@ -31,61 +33,57 @@ const FEATURE_LABELS = {
   marketplace: { title: "🔄 سوق تبادل الأدوات والكتب", icon: "🔄" }
 };
 
-/**
- * دالة لتأمين النصوص لمنع انهيار Markdown في التليجرام بسبب الرموز الخاصة
- */
-function safeEscape(str) {
-  if (str === null || str === undefined) return "";
-  return String(str)
-    .replace(/\\/g, "\\\\")
-    .replace(/_/g, "\\_")
-    .replace(/\*/g, "\\*")
-    .replace(/`/g, "\\`")
-    .replace(/\[/g, "\\[")
-    .replace(/\]/g, "\\]");
-}
+// ذاكرة وصول عشوائي فائقة السرعة للمستخدمين (In-Memory Cache)
+let cachedUsersMap = null;
+let saveDebounceTimer = null;
 
-/**
- * دالة إرسال آمنة تحاول الإرسال بـ Markdown أولاً، وفي حال حدوث خطأ ترسل النص العادي تلقائياً
- */
-async function safeSend(botInstance, chatId, text, options = {}) {
-  try {
-    return await botInstance.sendMessage(chatId, text, {
-      parse_mode: "Markdown",
-      ...options
-    });
-  } catch (err) {
-    console.warn("Markdown send failed, falling back to plain text:", err.message);
-    const plainText = text.replace(/[*_`\[\]\\]/g, "");
-    const { parse_mode, ...fallbackOptions } = options;
+function initUsersCache() {
+  if (cachedUsersMap !== null) return cachedUsersMap;
+  cachedUsersMap = new Map();
+
+  function tryReadFile(filePath) {
     try {
-      return await botInstance.sendMessage(chatId, plainText, fallbackOptions);
-    } catch (innerErr) {
-      console.error("Plain text fallback failed too:", innerErr.message);
+      if (fs.existsSync(filePath)) {
+        const raw = fs.readFileSync(filePath, "utf8");
+        const list = JSON.parse(raw || "[]");
+        if (Array.isArray(list)) {
+          list.forEach((u) => {
+            if (!u || !u.id) return;
+            const id = Number(u.id);
+            if (!cachedUsersMap.has(id)) {
+              cachedUsersMap.set(id, { ...u, id: id });
+            } else {
+              const curr = cachedUsersMap.get(id);
+              if (!curr.username && u.username) curr.username = u.username;
+              if ((!curr.name || curr.name === "طالب") && u.name && u.name !== "طالب") curr.name = u.name;
+              if (u.banned) curr.banned = true;
+              if (u.banReason) curr.banReason = u.banReason;
+              if (u.joinedAt && (!curr.joinedAt || new Date(u.joinedAt) < new Date(curr.joinedAt))) {
+                curr.joinedAt = u.joinedAt;
+              }
+              if (u.lastActive && (!curr.lastActive || new Date(u.lastActive) > new Date(curr.lastActive))) {
+                curr.lastActive = u.lastActive;
+              }
+              if (u.featuresUsed) {
+                if (!curr.featuresUsed) curr.featuresUsed = {};
+                for (const f in u.featuresUsed) {
+                  curr.featuresUsed[f] = Math.max(curr.featuresUsed[f] || 0, u.featuresUsed[f] || 0);
+                }
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.error(`Error reading ${filePath}:`, e.message);
     }
   }
-}
 
-/**
- * دالة إرسال مستند آمنة مع نص توضيحي آمن
- */
-async function safeSendDocument(botInstance, chatId, docPath, options = {}) {
-  try {
-    return await botInstance.sendDocument(chatId, docPath, {
-      parse_mode: "Markdown",
-      ...options
-    });
-  } catch (err) {
-    console.warn("Document send with markdown caption failed, falling back to plain caption:", err.message);
-    const plainCaption = options.caption ? options.caption.replace(/[*_`\[\]\\]/g, "") : "";
-    const { parse_mode, ...fallbackOptions } = options;
-    fallbackOptions.caption = plainCaption;
-    try {
-      return await botInstance.sendDocument(chatId, docPath, fallbackOptions);
-    } catch (innerErr) {
-      console.error("Document fallback failed:", innerErr.message);
-    }
-  }
+  tryReadFile(usersFilePath);
+  tryReadFile(backupFilePath);
+  tryReadFile(archiveFilePath);
+
+  return cachedUsersMap;
 }
 
 /**
@@ -93,12 +91,7 @@ async function safeSendDocument(botInstance, chatId, docPath, options = {}) {
  */
 function mergeUsersData(importedUsers) {
   if (!Array.isArray(importedUsers)) return { success: false, error: "الملف المرسل لا يحتوي قائمة بيانات صحيحة." };
-  const currentUsers = loadUsers();
-  const userMap = new Map();
-
-  currentUsers.forEach((u) => {
-    if (u && u.id) userMap.set(Number(u.id), { ...u });
-  });
+  const userMap = initUsersCache();
 
   let addedCount = 0;
   let updatedCount = 0;
@@ -137,66 +130,30 @@ function mergeUsersData(importedUsers) {
 }
 
 /**
- * قراءة ودمج بيانات المشتركين من ملفات التخزين والنسخ الاحتياطية المتعددة
+ * قراءة بيانات المشتركين من الذاكرة اللحظية (In-Memory) بأعلى سرعة
  */
 function loadUsers() {
-  const userMap = new Map();
-
-  function tryReadFile(filePath) {
-    try {
-      if (fs.existsSync(filePath)) {
-        const raw = fs.readFileSync(filePath, "utf8");
-        const list = JSON.parse(raw || "[]");
-        if (Array.isArray(list)) {
-          list.forEach((u) => {
-            if (!u || !u.id) return;
-            const id = Number(u.id);
-            if (!userMap.has(id)) {
-              userMap.set(id, { ...u, id: id });
-            } else {
-              const curr = userMap.get(id);
-              if (!curr.username && u.username) curr.username = u.username;
-              if ((!curr.name || curr.name === "طالب") && u.name && u.name !== "طالب") curr.name = u.name;
-              if (u.banned) curr.banned = true;
-              if (u.banReason) curr.banReason = u.banReason;
-              if (u.joinedAt && (!curr.joinedAt || new Date(u.joinedAt) < new Date(curr.joinedAt))) {
-                curr.joinedAt = u.joinedAt;
-              }
-              if (u.lastActive && (!curr.lastActive || new Date(u.lastActive) > new Date(curr.lastActive))) {
-                curr.lastActive = u.lastActive;
-              }
-              if (u.featuresUsed) {
-                if (!curr.featuresUsed) curr.featuresUsed = {};
-                for (const f in u.featuresUsed) {
-                  curr.featuresUsed[f] = Math.max(curr.featuresUsed[f] || 0, u.featuresUsed[f] || 0);
-                }
-              }
-            }
-          });
-        }
-      }
-    } catch (e) {
-      console.error(`Error reading ${filePath}:`, e.message);
-    }
-  }
-
-  tryReadFile(usersFilePath);
-  tryReadFile(backupFilePath);
-  tryReadFile(archiveFilePath);
-
-  const merged = Array.from(userMap.values());
-  return merged;
+  const userMap = initUsersCache();
+  return Array.from(userMap.values());
 }
 
 /**
- * حفظ قائمة المشتركين في ملفات متعددة لضمان عدم ضياع أي بيانات نهائياً
+ * حفظ قائمة المشتركين في ملفات متعددة (فوري أو مجدول)
  */
 function saveUsersList(users) {
   try {
+    const list = Array.isArray(users) ? users : loadUsers();
+    // تحديث الكاش
+    if (Array.isArray(users)) {
+      const map = new Map();
+      users.forEach(u => { if (u && u.id) map.set(Number(u.id), u); });
+      cachedUsersMap = map;
+    }
+
     const dataDir = path.dirname(usersFilePath);
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-    const serialized = JSON.stringify(users, null, 2);
+    const serialized = JSON.stringify(list, null, 2);
     fs.writeFileSync(usersFilePath, serialized, "utf8");
     fs.writeFileSync(backupFilePath, serialized, "utf8");
     fs.writeFileSync(archiveFilePath, serialized, "utf8");
@@ -205,28 +162,45 @@ function saveUsersList(users) {
   }
 }
 
+/**
+ * حفظ غير معطل عبر الـ Debounce لمنع ضغط القرص أثناء ضغطات الأزرار السريعة
+ */
+function scheduleSaveUsers() {
+  if (saveDebounceTimer) return;
+  saveDebounceTimer = setTimeout(() => {
+    saveDebounceTimer = null;
+    try {
+      const list = loadUsers();
+      const serialized = JSON.stringify(list, null, 2);
+      fs.writeFile(usersFilePath, serialized, "utf8", () => {});
+      fs.writeFile(backupFilePath, serialized, "utf8", () => {});
+    } catch (e) {}
+  }, 2000);
+}
+
 function isUserBanned(chatId) {
   if (!chatId) return false;
-  const users = loadUsers();
-  const u = users.find(x => Number(x.id) === Number(chatId));
-  return u && u.banned === true;
+  const userMap = initUsersCache();
+  const u = userMap.get(Number(chatId));
+  return Boolean(u && u.banned === true);
 }
 
 function trackFeatureUse(chatId, featureKey, msgUser = null) {
   try {
     if (!chatId) return;
     const id = Number(chatId);
-    const users = loadUsers();
-    let userIndex = users.findIndex(u => Number(u.id) === id);
+    const userMap = initUsersCache();
     const now = new Date().toISOString();
 
-    if (userIndex === -1) {
+    let u = userMap.get(id);
+
+    if (!u) {
       const firstName = msgUser?.first_name || "";
       const lastName = msgUser?.last_name || "";
       const fullName = (firstName + " " + lastName).trim() || "طالب";
       const username = msgUser?.username ? `@${msgUser.username}` : "";
-      
-      const newUser = {
+
+      u = {
         id: id,
         name: fullName,
         username: username,
@@ -236,14 +210,13 @@ function trackFeatureUse(chatId, featureKey, msgUser = null) {
         banned: false,
         featuresUsed: { [featureKey]: 1 }
       };
-      users.push(newUser);
+      userMap.set(id, u);
     } else {
-      const u = users[userIndex];
       u.lastActive = now;
       u.active = true;
       if (!u.featuresUsed) u.featuresUsed = {};
       u.featuresUsed[featureKey] = (u.featuresUsed[featureKey] || 0) + 1;
-      
+
       if (msgUser) {
         const firstName = msgUser.first_name || "";
         const lastName = msgUser.last_name || "";
@@ -253,20 +226,21 @@ function trackFeatureUse(chatId, featureKey, msgUser = null) {
       }
     }
 
-    saveUsersList(users);
+    scheduleSaveUsers();
   } catch (err) {
     console.error("Error tracking feature use:", err);
   }
 }
 
 function banUser(targetIdOrUsername, reason = "مخالفة تعليمات البوت") {
-  const users = loadUsers();
+  const userMap = initUsersCache();
   const query = targetIdOrUsername.toString().trim().replace(/^@/, "").toLowerCase();
-  
-  let target = users.find(u => Number(u.id) === Number(query) || (u.username && u.username.replace(/^@/, "").toLowerCase() === query));
+
+  let target = Array.from(userMap.values()).find(
+    u => Number(u.id) === Number(query) || (u.username && u.username.replace(/^@/, "").toLowerCase() === query)
+  );
 
   if (!target && !isNaN(Number(query))) {
-    // إنشاء سجل للمستخدم المحظور حتى لو لم يكن مسجلاً مسبقاً
     target = {
       id: Number(query),
       name: "مستخدم محظور",
@@ -278,8 +252,8 @@ function banUser(targetIdOrUsername, reason = "مخالفة تعليمات ال�
       banReason: reason,
       bannedAt: new Date().toISOString()
     };
-    users.push(target);
-    saveUsersList(users);
+    userMap.set(target.id, target);
+    saveUsersList();
     return { success: true, user: target, created: true };
   }
 
@@ -288,7 +262,7 @@ function banUser(targetIdOrUsername, reason = "مخالفة تعليمات ال�
     target.active = false;
     target.banReason = reason;
     target.bannedAt = new Date().toISOString();
-    saveUsersList(users);
+    saveUsersList();
     return { success: true, user: target };
   }
 
@@ -296,17 +270,19 @@ function banUser(targetIdOrUsername, reason = "مخالفة تعليمات ال�
 }
 
 function unbanUser(targetIdOrUsername) {
-  const users = loadUsers();
+  const userMap = initUsersCache();
   const query = targetIdOrUsername.toString().trim().replace(/^@/, "").toLowerCase();
-  
-  const target = users.find(u => Number(u.id) === Number(query) || (u.username && u.username.replace(/^@/, "").toLowerCase() === query));
+
+  const target = Array.from(userMap.values()).find(
+    u => Number(u.id) === Number(query) || (u.username && u.username.replace(/^@/, "").toLowerCase() === query)
+  );
 
   if (target) {
     target.banned = false;
     target.active = true;
     delete target.banReason;
     delete target.bannedAt;
-    saveUsersList(users);
+    saveUsersList();
     return { success: true, user: target };
   }
 
@@ -317,15 +293,15 @@ function addUserManually(rawId, name = "طالب", username = "") {
   const id = Number(rawId);
   if (!id || isNaN(id)) return { success: false, error: "المعرف غير صحيح." };
 
-  const users = loadUsers();
-  const existing = users.find(u => Number(u.id) === id);
+  const userMap = initUsersCache();
+  const existing = userMap.get(id);
 
   if (existing) {
     existing.active = true;
     existing.banned = false;
     if (name && name !== "طالب") existing.name = name;
     if (username) existing.username = username.startsWith("@") ? username : `@${username}`;
-    saveUsersList(users);
+    saveUsersList();
     return { success: true, user: existing, updated: true };
   }
 
@@ -341,8 +317,8 @@ function addUserManually(rawId, name = "طالب", username = "") {
     featuresUsed: {}
   };
 
-  users.push(newUser);
-  saveUsersList(users);
+  userMap.set(id, newUser);
+  saveUsersList();
   return { success: true, user: newUser, created: true };
 }
 
@@ -509,7 +485,6 @@ function renderFeatureUsers(chatId, botInstance, featureKey) {
   text += `━━━━━━━━━━━━━━━━━━━━\n`;
   text += `👥 عدد الطلاب: *${feat.uniqueUsersCount}* | إجمالي الاستخدام: *${feat.totalUsageCount} مرة*\n\n`;
 
-  // Sort by highest usage
   const sortedUsers = [...feat.users].sort((a, b) => b.count - a.count);
 
   sortedUsers.forEach((u, i) => {
@@ -523,7 +498,6 @@ function renderFeatureUsers(chatId, botInstance, featureKey) {
       reply_markup: { inline_keyboard: buttons }
     });
   } else {
-    // إرسال كملف لو كانت القائمة طويلة جداً
     const tempPath = path.join(__dirname, `feature_${featureKey}_users.txt`);
     let fileContent = `مستخدمي ميزة: ${label.title}\nإجمالي الطلاب: ${feat.uniqueUsersCount} | إجمالي الاستخدام: ${feat.totalUsageCount}\n====================================\n\n`;
     sortedUsers.forEach((u, i) => {
@@ -715,5 +689,3 @@ module.exports = {
   renderBannedList,
   renderUserProfile
 };
-
-

@@ -11,5 +11,17 @@
       "active": 1,
       "show_years": 2
     }
+  },
+  {
+    "id": 12345678,
+    "name": "أحمد",
+    "username": "@ahmed_test",
+    "joinedAt": "2026-09-19T18:32:50.093Z",
+    "lastActive": "2026-09-19T18:32:50.093Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "menu_academic": 1
+    }
   }
 ]

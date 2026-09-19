@@ -1,0 +1,14 @@
+[
+  {
+    "id": "item_1789842770103",
+    "userId": "12345678",
+    "userName": "أحمد",
+    "userHandle": "@ahmed_test",
+    "category": "hardware",
+    "title": "كيت أردوينو",
+    "details": "بحالة ممتازة",
+    "priceOrType": "30 شيكل",
+    "contact": "@ahmed_test",
+    "createdAt": "2026-09-19T18:32:50.104Z"
+  }
+]
