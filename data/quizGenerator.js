@@ -302,7 +302,8 @@ function renderQuizSubjectMenu(chatId, bot) {
     { text: "✍️ كتابة موضوع أو مادة مخصصة", callback_data: "quiz_custom_subject_prompt" }
   ]);
   keyboard.push([
-    { text: "🔙 العودة للقائمة الرئيسية", callback_data: "main_menu" }
+    { text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" },
+    { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
   ]);
 
   bot.sendMessage(chatId, text, {
@@ -631,6 +632,7 @@ async function finishQuiz(chatId, bot, userState) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "🔄 بدء كويز جديد", callback_data: "start_ai_quiz" }],
+          [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
           [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
         ]
       }
@@ -669,6 +671,7 @@ ${advice}`;
   const keyboard = [
     [{ text: `🔄 إعادة كويز جديد في (${subject})`, callback_data: `quiz_subject_custom_retry_${encodeURIComponent(subject)}` }],
     [{ text: "📚 اختيار مادة أخرى", callback_data: "start_ai_quiz" }],
+    [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
     [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
   ];
 

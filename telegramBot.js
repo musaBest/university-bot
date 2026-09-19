@@ -1267,26 +1267,18 @@ const contacts = {
   ]
 };
 
-// القائمة الرئيسية
+// ==========================================
+// القوائم والبوابات الأكاديمية الرئيسية (4 أبواب ذكية ومنظمة)
+// ==========================================
+
+// 1. القائمة الرئيسية (4 أبواب كبرى + بحث سريع)
 function showMainMenu(chatId, name = "طالب") {
   const keyboard = [
-    [{ text: "🤖 المساعد الأكاديمي الذكي (AI Chatbot)", callback_data: "start_ai_chat" }],
-    [{ text: "📚 عرض كل السنوات", callback_data: "show_years" }],
-    [{ text: "🏛️ متطلبات الجامعة الاسلامية", callback_data: "show_uni_reqs" }],
-    [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
-    [{ text: "🔍 البحث عن مادة / كود مساق", callback_data: "start_search" }],
-    [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد ", callback_data: "open_lab_programs" }],
-    [{ text: "📊 احسب معدلك الفصلي والتراكمي", callback_data: "gpa_file" }],
-    [{ text: "📞 جهات التواصل المهمة", callback_data: "show_contacts" }],
-    [{ text: "📷 عرض المواد المعتمدة على بعض", callback_data: "show_prerequisites" }],
-    [{ text: "📄 خطة هندسة الحاسوب 5 سنوات", callback_data: "plan5" }],
-    [{ text: "🖼 خطة هندسة الحاسوب 4 سنوات", callback_data: "plan4" }],
-    [{ text: "🐞 مصحح ومفسر الأكواد الذكي (Code Debugger)", callback_data: "start_code_debugger" }],
-    [{ text: "📝 مولّد الكويزات الذكي (AI Quiz Generator)", callback_data: "start_ai_quiz" }],
-    [{ text: "⏳ عداد ومخطط الامتحانات (Exam Countdown)", callback_data: "exam_countdown" }],
-    [{ text: "📂 بنك الامتحانات السابقة (Past Papers Bank)", callback_data: "open_past_papers" }],
-    [{ text: "🔄 سوق تبادل الأدوات والكتب (Hardware & Books)", callback_data: "open_marketplace" }],
-    [{ text: "🌐 يمكنك استخدام الموقع الالكتروني", url: "https://computer-engineering-iug.vercel.app" }]
+    [{ text: "🤖 أدوات الذكاء الاصطناعي (شات ذكي • مصحح أكواد • مولد كويزات)", callback_data: "menu_ai_tools" }],
+    [{ text: "📚 المقررات والخطط الدراسية (كل السنوات • متطلبات • خطة 4 و 5)", callback_data: "menu_academic" }],
+    [{ text: "📂 بنك الامتحانات والمختبرات (امتحانات سابقة • عداد • برامج • GPA)", callback_data: "menu_exams_labs" }],
+    [{ text: "🔄 الخدمات الطلابية والتواصل (سوق التبادل • تواصل مع الأدمن • الأرقام)", callback_data: "menu_services" }],
+    [{ text: "🔍 البحث السريع عن مادة أو كود مساق", callback_data: "start_search" }]
   ];
 
   if (chatId === ADMIN_ID) {
@@ -1297,7 +1289,114 @@ function showMainMenu(chatId, name = "طالب") {
     );
   }
 
-  bot.sendMessage(chatId, "مرحباً " + name + "!\nاختر من القائمة التالية أو أرسل اسم/كود المادة مباشرة للبحث:", {
+  const welcomeText = `👋 مرحباً بك يا *${safeEscape(name)}* في بوت قسم هندسة الحاسوب! 🎓
+━━━━━━━━━━━━━━━━━━━━
+
+📌 *اختر البوابة أو القسم المطلوب للوصول المباشر لمصادرك:*`;
+
+  bot.sendMessage(chatId, welcomeText, {
+    parse_mode: "Markdown",
+    reply_markup: { inline_keyboard: keyboard }
+  });
+}
+
+// الباب الأول: أدوات الذكاء الاصطناعي والبرمجة
+function showAiToolsMenu(chatId) {
+  const hasHistory = (userState[chatId]?.aiHistory?.length || 0) > 0;
+  const keyboard = [
+    [{ text: "💬 المساعد الأكاديمي الذكي (AI Chatbot)" + (hasHistory ? " (جلسة نشطة 🟢)" : ""), callback_data: "start_ai_chat" }],
+    [{ text: "🐞 مصحح ومفسر الأكواد الذكي (Code Debugger)", callback_data: "start_code_debugger" }],
+    [{ text: "📝 مولّد الكويزات الذكي (AI Quiz Generator)", callback_data: "start_ai_quiz" }],
+    [{ text: "🔙 رجوع للقائمة الرئيسية", callback_data: "main_menu" }]
+  ];
+
+  const text = `🤖 *بوابة أدوات الذكاء الاصطناعي والبرمجة*
+━━━━━━━━━━━━━━━━━━━━
+اختر الأداة الهندسية والبرمجية الذكية التي تود استخدامها:
+
+• 💬 *المساعد الأكاديمي الذكي:* حل وشرح المسائل، تلخيص السلايدات والملفات، الإجابة على استفسارات المواد وتزويدك بالروابط.
+• 🐞 *مصحح ومفسر الأكواد:* فحص الأكواد وتصحيح الأخطاء، شرح الدوال والخوارزميات، وتوليد حالات اختبار.
+• 📝 *مولد الكويزات الذكي:* تدرب واختبر مستواك بأسئلة تفاعلية غير محدودة في أي مساق تخصصي.`;
+
+  bot.sendMessage(chatId, text, {
+    parse_mode: "Markdown",
+    reply_markup: { inline_keyboard: keyboard }
+  });
+}
+
+// الباب الثاني: المقررات والخطط الدراسية
+function showAcademicMenu(chatId) {
+  const keyboard = [
+    [{ text: "📚 عرض مقررات جميع السنوات (1 - 5)", callback_data: "show_years" }],
+    [{ text: "🏛️ متطلبات الجامعة الإسلامية", callback_data: "show_uni_reqs" }],
+    [{ text: "🔍 البحث عن مادة / كود مساق (خطة 4 و 5)", callback_data: "start_search" }],
+    [{ text: "🖼️ خطة هندسة الحاسوب 4 سنوات (الجديدة)", callback_data: "plan4" }],
+    [{ text: "📄 خطة هندسة الحاسوب 5 سنوات (السابقة)", callback_data: "plan5" }],
+    [{ text: "📷 شجرة المواد المعتمدة على بعض (Prerequisites)", callback_data: "show_prerequisites" }],
+    [{ text: "🔙 رجوع للقائمة الرئيسية", callback_data: "main_menu" }]
+  ];
+
+  const text = `📚 *بوابة المقررات والخطط الدراسية*
+━━━━━━━━━━━━━━━━━━━━
+تصفح شجرة المواد والمصادر والخطط الأكاديمية:
+
+• 📚 *عرض السنوات:* تصفح مساقات كل سنة وفصل مع روابط الدرايف والشروحات والسلايدات والنصائح.
+• 🏛️ *متطلبات الجامعة:* مقررات القرآن الكريم، العقيدة، الفقه، السيرة، نحو وصرف، وغيرها.
+• 🔍 *البحث بالكود والاسم:* البحث الفوري بأكواد خطة 4 أو 5 سنوات أو اسم المادة.
+• 📄 *الخطط والشجرة:* صور ومستندات الخطط الدراسية وشجرة اعتماد المواد.`;
+
+  bot.sendMessage(chatId, text, {
+    parse_mode: "Markdown",
+    reply_markup: { inline_keyboard: keyboard }
+  });
+}
+
+// الباب الثالث: بنك الامتحانات والمختبرات والمعدل
+function showExamsAndLabsMenu(chatId) {
+  const keyboard = [
+    [{ text: "📂 بنك الامتحانات السابقة (نصفي ونهائي)", callback_data: "open_past_papers" }],
+    [{ text: "⏳ عداد ومخطط الامتحانات وحاسبة الدرجة", callback_data: "exam_countdown" }],
+    [{ text: "🧪 روابط تنزيل برامج المختبرات للمواد", callback_data: "open_lab_programs" }],
+    [{ text: "📊 ملف إكسل حساب المعدل الفصلي والتراكمي", callback_data: "gpa_file" }],
+    [{ text: "🔙 رجوع للقائمة الرئيسية", callback_data: "main_menu" }]
+  ];
+
+  const text = `📂 *بوابة الامتحانات والمختبرات وحساب المعدل*
+━━━━━━━━━━━━━━━━━━━━
+جميع أدوات المراجعة والتحضير العملي والأكاديمي:
+
+• 📂 *بنك الامتحانات السابقة:* نماذج امتحانات نصفية ونهائية مع الحلول للتدريب عليها.
+• ⏳ *مخطط الامتحانات:* عداد تنازلي لمواعيد الاختبارات، إنشاء خطة مراجعة ذكية، وحاسبة الدرجة المطلوبة في النهائي.
+• 🧪 *برامج المختبرات:* شروحات وروابط تنزيل البرامج الهندسية (Logisim, MATLAB, Proteus, Quartus, LTSpice, NetBeans...).
+• 📊 *حاسبة المعدل:* ملف إكسل منظم لحساب وتوقع معدلك الفصلي والتراكمي.`;
+
+  bot.sendMessage(chatId, text, {
+    parse_mode: "Markdown",
+    reply_markup: { inline_keyboard: keyboard }
+  });
+}
+
+// الباب الرابع: الخدمات الطلابية والتواصل
+function showStudentServicesMenu(chatId) {
+  const keyboard = [
+    [{ text: "🔄 سوق تبادل الأدوات والكتب الهندسية", callback_data: "open_marketplace" }],
+    [{ text: "💬 تواصل مع الأدمن / إرسال استفسار أو ملف", callback_data: "contact_admin" }],
+    [{ text: "📞 جهات التواصل المهمة وأرقام الجامعة", callback_data: "show_contacts" }],
+    [{ text: "🌐 الموقع الإلكتروني الرسمي لقسم الحاسوب", url: "https://computer-engineering-iug.vercel.app" }],
+    [{ text: "🔙 رجوع للقائمة الرئيسية", callback_data: "main_menu" }]
+  ];
+
+  const text = `🔄 *بوابة الخدمات الطلابية والتواصل*
+━━━━━━━━━━━━━━━━━━━━
+الخدمات المشتركة وقنوات التواصل والمساعدة:
+
+• 🔄 *سوق التبادل الطلابي:* منصة لعرض وطلب الأدوات الهندسية (Arduino, Raspberry Pi, قطع إلكترونية) والكتب والملازم للبيع أو البدل أو الإهداء.
+• 💬 *تواصل مع الإدارة:* إرسال استفسارات، ملفات (Word, PDF, Excel, ZIP)، واقتراحات لإدارة البوت مع رد مباشر.
+• 📞 *أرقام الجامعة:* جهات التواصل مع القبول والتسجيل، شؤون الطلبة، الشؤون المالية، المنح، والدعم الفني.
+• 🌐 *الموقع الإلكتروني:* تصفح منصة الويب التفاعلية للقسم.`;
+
+  bot.sendMessage(chatId, text, {
+    parse_mode: "Markdown",
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -1533,9 +1632,38 @@ bot.on("callback_query", (query) => {
     } else if (userState[chatId]) {
       userState[chatId].waitingAdminMessage = false;
       userState[chatId].inAiChat = false;
+      userState[chatId].inCodeDebugger = false;
     }
     const name = userState[chatId]?.name || "طالب";
     showMainMenu(chatId, name);
+    return;
+  }
+
+  // الباب الأول: أدوات الذكاء الاصطناعي
+  if (data === "menu_ai_tools") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    showAiToolsMenu(chatId);
+    return;
+  }
+
+  // الباب الثاني: المقررات والخطط الدراسية
+  if (data === "menu_academic") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    showAcademicMenu(chatId);
+    return;
+  }
+
+  // الباب الثالث: بنك الامتحانات والمختبرات والمعدل
+  if (data === "menu_exams_labs") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    showExamsAndLabsMenu(chatId);
+    return;
+  }
+
+  // الباب الرابع: الخدمات الطلابية والتواصل
+  if (data === "menu_services") {
+    if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
+    showStudentServicesMenu(chatId);
     return;
   }
 
@@ -1855,16 +1983,40 @@ bot.on("callback_query", (query) => {
   // ميزات الطلاب والأكاديمية
   // ==========================================
 
-  // بدء محادثة مع الذكاء الاصطناعي
+  // بدء محادثة مع الذكاء الاصطناعي (مع دعم حفظ واستئناف الجلسات الذكية)
   if (data === "start_ai_chat") {
     if (chatId === ADMIN_ID) resetAdminState(ADMIN_ID);
     trackFeatureUse(chatId, "ai_chat", query.from);
-    userState[chatId] = {
-      ...userState[chatId],
-      inAiChat: true,
-      waitingAdminMessage: false,
-      aiHistory: []
-    };
+
+    const hasHistory = (userState[chatId]?.aiHistory?.length || 0) > 0;
+    if (hasHistory) {
+      const historyCount = Math.floor(userState[chatId].aiHistory.length / 2);
+      const resumeText = `🤖 *المساعد الأكاديمي الذكي لقسم هندسة الحاسوب*
+━━━━━━━━━━━━━━━━━━━━
+
+📌 *لديك جلسة محادثة سابقة محفوظة (${historyCount} أسئلة ومناقشات).*
+
+كيف تود المتابعة؟`;
+
+      bot.sendMessage(chatId, resumeText, {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "▶️ متابعة الجلسة السابقة ومواصلة الحديث", callback_data: "resume_ai_chat" }],
+            [{ text: "🆕 بدء محادثة جديدة وتصفير السجل", callback_data: "new_ai_chat" }],
+            [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
+            [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+          ]
+        }
+      });
+      return;
+    }
+
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].inAiChat = true;
+    userState[chatId].waitingAdminMessage = false;
+    userState[chatId].inCodeDebugger = false;
+    userState[chatId].aiHistory = [];
 
     const aiWelcome = `🤖 *المساعد الأكاديمي الذكي لقسم هندسة الحاسوب*
 ━━━━━━━━━━━━━━━━━━━━
@@ -1885,7 +2037,59 @@ bot.on("callback_query", (query) => {
       reply_markup: {
         inline_keyboard: [
           [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
-          [{ text: "❌ إنهاء المحادثة والعودة للقائمة الرئيسية", callback_data: "exit_ai_chat" }]
+          [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+        ]
+      }
+    });
+    return;
+  }
+
+  // استئناف محادثة سابقة
+  if (data === "resume_ai_chat") {
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].inAiChat = true;
+    userState[chatId].waitingAdminMessage = false;
+    userState[chatId].inCodeDebugger = false;
+
+    bot.sendMessage(
+      chatId,
+      "▶️ *تم استئناف محادثتك السابقة بنجاح!* (السياق والذاكرة محفوظان 🟢)\n\nتفضل بطرح سؤالك أو إرسال صورتك/كودك التالي وسأكمل معك فوراً 👇",
+      {
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🧹 مسح الذاكرة وبدء جلسة جديدة", callback_data: "clear_ai_chat" }],
+            [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
+            [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
+          ]
+        }
+      }
+    );
+    return;
+  }
+
+  // بدء محادثة جديدة وتصفير الذاكرة
+  if (data === "new_ai_chat") {
+    if (!userState[chatId]) userState[chatId] = {};
+    userState[chatId].inAiChat = true;
+    userState[chatId].waitingAdminMessage = false;
+    userState[chatId].inCodeDebugger = false;
+    userState[chatId].aiHistory = [];
+
+    const aiWelcome = `🤖 *المساعد الأكاديمي الذكي (جلسة جديدة)*
+━━━━━━━━━━━━━━━━━━━━
+
+أهلاً بك! تم بدء جلسة جديدة ونظيفة 🎓
+تفضل بطرح أي سؤال برمجي أو هندسي أو إرسال صور المسائل والملفات وسأشرحها لك فوراً 👇`;
+
+    bot.sendMessage(chatId, aiWelcome, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
+          [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
         ]
       }
     });
@@ -1896,8 +2100,9 @@ bot.on("callback_query", (query) => {
   if (data === "clear_ai_chat") {
     if (userState[chatId]) {
       userState[chatId].aiHistory = [];
+      userState[chatId].inAiChat = true;
     }
-    bot.sendMessage(chatId, "🧹 تم مسح سجل المحادثة السابقة بنجاح. تفضل بطرح سؤالك الجديد:");
+    bot.sendMessage(chatId, "🧹 تم مسح سجل المحادثة بنجاح وبدء جلسة جديدة. تفضل بطرح سؤالك الجديد:");
     return;
   }
 
@@ -1905,11 +2110,9 @@ bot.on("callback_query", (query) => {
   if (data === "exit_ai_chat") {
     if (userState[chatId]) {
       userState[chatId].inAiChat = false;
-      userState[chatId].aiHistory = [];
     }
-    const name = userState[chatId]?.name || "طالب";
-    bot.sendMessage(chatId, "تم إنهاء المحادثة مع المساعد الذكي. يمكنك اختيار أي خدمة أخرى من القائمة:");
-    showMainMenu(chatId, name);
+    bot.sendMessage(chatId, "✅ تم إنهاء جلسة المحادثة مؤقتاً وحفظ سجلها. يمكنك استئنافها في أي وقت!");
+    showAiToolsMenu(chatId);
     return;
   }
 
@@ -2520,7 +2723,10 @@ bot.on("callback_query", (query) => {
     const buttons = Object.keys(uniRequirements).map((sub) => [
       { text: "📖 " + sub, callback_data: "req_" + sub }
     ]);
-    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+    buttons.push(
+      [{ text: "🔙 رجوع لبوابة المقررات", callback_data: "menu_academic" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "🏛️ اختر مساق متطلبات الجامعة المطلوب:", {
       reply_markup: { inline_keyboard: buttons }
@@ -2569,7 +2775,13 @@ bot.on("callback_query", (query) => {
     trackFeatureUse(chatId, "gpa_file", query.from);
     const filePath = path.join(__dirname, "gpa_calculator.xlsx");
     bot.sendDocument(chatId, filePath, {
-      caption: "📊 ملف حساب المعدل الفصلي والتراكمي"
+      caption: "📊 ملف حساب وتوقع المعدل الفصلي والتراكمي",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🔙 رجوع لبوابة الامتحانات والمختبرات", callback_data: "menu_exams_labs" }],
+          [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+        ]
+      }
     });
     return;
   }
@@ -2579,7 +2791,13 @@ bot.on("callback_query", (query) => {
     trackFeatureUse(chatId, "plan5", query.from);
     const filePath = path.join(__dirname, "plan_5years.pdf");
     bot.sendDocument(chatId, filePath, {
-      caption: "📄 خطة هندسة الحاسوب - نظام 5 سنوات"
+      caption: "📄 خطة هندسة الحاسوب - نظام 5 سنوات",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🔙 رجوع لبوابة المقررات والخطط", callback_data: "menu_academic" }],
+          [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+        ]
+      }
     });
     return;
   }
@@ -2589,8 +2807,17 @@ bot.on("callback_query", (query) => {
     trackFeatureUse(chatId, "plan4", query.from);
     const img1 = path.join(__dirname, "plan4_1.png");
     const img2 = path.join(__dirname, "plan4_2.png");
-    bot.sendPhoto(chatId, img1);
-    bot.sendPhoto(chatId, img2);
+    bot.sendPhoto(chatId, img1).then(() => {
+      bot.sendPhoto(chatId, img2, {
+        caption: "🖼️ خطة هندسة الحاسوب (4 سنوات - 136 ساعة)",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🔙 رجوع لبوابة المقررات والخطط", callback_data: "menu_academic" }],
+            [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+          ]
+        }
+      });
+    });
     return;
   }
 
@@ -2599,7 +2826,13 @@ bot.on("callback_query", (query) => {
     trackFeatureUse(chatId, "prerequisites", query.from);
     const imagePath = path.join(__dirname, "prerequisites.png");
     bot.sendPhoto(chatId, imagePath, {
-      caption: "📷 المواد المعتمدة على بعضها"
+      caption: "📷 شجرة المواد المعتمدة على بعضها (Prerequisites)",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🔙 رجوع لبوابة المقررات والخطط", callback_data: "menu_academic" }],
+          [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+        ]
+      }
     });
     return;
   }
@@ -2610,7 +2843,10 @@ bot.on("callback_query", (query) => {
     const buttons = Object.keys(courses).map((year) => [
       { text: year, callback_data: "year_" + year }
     ]);
-    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+    buttons.push(
+      [{ text: "🔙 رجوع لبوابة المقررات", callback_data: "menu_academic" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "اختر السنة:", {
       reply_markup: { inline_keyboard: buttons }
@@ -2624,7 +2860,10 @@ bot.on("callback_query", (query) => {
     const buttons = Object.keys(contacts).map((c) => [
       { text: c, callback_data: "contact_" + c }
     ]);
-    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+    buttons.push(
+      [{ text: "🔙 رجوع لبوابة الخدمات", callback_data: "menu_services" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "اختر الجهة:", {
       reply_markup: { inline_keyboard: buttons }
@@ -2656,7 +2895,10 @@ bot.on("callback_query", (query) => {
     const buttons = Object.keys(labPrograms).map((name) => [
       { text: name, callback_data: "labItem_" + name }
     ]);
-    buttons.push([{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]);
+    buttons.push(
+      [{ text: "🔙 رجوع لبوابة الامتحانات والمختبرات", callback_data: "menu_exams_labs" }],
+      [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
+    );
 
     bot.sendMessage(chatId, "🧪 اختر المادة:", {
       reply_markup: { inline_keyboard: buttons }
@@ -3206,7 +3448,8 @@ bot.on("message", async (msg) => {
       const aiKeyboard = {
         inline_keyboard: [
           [{ text: "🧹 مسح الذاكرة وبدء محادثة جديدة", callback_data: "clear_ai_chat" }],
-          [{ text: "❌ إنهاء المحادثة والعودة للقائمة الرئيسية", callback_data: "exit_ai_chat" }]
+          [{ text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
         ]
       };
 

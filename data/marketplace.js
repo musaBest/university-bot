@@ -101,8 +101,11 @@ function renderMarketplaceMenu(chatId, bot) {
       { text: "➕ إضافة إعلان جديد (عرض / طلب)", callback_data: "market_add_prompt" }
     ],
     [
-      { text: "📋 إعلاناتي الخاصة", callback_data: "market_my_listings" },
-      { text: "🔙 العودة للقائمة الرئيسية", callback_data: "main_menu" }
+      { text: "📋 إعلاناتي الخاصة", callback_data: "market_my_listings" }
+    ],
+    [
+      { text: "🔙 رجوع لقسم الخدمات الطلابية", callback_data: "menu_services" },
+      { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
     ]
   ];
 
@@ -132,7 +135,8 @@ function renderCategoryListings(chatId, bot, category, adminId = 5687891184) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "➕ إضافة إعلان الآن", callback_data: `market_add_prompt_${category}` }],
-          [{ text: "🔙 العودة لسوق التبادل", callback_data: "open_marketplace" }]
+          [{ text: "🔙 رجوع لسوق التبادل", callback_data: "open_marketplace" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
         ]
       }
     });
@@ -154,7 +158,10 @@ function renderCategoryListings(chatId, bot, category, adminId = 5687891184) {
 
   const keyboard = [];
   keyboard.push([{ text: "➕ أضف إعلانك في هذا القسم", callback_data: `market_add_prompt_${category}` }]);
-  keyboard.push([{ text: "🔙 العودة لسوق التبادل", callback_data: "open_marketplace" }]);
+  keyboard.push([
+    { text: "🔙 رجوع لسوق التبادل", callback_data: "open_marketplace" },
+    { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
+  ]);
 
   bot.sendMessage(chatId, text, {
     parse_mode: "Markdown",
@@ -174,7 +181,8 @@ function renderMyListings(chatId, bot) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "➕ نشر إعلان جديد", callback_data: "market_add_prompt" }],
-          [{ text: "🔙 العودة لسوق التبادل", callback_data: "open_marketplace" }]
+          [{ text: "🔙 رجوع لسوق التبادل", callback_data: "open_marketplace" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
         ]
       }
     });
@@ -195,7 +203,10 @@ function renderMyListings(chatId, bot) {
     ]);
   }
 
-  keyboard.push([{ text: "🔙 العودة لسوق التبادل", callback_data: "open_marketplace" }]);
+  keyboard.push([
+    { text: "🔙 رجوع لسوق التبادل", callback_data: "open_marketplace" },
+    { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
+  ]);
 
   bot.sendMessage(chatId, text, {
     parse_mode: "Markdown",

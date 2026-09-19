@@ -101,7 +101,8 @@ function renderPastPapersMenu(chatId, bot) {
       { text: "🔍 بحث سريع عن امتحانات مادة معينة", callback_data: "pp_search_prompt" }
     ],
     [
-      { text: "🔙 العودة للقائمة الرئيسية", callback_data: "main_menu" }
+      { text: "🔙 رجوع لبنك الامتحانات والمختبرات", callback_data: "menu_exams_labs" },
+      { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
     ]
   ];
 
@@ -142,7 +143,8 @@ function renderYearExams(chatId, bot, yearKey) {
   }
 
   keyboard.push([
-    { text: "🔙 العودة لقائمة بنك الامتحانات", callback_data: "open_past_papers" }
+    { text: "🔙 رجوع لبنك الامتحانات", callback_data: "open_past_papers" },
+    { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
   ]);
 
   bot.sendMessage(chatId, text, {
@@ -163,7 +165,8 @@ function searchPastPapers(chatId, bot, query) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "📂 تصفح بنك الامتحانات بالسنوات", callback_data: "open_past_papers" }],
-          [{ text: "🔙 القائمة الرئيسية", callback_data: "main_menu" }]
+          [{ text: "🔙 رجوع لبنك الامتحانات والمختبرات", callback_data: "menu_exams_labs" }],
+          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
         ]
       }
     });
@@ -186,7 +189,8 @@ function searchPastPapers(chatId, bot, query) {
   }
 
   keyboard.push([
-    { text: "🔙 العودة لبنك الامتحانات", callback_data: "open_past_papers" }
+    { text: "🔙 رجوع لبنك الامتحانات", callback_data: "open_past_papers" },
+    { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
   ]);
 
   bot.sendMessage(chatId, text, {

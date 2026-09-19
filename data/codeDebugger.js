@@ -109,7 +109,7 @@ function renderCodeDebuggerMenu(chatId, bot, currentMode = "debug") {
     ],
     [
       { text: "🧹 تنظيف وبدء جلسة جديدة", callback_data: "cd_clear" },
-      { text: "🔙 العودة للقائمة الرئيسية", callback_data: "cd_exit" }
+      { text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "cd_exit" }
     ]
   ];
 
@@ -205,7 +205,7 @@ async function handleCodeDebuggerInput(chatId, bot, msg, userState) {
       ],
       [
         { text: "🧹 مسح وبدء من جديد", callback_data: "cd_clear" },
-        { text: "🔙 إنهاء والعودة للقائمة", callback_data: "cd_exit" }
+        { text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "cd_exit" }
       ]
     ];
 

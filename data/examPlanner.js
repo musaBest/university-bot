@@ -96,7 +96,10 @@ function renderExamCountdown(chatId, bot) {
   const keyboard = [
     [{ text: "📅 إنشاء جدول وخطة مراجعة ذكية (AI Planner)", callback_data: "exam_create_plan_prompt" }],
     [{ text: "🎯 حاسبة الدرجة المطلوبة في النهائي", callback_data: "exam_calc_grade_prompt" }],
-    [{ text: "🔙 العودة للقائمة الرئيسية", callback_data: "main_menu" }]
+    [
+      { text: "🔙 رجوع لبنك الامتحانات والمختبرات", callback_data: "menu_exams_labs" },
+      { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
+    ]
   ];
 
   bot.sendMessage(chatId, text, {
@@ -131,8 +134,9 @@ async function generateSmartStudyPlan(chatId, bot, studentInput) {
     clearInterval(typingTimer);
 
     const keyboard = [
-      [{ text: "⏳ عداد الامتحانات", callback_data: "exam_countdown" }],
-      [{ text: "🔙 القائمة الرئيسية", callback_data: "main_menu" }]
+      [{ text: "⏳ عداد ومخطط الامتحانات", callback_data: "exam_countdown" }],
+      [{ text: "🔙 رجوع لبنك الامتحانات والمختبرات", callback_data: "menu_exams_labs" }],
+      [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
     ];
 
     if (plan.length > 4000) {
