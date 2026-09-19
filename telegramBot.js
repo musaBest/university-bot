@@ -1304,8 +1304,7 @@ function showMainMenu(chatId, name = "طالب") {
 
 📌 *اختر البوابة أو القسم المطلوب للوصول المباشر لمصادرك:*`;
 
-  bot.sendMessage(chatId, welcomeText, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, welcomeText, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -1328,8 +1327,7 @@ function showAiToolsMenu(chatId) {
 • 🐞 *مصحح ومفسر الأكواد:* فحص الأكواد وتصحيح الأخطاء، شرح الدوال والخوارزميات، وتوليد حالات اختبار.
 • 📝 *مولد الكويزات الذكي:* تدرب واختبر مستواك بأسئلة تفاعلية غير محدودة في أي مساق تخصصي.`;
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -1355,8 +1353,7 @@ function showAcademicMenu(chatId) {
 • 🔍 *البحث بالكود والاسم:* البحث الفوري بأكواد خطة 4 أو 5 سنوات أو اسم المادة.
 • 📄 *الخطط والشجرة:* صور ومستندات الخطط الدراسية وشجرة اعتماد المواد.`;
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -1380,8 +1377,7 @@ function showExamsAndLabsMenu(chatId) {
 • 🧪 *برامج المختبرات:* شروحات وروابط تنزيل البرامج الهندسية (Logisim, MATLAB, Proteus, Quartus, LTSpice, NetBeans...).
 • 📊 *حاسبة المعدل:* ملف إكسل منظم لحساب وتوقع معدلك الفصلي والتراكمي.`;
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -1405,8 +1401,7 @@ function showStudentServicesMenu(chatId) {
 • 📞 *أرقام الجامعة:* جهات التواصل مع القبول والتسجيل، شؤون الطلبة، الشؤون المالية، المنح، والدعم الفني.
 • 🌐 *الموقع الإلكتروني:* تصفح منصة الويب التفاعلية للقسم.`;
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -1614,40 +1609,43 @@ bot.onText(/\/stats/, (msg) => {
 });
 
 // التعامل مع جميع أزرار Callback Queries
-bot.on("callback_query", (query) => {
-  const chatId = query.message.chat.id;
-  const data = query.data;
+bot.on("callback_query", async (query) => {
+  try {
+    const chatId = query.message ? query.message.chat.id : (query.from ? query.from.id : null);
+    const data = query.data;
+    if (!chatId || !data) return;
 
-  // التحقق من حالة حظر المستخدم
-  if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
-    bot.answerCallbackQuery(query.id, {
-      text: "⛔ عذراً، تم تقييد وصولك للبوت وحظر حسابك من قبل الإدارة.",
-      show_alert: true
-    });
-    return;
-  }
+    // الإجابة الفورية على التليجرام لإيقاف مؤشر التحميل فوراً في التطبيق
+    bot.answerCallbackQuery(query.id).catch(() => {});
 
-  saveUser(query.from, chatId);
-
-  if (processedCallbacks.has(query.id)) return;
-  processedCallbacks.add(query.id);
-
-  bot.answerCallbackQuery(query.id);
-  setTimeout(() => processedCallbacks.delete(query.id), 5000);
-
-  // القائمة الرئيسية
-  if (data === "main_menu") {
-    if (chatId === ADMIN_ID) {
-      resetAdminState(ADMIN_ID);
-    } else if (userState[chatId]) {
-      userState[chatId].waitingAdminMessage = false;
-      userState[chatId].inAiChat = false;
-      userState[chatId].inCodeDebugger = false;
+    // التحقق من حالة حظر المستخدم
+    if (chatId !== ADMIN_ID && isUserBanned(chatId)) {
+      bot.answerCallbackQuery(query.id, {
+        text: "⛔ عذراً، تم تقييد وصولك للبوت وحظر حسابك من قبل الإدارة.",
+        show_alert: true
+      }).catch(() => {});
+      return;
     }
-    const name = userState[chatId]?.name || "طالب";
-    showMainMenu(chatId, name);
-    return;
-  }
+
+    try { saveUser(query.from, chatId); } catch (e) {}
+
+    if (processedCallbacks.has(query.id)) return;
+    processedCallbacks.add(query.id);
+    setTimeout(() => processedCallbacks.delete(query.id), 5000);
+
+    // القائمة الرئيسية
+    if (data === "main_menu") {
+      if (chatId === ADMIN_ID) {
+        resetAdminState(ADMIN_ID);
+      } else if (userState[chatId]) {
+        userState[chatId].waitingAdminMessage = false;
+        userState[chatId].inAiChat = false;
+        userState[chatId].inCodeDebugger = false;
+      }
+      const name = userState[chatId]?.name || (query.from?.first_name || "طالب");
+      showMainMenu(chatId, name);
+      return;
+    }
 
   // الباب الأول: أدوات الذكاء الاصطناعي
   if (data === "menu_ai_tools") {
@@ -3057,6 +3055,9 @@ bot.on("callback_query", (query) => {
       sendCourseDetails(chatId, match, false);
       return;
     }
+  }
+  } catch (err) {
+    console.error("Callback query error:", err);
   }
 });
 
