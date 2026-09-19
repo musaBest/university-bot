@@ -5,6 +5,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { safeEscape, safeSend } = require("./safeMessenger");
 
 const pollsFilePath = path.join(__dirname, "polls.json");
 
@@ -12,7 +13,8 @@ function loadPolls() {
   try {
     if (fs.existsSync(pollsFilePath)) {
       const data = fs.readFileSync(pollsFilePath, "utf8");
-      return JSON.parse(data);
+      const list = JSON.parse(data);
+      if (Array.isArray(list)) return list;
     }
   } catch (e) {
     console.error("Error loading polls:", e);
@@ -22,7 +24,7 @@ function loadPolls() {
 
 function savePolls(polls) {
   try {
-    fs.writeFileSync(pollsFilePath, JSON.stringify(polls.slice(-25), null, 2), "utf8");
+    fs.writeFileSync(pollsFilePath, JSON.stringify(polls.slice(-50), null, 2), "utf8");
   } catch (e) {
     console.error("Error saving polls:", e);
   }
@@ -57,6 +59,8 @@ function recordVote(pollId, userId, studentName, username, optionIndex) {
   if (optionIndex < 0 || optionIndex >= poll.options.length) {
     return { success: false, error: "خيار التصويت غير صالح." };
   }
+
+  if (!poll.votes) poll.votes = {};
 
   poll.votes[String(userId)] = {
     name: studentName || "طالب",
@@ -109,7 +113,7 @@ async function unsendPollFromStudents(bot, pollId) {
 function renderAdminPollDetails(chatId, bot, pollId) {
   const poll = getPoll(pollId);
   if (!poll) {
-    bot.sendMessage(chatId, "❌ لم يتم العثور على هذا الاستطلاع.", {
+    safeSend(bot, chatId, "❌ لم يتم العثور على هذا الاستطلاع.", {
       reply_markup: {
         inline_keyboard: [[{ text: "🔙 قائمة الاستطلاعات", callback_data: "admin_polls_menu" }]]
       }
@@ -121,9 +125,10 @@ function renderAdminPollDetails(chatId, bot, pollId) {
   const totalVotes = votesArr.length;
   const statusEmoji = poll.active ? "🟢 جاري ومتاح للطلاب" : "🔴 مغلق";
 
+  const safeQuestion = safeEscape(poll.question);
   let text = `🗳️ *تفاصيل ونتائج استطلاع الرأي (خاص بالأدمن فقط)*\n`;
   text += `━━━━━━━━━━━━━━━━━━━━\n`;
-  text += `📌 *السؤال:* ${poll.question}\n`;
+  text += `📌 *السؤال:* ${safeQuestion}\n`;
   text += `📅 *تاريخ الإنشاء:* ${new Date(poll.createdAt).toLocaleString("ar-EG")}\n`;
   text += `📊 *الحالة:* ${statusEmoji}\n`;
   text += `👥 *إجمالي المصوتين:* *${totalVotes}* طالب\n\n`;
@@ -135,7 +140,8 @@ function renderAdminPollDetails(chatId, bot, pollId) {
     const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
     const barBlocks = Math.round(pct / 10);
     const bar = "🟩".repeat(barBlocks) + "⬜".repeat(10 - barBlocks);
-    text += `*${idx + 1}. ${opt}*\n`;
+    const safeOpt = safeEscape(opt);
+    text += `*${idx + 1}. ${safeOpt}*\n`;
     text += `   ${bar} *${count}* صوت (${pct}%)\n\n`;
   });
 
@@ -144,13 +150,14 @@ function renderAdminPollDetails(chatId, bot, pollId) {
 
   poll.options.forEach((opt, idx) => {
     const optionVoters = votesArr.filter(v => v.optionIndex === idx);
-    text += `🔹 *${opt}* (${optionVoters.length} طالب):\n`;
+    const safeOpt = safeEscape(opt);
+    text += `🔹 *${safeOpt}* (${optionVoters.length} طالب):\n`;
     if (optionVoters.length === 0) {
       text += `   _لا يوجد أصوات لهذا الخيار بعد_\n`;
     } else {
       optionVoters.forEach((v, vIdx) => {
-        const uName = v.name || "طالب";
-        const uHandle = v.username ? ` (@${v.username})` : "";
+        const uName = safeEscape(v.name || "طالب");
+        const uHandle = v.username ? ` (@${safeEscape(v.username.replace(/^@/, ""))})` : "";
         text += `   ${vIdx + 1}. *${uName}*${uHandle} - \`ID: ${v.uid}\`\n`;
       });
     }
@@ -171,8 +178,7 @@ function renderAdminPollDetails(chatId, bot, pollId) {
     ]
   ];
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -197,7 +203,7 @@ function renderAdminPollsList(chatId, bot) {
     [{ text: "➕ إنشاء استطلاع رأي جديد وإرساله للطلاب", callback_data: "admin_poll_prompt" }]
   ];
 
-  polls.slice(0, 8).forEach((p) => {
+  polls.slice(0, 10).forEach((p) => {
     const votesCount = Object.keys(p.votes || {}).length;
     const statusIcon = p.active ? "🟢" : "🔴";
     const title = p.question.length > 28 ? p.question.slice(0, 28) + "..." : p.question;
@@ -211,8 +217,7 @@ function renderAdminPollsList(chatId, bot) {
     { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
   ]);
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }

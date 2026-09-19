@@ -1,0 +1,15 @@
+[
+  {
+    "id": "bc_1789775426347",
+    "timestamp": "2026-09-18T23:50:26.347Z",
+    "description": "إعلان تجريبي",
+    "totalSent": 1,
+    "sentMessages": [
+      {
+        "chatId": 123,
+        "messageId": 456
+      }
+    ],
+    "isDeleted": false
+  }
+]

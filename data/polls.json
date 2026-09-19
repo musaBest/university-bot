@@ -1,0 +1,27 @@
+[
+  {
+    "id": "poll_1789775411611",
+    "question": "ما رأيكم بمستوى الامتحان؟",
+    "options": [
+      "سهل",
+      "صعب"
+    ],
+    "createdAt": "2026-09-18T23:50:11.612Z",
+    "active": true,
+    "votes": {
+      "123456": {
+        "name": "أحمد",
+        "username": "ahmed_dev",
+        "optionIndex": 0,
+        "timestamp": "2026-09-18T23:50:11.649Z"
+      },
+      "789012": {
+        "name": "محمد",
+        "username": "",
+        "optionIndex": 1,
+        "timestamp": "2026-09-18T23:50:11.652Z"
+      }
+    },
+    "sentMessages": []
+  }
+]

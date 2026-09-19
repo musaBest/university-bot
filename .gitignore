@@ -1,14 +1,6 @@
 node_modules/
 .env
 *.log
-data/users.json
-data/users_backup.json
-data/users_archive.json
-data/*.txt
 data/ai_config.json
-data/marketplace.json
-data/course_searches.json
-data/broadcast_history.json
-data/polls.json
-
-
+data/last_broadcast_report.txt
+data/subscribers_list.txt

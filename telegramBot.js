@@ -14,6 +14,13 @@ const { renderPastPapersMenu, renderYearExams, searchPastPapers } = require("./d
 const { renderMarketplaceMenu, renderCategoryListings, renderMyListings, addListing, deleteListing } = require("./data/marketplace");
 const { saveBroadcastRecord, getLastBroadcast, getBroadcastById, unsendBroadcast } = require("./data/broadcastManager");
 const { createPoll, getPoll, loadPolls, savePolls, recordVote, togglePollStatus, unsendPollFromStudents, renderAdminPollDetails, renderAdminPollsList } = require("./data/pollsManager");
+const {
+  initCloudSyncOnBoot,
+  sendMasterBackupToAdmin,
+  restoreDatabaseBundle,
+  scheduleAutoCloudSync,
+  saveMasterSnapshot
+} = require("./data/cloudSync");
 
 // خادم صحة بسيط (Health Check & Keep-Alive) لربط البوت بالاستضافات السحابية وضمان عمله 24/7
 const PORT = process.env.PORT || 3000;
@@ -27,6 +34,9 @@ server.listen(PORT, () => {
 
 const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
+
+// تشغيل محرك المزامنة والاستعادة الفورية لقاعدة البيانات عند الإقلاع
+initCloudSyncOnBoot(bot);
 
 const userState = {};
 const processedCallbacks = new Set();
@@ -2474,18 +2484,27 @@ bot.on("callback_query", (query) => {
       return;
     }
 
+    scheduleAutoCloudSync(bot);
+
     bot.answerCallbackQuery(query.id, {
       text: "✅ تم تسجيل تصويتك بنجاح، شكراً لمشاركتك!",
       show_alert: false
     });
 
-    const updatedText = `🗳️ *استطلاع رأي لطلبة قسم هندسة الحاسوب*\n━━━━━━━━━━━━━━━━━━━━\n\n📌 *السؤال:* ${voteRes.poll.question}\n\n✅ *تم تسجيل اختيارك بنجاح:* \`${voteRes.chosenOption}\`\n\n🔒 *ملاحظة:* التصويت سري ومحفوظ للإدارة فقط، شكراً لمشاركتك الفعالة! ❤️`;
+    const safeQ = safeEscape(voteRes.poll.question);
+    const safeChoice = safeEscape(voteRes.chosenOption);
+    const updatedText = `🗳️ *استطلاع رأي لطلبة قسم هندسة الحاسوب*\n━━━━━━━━━━━━━━━━━━━━\n\n📌 *السؤال:* ${safeQ}\n\n✅ *تم تسجيل اختيارك بنجاح:* \`${safeChoice}\`\n\n🔒 *ملاحظة:* التصويت سري ومحفوظ للإدارة فقط، شكراً لمشاركتك الفعالة! ❤️`;
 
     bot.editMessageText(updatedText, {
       chat_id: chatId,
       message_id: query.message.message_id,
       parse_mode: "Markdown"
-    }).catch(() => {});
+    }).catch(() => {
+      bot.editMessageText(`🗳️ استطلاع رأي لطلبة قسم هندسة الحاسوب\n\nالسؤال: ${voteRes.poll.question}\n\n✅ تم تسجيل اختيارك: ${voteRes.chosenOption}\n\nالتصويت سري ومحفوظ للإدارة فقط.`, {
+        chat_id: chatId,
+        message_id: query.message.message_id
+      }).catch(() => {});
+    });
     return;
   }
 
@@ -2612,29 +2631,15 @@ bot.on("callback_query", (query) => {
     return;
   }
 
-  // تنزيل نسخة احتياطية من قاعدة بيانات الطلاب JSON
+  // تنزيل نسخة احتياطية شاملة لكامل البوت JSON (طلاب + استطلاعات + سوق + إعلانات)
   if (data === "admin_download_backup") {
     if (chatId !== ADMIN_ID) return;
     resetAdminState(ADMIN_ID);
-    const users = loadUsers();
-    saveUsersList(users);
-    const backupFile = path.join(__dirname, "data", "users.json");
-
-    const caption = `💾 *نسخة احتياطية لقاعدة بيانات المشتركين*\n━━━━━━━━━━━━━━━━━━━━\n👥 *إجمالي الطلاب المسجلين:* ${users.length} طالب\n📅 *تاريخ التصدير:* ${new Date().toLocaleString("ar-EG")}\n\n💡 *ملاحظة مهمة:* احتفظ بهذا الملف لديك. عند تحديث السيرفر أو نقله يمكنك إعادة إرسال هذا الملف للبوت في أي وقت لاستعادة ودمج كل المشتركين فوراً بنقرة واحدة!`;
-
-    safeSendDocument(bot, chatId, backupFile, {
-      caption: caption,
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
-          [{ text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }]
-        ]
-      }
-    });
+    sendMasterBackupToAdmin(chatId, bot);
     return;
   }
 
-  // طلب استعادة أو دمج بيانات المشتركين
+  // طلب استعادة أو دمج بيانات شاملة
   if (data === "admin_restore_prompt") {
     if (chatId !== ADMIN_ID) return;
     resetAdminState(ADMIN_ID);
@@ -2642,7 +2647,7 @@ bot.on("callback_query", (query) => {
     safeSend(
       bot,
       chatId,
-      `📥 *استعادة أو دمج بيانات المشتركين (Restore / Merge)*\n━━━━━━━━━━━━━━━━━━━━\n\nأرسل الآن ملف النسخة الاحتياطية (\`users.json\` أو أي ملف \`.json\`) مباشرة هنا في المحادثة.\n\n⚡ *ملاحظة:* لن يتم مسح أي مستخدم حالي، بل سيقوم البوت تلقائياً بدمج جميع الطلاب القدامى والجدد وتحديث نشاطهم وإحصائياتهم بدقة!`,
+      `📥 *استعادة أو دمج البيانات الشاملة (Restore / Merge)*\n━━━━━━━━━━━━━━━━━━━━\n\nأرسل الآن ملف النسخة الاحتياطية (\`ce_bot_full_backup.json\` أو \`users.json\`) مباشرة هنا في المحادثة.\n\n⚡ *ملاحظة:* سيقوم البوت تلقائياً بدمج واسترجاع كافة استطلاعات الرأي والأصوات، إعلانات سوق التبادل، وبيانات الطلاب المشتركين بدقة ودون فقدان أي معلومة! 🚀`,
       {
         reply_markup: {
           inline_keyboard: [[{ text: "❌ إلغاء والعودة للوحة التحكم", callback_data: "admin_dashboard" }]]
@@ -3165,7 +3170,7 @@ bot.on("message", async (msg) => {
       return;
     }
 
-    // حالة: الأدمن يرسل ملف JSON لاستعادة أو دمج قاعدة بيانات المشتركين
+    // حالة: الأدمن يرسل ملف JSON لاستعادة أو دمج قاعدة بيانات المشتركين أو النسخة الشاملة
     if (msg.document && (userState[ADMIN_ID]?.waitingRestoreBackup || (msg.document.file_name && msg.document.file_name.toLowerCase().endsWith(".json")))) {
       userState[ADMIN_ID].waitingRestoreBackup = false;
       try {
@@ -3175,12 +3180,28 @@ bot.on("message", async (msg) => {
         try { fs.unlinkSync(downloadedPath); } catch (e) {}
 
         const parsed = JSON.parse(jsonText);
-        if (Array.isArray(parsed)) {
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed) && (parsed.users || parsed.polls || parsed.marketplace || parsed.version)) {
+          const res = restoreDatabaseBundle(parsed);
+          safeSend(
+            bot,
+            chatId,
+            `✅ *تم استعادة ودمج النسخة الشاملة بنجاح!* 🚀\n━━━━━━━━━━━━━━━━━━━━\n👥 *المشتركين:* تمت استعادة وتحديث سجلاتهم.\n🗳️ *الاستطلاعات:* تمت استعادة الاستطلاعات وتصويت الطلاب.\n🔄 *سوق التبادل:* تمت استعادة كافة الإعلانات.\n\nجميع البيانات تعمل الآن بنجاح وبأعلى دقة!`,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+                  [{ text: "🗳️ استطلاعات الرأي", callback_data: "admin_polls_menu" }]
+                ]
+              }
+            }
+          );
+          return;
+        } else if (Array.isArray(parsed)) {
           const mergeResult = mergeUsersData(parsed);
           safeSend(
             bot,
             chatId,
-            `✅ *تم استعادة ودمج البيانات بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n➕ *طلاب جدد تمت إضافتهم:* ${mergeResult.addedCount}\n🔄 *طلاب تم تحديث بياناتهم:* ${mergeResult.updatedCount}\n👥 *إجمالي المشتركين الحالي:* ${mergeResult.total} طالب`,
+            `✅ *تم استعادة ودمج بيانات المشتركين بنجاح!*\n━━━━━━━━━━━━━━━━━━━━\n➕ *طلاب جدد تمت إضافتهم:* ${mergeResult.addedCount}\n🔄 *طلاب تم تحديث بياناتهم:* ${mergeResult.updatedCount}\n👥 *إجمالي المشتركين الحالي:* ${mergeResult.total} طالب`,
             {
               reply_markup: {
                 inline_keyboard: [
@@ -3192,7 +3213,7 @@ bot.on("message", async (msg) => {
           );
           return;
         } else {
-          safeSend(bot, chatId, "❌ الملف المرسل لا يحتوي على مصفوفة بيانات مشترين بصيغة JSON صحيحة.");
+          safeSend(bot, chatId, "❌ الملف المرسل لا يحتوي على بنية بيانات JSON صحيحة.");
           return;
         }
       } catch (err) {

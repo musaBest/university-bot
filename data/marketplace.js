@@ -5,6 +5,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { safeEscape, safeSend } = require("./safeMessenger");
 
 const MARKETPLACE_FILE = path.join(__dirname, "marketplace.json");
 
@@ -109,8 +110,7 @@ function renderMarketplaceMenu(chatId, bot) {
     ]
   ];
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -130,8 +130,7 @@ function renderCategoryListings(chatId, bot, category, adminId = 5687891184) {
   const catTitle = catNames[category] || "الإعلانات";
 
   if (filtered.length === 0) {
-    bot.sendMessage(chatId, `لا توجد إعلانات حالياً في قسم *${catTitle}*.\n\nكن أول من يضيف إعلاناً! 🚀`, {
-      parse_mode: "Markdown",
+    safeSend(bot, chatId, `لا توجد إعلانات حالياً في قسم *${catTitle}*.\n\nكن أول من يضيف إعلاناً! 🚀`, {
       reply_markup: {
         inline_keyboard: [
           [{ text: "➕ إضافة إعلان الآن", callback_data: `market_add_prompt_${category}` }],
@@ -147,12 +146,19 @@ function renderCategoryListings(chatId, bot, category, adminId = 5687891184) {
 
   for (let i = 0; i < Math.min(filtered.length, 10); i++) {
     const item = filtered[i];
-    const dateStr = item.createdAt.split("T")[0];
-    text += `🔹 *${i + 1}. ${item.title}*\n`;
-    text += `• 📝 *الوصف:* ${item.details}\n`;
-    text += `• 💰 *الحالة/السعر:* ${item.priceOrType}\n`;
-    text += `• 👤 *الناشر:* ${item.userName} (${item.userHandle || "بدون يوزر"})\n`;
-    text += `• 📞 *للتواصل:* \`${item.contact}\`\n`;
+    const dateStr = item.createdAt ? item.createdAt.split("T")[0] : "";
+    const safeTitle = safeEscape(item.title);
+    const safeDetails = safeEscape(item.details);
+    const safePrice = safeEscape(item.priceOrType);
+    const safeName = safeEscape(item.userName);
+    const safeHandle = item.userHandle ? ` (@${safeEscape(item.userHandle.replace(/^@/, ""))})` : "";
+    const safeContact = safeEscape(item.contact);
+
+    text += `🔹 *${i + 1}. ${safeTitle}*\n`;
+    text += `• 📝 *الوصف:* ${safeDetails}\n`;
+    text += `• 💰 *الحالة/السعر:* ${safePrice}\n`;
+    text += `• 👤 *الناشر:* ${safeName}${safeHandle}\n`;
+    text += `• 📞 *للتواصل:* \`${safeContact}\`\n`;
     text += `• 📅 *التاريخ:* ${dateStr}\n\n`;
   }
 
@@ -163,8 +169,7 @@ function renderCategoryListings(chatId, bot, category, adminId = 5687891184) {
     { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
   ]);
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }
@@ -177,7 +182,7 @@ function renderMyListings(chatId, bot) {
   const mine = all.filter(l => String(l.userId) === String(chatId));
 
   if (mine.length === 0) {
-    bot.sendMessage(chatId, "ليس لديك أي إعلانات منشورة حالياً في سوق التبادل.", {
+    safeSend(bot, chatId, "ليس لديك أي إعلانات منشورة حالياً في سوق التبادل.", {
       reply_markup: {
         inline_keyboard: [
           [{ text: "➕ نشر إعلان جديد", callback_data: "market_add_prompt" }],
@@ -194,9 +199,13 @@ function renderMyListings(chatId, bot) {
 
   for (let i = 0; i < mine.length; i++) {
     const item = mine[i];
-    text += `🔹 *${i + 1}. ${item.title}*\n`;
-    text += `• 📝 *الوصف:* ${item.details}\n`;
-    text += `• 💰 *السعر/النوع:* ${item.priceOrType}\n\n`;
+    const safeTitle = safeEscape(item.title);
+    const safeDetails = safeEscape(item.details);
+    const safePrice = safeEscape(item.priceOrType);
+
+    text += `🔹 *${i + 1}. ${safeTitle}*\n`;
+    text += `• 📝 *الوصف:* ${safeDetails}\n`;
+    text += `• 💰 *السعر/النوع:* ${safePrice}\n\n`;
 
     keyboard.push([
       { text: `🗑️ حذف: ${item.title.slice(0, 20)}`, callback_data: `market_del_${item.id}` }
@@ -208,8 +217,7 @@ function renderMyListings(chatId, bot) {
     { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
   ]);
 
-  bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
+  safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }
   });
 }

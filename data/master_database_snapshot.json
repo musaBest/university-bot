@@ -1,0 +1,80 @@
+{
+  "version": "2.0",
+  "exportedAt": "2026-09-19T17:35:52.305Z",
+  "users": [
+    {
+      "id": 5687891184,
+      "name": "Admin",
+      "username": "@admin_test",
+      "joinedAt": "2026-09-02T10:23:07.048Z",
+      "lastActive": "2026-09-10T06:55:45.845Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 1,
+        "show_years": 2
+      }
+    }
+  ],
+  "polls": [
+    {
+      "id": "poll_1789775411611",
+      "question": "ما رأيكم بمستوى الامتحان؟",
+      "options": [
+        "سهل",
+        "صعب"
+      ],
+      "createdAt": "2026-09-18T23:50:11.612Z",
+      "active": true,
+      "votes": {
+        "123456": {
+          "name": "أحمد",
+          "username": "ahmed_dev",
+          "optionIndex": 0,
+          "timestamp": "2026-09-18T23:50:11.649Z"
+        },
+        "789012": {
+          "name": "محمد",
+          "username": "",
+          "optionIndex": 1,
+          "timestamp": "2026-09-18T23:50:11.652Z"
+        }
+      },
+      "sentMessages": []
+    }
+  ],
+  "marketplace": [],
+  "broadcastHistory": [
+    {
+      "id": "bc_1789775426347",
+      "timestamp": "2026-09-18T23:50:26.347Z",
+      "description": "إعلان تجريبي",
+      "totalSent": 1,
+      "sentMessages": [
+        {
+          "chatId": 123,
+          "messageId": 456
+        }
+      ],
+      "isDeleted": false
+    }
+  ],
+  "courseSearches": {},
+  "examDates": {
+    "semesterName": "الفصل الدراسي الحالي 2026",
+    "midtermStart": "2026-10-25T09:00:00",
+    "midtermEnd": "2026-11-05T14:00:00",
+    "finalStart": "2026-12-20T09:00:00",
+    "finalEnd": "2027-01-05T14:00:00",
+    "customEvents": [
+      {
+        "title": "📌 بداية الامتحانات النصفية",
+        "date": "2026-10-25T09:00:00"
+      },
+      {
+        "title": "🏁 بداية الامتحانات النهائية",
+        "date": "2026-12-20T09:00:00"
+      }
+    ]
+  }
+}
