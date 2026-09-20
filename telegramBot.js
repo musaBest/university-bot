@@ -32,7 +32,7 @@ server.listen(PORT, () => {
   console.log(`Keep-alive server is listening on port ${PORT}`);
 });
 
-const token = "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
+const token = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || "8515128167:AAGRskapdCNiU-wVosktdc-hFLrvBuBUc8o";
 const bot = new TelegramBot(token, { polling: true });
 
 // تشغيل محرك المزامنة والاستعادة الفورية لقاعدة البيانات عند الإقلاع
