@@ -1,22 +1,1253 @@
 {
   "version": "2.0",
-  "exportedAt": "2026-09-19T18:32:50.120Z",
+  "exportedAt": "2026-10-05T07:25:53.410Z",
   "users": [
     {
       "id": 5687891184,
-      "name": "Admin",
-      "username": "@admin_test",
+      "name": "Musab Alaswed",
+      "username": "@bestmusab",
       "joinedAt": "2026-09-02T10:23:07.048Z",
-      "lastActive": "2026-09-10T06:55:45.845Z",
+      "lastActive": "2026-10-04T13:58:50.171Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 1363,
+        "show_years": 33,
+        "ai_chat": 61,
+        "contacts": 6,
+        "lab_programs": 8,
+        "marketplace": 29,
+        "search": 12,
+        "ai_quiz": 1,
+        "exam_planner": 1
+      }
+    },
+    {
+      "id": 12345678,
+      "name": "أحمد",
+      "username": "@ahmed_test",
+      "joinedAt": "2026-09-19T18:32:50.093Z",
+      "lastActive": "2026-09-19T18:32:50.093Z",
+      "active": false,
+      "banned": false,
+      "featuresUsed": {
+        "menu_academic": 1
+      }
+    },
+    {
+      "id": 8936082180,
+      "name": "M",
+      "username": "",
+      "joinedAt": "2026-09-10T17:01:19.862Z",
+      "lastActive": "2026-10-04T05:40:10.365Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 204,
+        "search": 9,
+        "ai_chat": 33,
+        "show_years": 18,
+        "contact_admin": 8,
+        "lab_programs": 2,
+        "gpa_file": 1,
+        "marketplace": 18,
+        "ai_quiz": 2,
+        "uni_reqs": 3
+      }
+    },
+    {
+      "id": 8015484473,
+      "name": "منة",
+      "username": "",
+      "joinedAt": "2026-09-11T12:43:52.076Z",
+      "lastActive": "2026-09-30T09:19:01.619Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 49,
+        "search": 8,
+        "gpa_file": 2,
+        "upload": 2,
+        "ai_chat": 6,
+        "show_years": 3,
+        "ai_quiz": 3,
+        "exam_planner": 6,
+        "marketplace": 2,
+        "lab_programs": 1
+      }
+    },
+    {
+      "id": 1337998820,
+      "name": "Aya",
+      "username": "@Aya_Habib8",
+      "joinedAt": "2026-09-11T15:41:19.836Z",
+      "lastActive": "2026-09-11T15:41:19.836Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 1
+      }
+    },
+    {
+      "id": 7532258758,
+      "name": "Bader Qudaih 2",
+      "username": "",
+      "joinedAt": "2026-09-11T17:10:07.631Z",
+      "lastActive": "2026-10-02T19:30:52.314Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 29,
+        "prerequisites": 1,
+        "plan5": 1,
+        "plan4": 1,
+        "uni_reqs": 4,
+        "search": 9,
+        "show_years": 9
+      }
+    },
+    {
+      "id": 5752102001,
+      "name": "هنا أبو يوسف",
+      "username": "@HN_PAL",
+      "joinedAt": "2026-09-11T21:16:48.198Z",
+      "lastActive": "2026-09-11T21:17:06.887Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2
+      }
+    },
+    {
+      "id": 6349922119,
+      "name": "𝚀𝚞𝚜𝚊𝚒 𝙼.𝙻",
+      "username": "",
+      "joinedAt": "2026-09-12T02:33:47.520Z",
+      "lastActive": "2026-09-12T02:34:04.327Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2,
+        "plan4": 1
+      }
+    },
+    {
+      "id": 1348759786,
+      "name": "أحمد أبو صبحة",
+      "username": "@abumusab583",
+      "joinedAt": "2026-09-12T11:03:26.579Z",
+      "lastActive": "2026-09-13T15:11:52.859Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 7,
+        "ai_chat": 1,
+        "show_years": 5
+      }
+    },
+    {
+      "id": 7197341877,
+      "name": "أبو عمر",
+      "username": "@Eyad_kh_Ayesh",
+      "joinedAt": "2026-09-12T13:56:36.561Z",
+      "lastActive": "2026-09-12T13:58:10.433Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 17,
+        "show_years": 15
+      }
+    },
+    {
+      "id": 1198633911,
+      "name": "Fawzi",
+      "username": "@Fawzi46",
+      "joinedAt": "2026-09-12T14:45:36.701Z",
+      "lastActive": "2026-09-26T16:48:05.819Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 21,
+        "lab_programs": 3,
+        "search": 7,
+        "show_years": 2,
+        "contact_admin": 4
+      }
+    },
+    {
+      "id": 1188721012,
+      "name": "💗",
+      "username": "",
+      "joinedAt": "2026-09-12T18:30:42.239Z",
+      "lastActive": "2026-10-03T07:09:24.077Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 13,
+        "show_years": 9,
+        "search": 1
+      }
+    },
+    {
+      "id": 8442188437,
+      "name": ". .",
+      "username": "",
+      "joinedAt": "2026-09-12T20:20:25.703Z",
+      "lastActive": "2026-09-26T14:13:47.187Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 39,
+        "show_years": 31
+      }
+    },
+    {
+      "id": 7250281021,
+      "name": "Eng.Bara B Dagga",
+      "username": "",
+      "joinedAt": "2026-09-13T10:04:35.082Z",
+      "lastActive": "2026-09-13T10:04:58.201Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "search": 2
+      }
+    },
+    {
+      "id": -1003844529585,
+      "name": "Yousef Douhan _",
+      "username": "@KamalRaedAnan",
+      "joinedAt": "2026-09-13T12:01:19.160Z",
+      "lastActive": "2026-10-04T12:38:25.721Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 10
+      }
+    },
+    {
+      "id": 5991663444,
+      "name": "Sja Miqdad.",
+      "username": "@allsja04",
+      "joinedAt": "2026-09-13T15:08:47.205Z",
+      "lastActive": "2026-09-13T15:09:09.633Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 5,
+        "show_years": 4
+      }
+    },
+    {
+      "id": 5127961240,
+      "name": "Reem💜",
+      "username": "",
+      "joinedAt": "2026-09-13T17:47:36.120Z",
+      "lastActive": "2026-09-19T08:47:23.753Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 14,
+        "ai_chat": 1,
+        "search": 1,
+        "plan5": 1,
+        "show_years": 8
+      }
+    },
+    {
+      "id": 1400916024,
+      "name": "Adham Matar",
+      "username": "@Adhammatar",
+      "joinedAt": "2026-09-13T22:14:24.102Z",
+      "lastActive": "2026-09-27T20:12:38.544Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "search": 6
+      }
+    },
+    {
+      "id": 8693544178,
+      "name": "سُندُس 🤎.",
+      "username": "@sondos_128",
+      "joinedAt": "2026-09-14T12:57:05.529Z",
+      "lastActive": "2026-09-20T10:06:57.443Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "search": 4,
+        "show_years": 1
+      }
+    },
+    {
+      "id": 8289528261,
+      "name": "Mohammed",
+      "username": "@yioolhhhuiiii",
+      "joinedAt": "2026-09-14T14:22:18.880Z",
+      "lastActive": "2026-09-30T14:04:29.468Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 25,
+        "plan4": 2,
+        "show_years": 20
+      }
+    },
+    {
+      "id": 1468908779,
+      "name": "shahd alhoor",
+      "username": "@Shh25_8",
+      "joinedAt": "2026-09-14T14:31:40.563Z",
+      "lastActive": "2026-09-14T14:33:58.484Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "show_years": 4
+      }
+    },
+    {
+      "id": 8375634735,
+      "name": "𝑇𝑎𝑠𝑛𝑒𝑒𝑚",
+      "username": "",
+      "joinedAt": "2026-09-15T15:31:37.132Z",
+      "lastActive": "2026-10-01T14:46:41.133Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 15,
+        "search": 8,
+        "show_years": 4
+      }
+    },
+    {
+      "id": 8682420614,
+      "name": "Eng.Doha",
+      "username": "",
+      "joinedAt": "2026-09-15T15:32:53.880Z",
+      "lastActive": "2026-09-29T12:07:35.711Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 3,
+        "search": 3
+      }
+    },
+    {
+      "id": 7827998053,
+      "name": ".",
+      "username": "",
+      "joinedAt": "2026-09-16T14:53:59.085Z",
+      "lastActive": "2026-09-16T15:27:04.269Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 7,
+        "show_years": 2,
+        "plan5": 1
+      }
+    },
+    {
+      "id": 7788103940,
+      "name": "سجا عماد",
+      "username": "",
+      "joinedAt": "2026-09-17T11:44:00.238Z",
+      "lastActive": "2026-09-17T11:44:24.646Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "ai_chat": 1,
+        "gpa_file": 1
+      }
+    },
+    {
+      "id": 1966485376,
+      "name": "البراء حامد",
+      "username": "@abyazmaslama",
+      "joinedAt": "2026-09-17T20:23:38.019Z",
+      "lastActive": "2026-09-17T20:26:11.199Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 15,
+        "prerequisites": 1,
+        "uni_reqs": 1,
+        "show_years": 10,
+        "plan4": 1
+      }
+    },
+    {
+      "id": 1457376272,
+      "name": "Mohamed □□",
+      "username": "@Mohamed_j22",
+      "joinedAt": "2026-09-18T15:43:14.093Z",
+      "lastActive": "2026-09-18T15:46:45.107Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "search": 2,
+        "show_years": 2
+      }
+    },
+    {
+      "id": 5770434377,
+      "name": "M.77 ..",
+      "username": "@Mohaned2712",
+      "joinedAt": "2026-09-18T15:47:10.194Z",
+      "lastActive": "2026-10-02T21:25:53.955Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 12,
+        "search": 7,
+        "show_years": 2
+      }
+    },
+    {
+      "id": 1254753958,
+      "name": "فاطِمةْ أبوسويرح 💜",
+      "username": "@fatima_swerih",
+      "joinedAt": "2026-09-18T20:18:51.415Z",
+      "lastActive": "2026-10-02T21:53:01.833Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 28,
+        "show_years": 21,
+        "plan5": 1
+      }
+    },
+    {
+      "id": 8068066458,
+      "name": "Ezz eldeen Almjdalawi",
+      "username": "@EzzEldeenAlmjdalawi",
+      "joinedAt": "2026-09-19T09:16:55.519Z",
+      "lastActive": "2026-09-23T03:07:37.291Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 29,
+        "marketplace": 2,
+        "code_debugger": 1,
+        "ai_quiz": 4,
+        "ai_chat": 2,
+        "plan4": 1,
+        "contacts": 4
+      }
+    },
+    {
+      "id": 1252664950,
+      "name": "أنس عودة",
+      "username": "@Anasmsowda",
+      "joinedAt": "2026-09-19T13:47:22.537Z",
+      "lastActive": "2026-10-03T08:11:20.255Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 40,
+        "exam_planner": 1,
+        "marketplace": 3,
+        "ai_chat": 9,
+        "plan4": 1,
+        "search": 3,
+        "contacts": 2,
+        "past_papers": 2
+      }
+    },
+    {
+      "id": 8156363466,
+      "name": "ahmad.Z.mortaja",
+      "username": "@Ahmad2272006",
+      "joinedAt": "2026-09-19T14:18:23.770Z",
+      "lastActive": "2026-09-27T20:06:15.424Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 23,
+        "search": 5,
+        "ai_chat": 15
+      }
+    },
+    {
+      "id": 8738091254,
+      "name": "Ahmad Younis",
+      "username": "",
+      "joinedAt": "2026-09-20T16:40:49.286Z",
+      "lastActive": "2026-09-27T15:28:01.962Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 39,
+        "show_years": 35,
+        "search": 3
+      }
+    },
+    {
+      "id": 8468855317,
+      "name": "يحيى الاطرش",
+      "username": "",
+      "joinedAt": "2026-09-20T16:48:30.750Z",
+      "lastActive": "2026-09-30T13:12:21.932Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 15,
+        "show_years": 7,
+        "search": 2
+      }
+    },
+    {
+      "id": 8777397303,
+      "name": "a",
+      "username": "@ahmeds3l",
+      "joinedAt": "2026-09-20T18:36:41.698Z",
+      "lastActive": "2026-09-20T18:37:08.903Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 5,
+        "contacts": 2
+      }
+    },
+    {
+      "id": 6893809789,
+      "name": "No Name",
+      "username": "@NoName_20071",
+      "joinedAt": "2026-09-22T09:38:32.258Z",
+      "lastActive": "2026-09-22T09:38:37.907Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2,
+        "contacts": 2
+      }
+    },
+    {
+      "id": 1468832040,
+      "name": "Seraj",
+      "username": "",
+      "joinedAt": "2026-09-23T06:46:04.825Z",
+      "lastActive": "2026-09-23T06:46:04.825Z",
       "active": true,
       "banned": false,
       "featuresUsed": {
         "active": 1,
+        "contacts": 1
+      }
+    },
+    {
+      "id": 8315564300,
+      "name": "Hafez Arafat AlAmodi",
+      "username": "",
+      "joinedAt": "2026-09-23T07:48:46.917Z",
+      "lastActive": "2026-09-29T15:21:07.767Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 26,
+        "plan4": 1,
+        "search": 18,
+        "show_years": 3
+      }
+    },
+    {
+      "id": 6738472939,
+      "name": "𝓡𝓐𝓦𝓐𝓝🜌",
+      "username": "@do_22_w",
+      "joinedAt": "2026-09-23T10:12:02.868Z",
+      "lastActive": "2026-09-23T10:56:41.121Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 12,
+        "search": 3,
+        "show_years": 1,
+        "ai_chat": 4
+      }
+    },
+    {
+      "id": 1357486285,
+      "name": "3laa Alhaloul",
+      "username": "@s120200531",
+      "joinedAt": "2026-09-23T12:11:24.522Z",
+      "lastActive": "2026-09-23T12:32:03.651Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 9,
+        "show_years": 6
+      }
+    },
+    {
+      "id": 972567013,
+      "name": "HK",
+      "username": "@Hahakh0",
+      "joinedAt": "2026-09-24T09:57:30.299Z",
+      "lastActive": "2026-09-27T17:13:34.100Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 61,
+        "prerequisites": 2,
+        "past_papers": 1,
+        "ai_chat": 3,
+        "code_debugger": 5,
+        "ai_quiz": 4,
+        "show_years": 5,
+        "uni_reqs": 1,
+        "search": 1,
+        "plan4": 1,
+        "marketplace": 3
+      }
+    },
+    {
+      "id": 7203837886,
+      "name": "ألاء جمعة",
+      "username": "",
+      "joinedAt": "2026-09-24T15:24:02.593Z",
+      "lastActive": "2026-09-24T15:27:09.463Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 9,
+        "show_years": 7
+      }
+    },
+    {
+      "id": 5226758808,
+      "name": "عبدالرحمن سليمان",
+      "username": "",
+      "joinedAt": "2026-09-24T16:43:38.026Z",
+      "lastActive": "2026-09-24T16:43:46.454Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2,
+        "prerequisites": 1
+      }
+    },
+    {
+      "id": 8064558860,
+      "name": "ميسرة اهل",
+      "username": "",
+      "joinedAt": "2026-09-25T08:42:28.826Z",
+      "lastActive": "2026-09-25T15:43:17.853Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "show_years": 6
+      }
+    },
+    {
+      "id": 932036549,
+      "name": "kareem ammar",
+      "username": "@kareemsuhail",
+      "joinedAt": "2026-09-25T08:49:29.682Z",
+      "lastActive": "2026-09-25T08:53:08.965Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2,
         "show_years": 2
+      }
+    },
+    {
+      "id": 5851058091,
+      "name": "Doaa M. Elmasri",
+      "username": "",
+      "joinedAt": "2026-09-26T06:45:15.773Z",
+      "lastActive": "2026-09-26T08:24:51.611Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 29,
+        "show_years": 21,
+        "search": 2,
+        "plan5": 1,
+        "prerequisites": 1
+      }
+    },
+    {
+      "id": 8066581524,
+      "name": "Ghp",
+      "username": "",
+      "joinedAt": "2026-09-26T12:13:42.530Z",
+      "lastActive": "2026-10-02T06:12:13.644Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 37,
+        "show_years": 24,
+        "plan4": 1
+      }
+    },
+    {
+      "id": 5703028430,
+      "name": "Farah Dou",
+      "username": "@Farah_dou",
+      "joinedAt": "2026-09-26T16:37:43.571Z",
+      "lastActive": "2026-09-26T16:43:25.232Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 13,
+        "ai_chat": 3,
+        "ai_quiz": 1,
+        "upload": 1,
+        "prerequisites": 1
+      }
+    },
+    {
+      "id": 7905445798,
+      "name": "Abed Isa",
+      "username": "",
+      "joinedAt": "2026-09-26T17:30:01.649Z",
+      "lastActive": "2026-09-26T17:37:22.789Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 9,
+        "plan4": 1,
+        "uni_reqs": 1,
+        "search": 5,
+        "show_years": 1
+      }
+    },
+    {
+      "id": 8088982317,
+      "name": "Aya",
+      "username": "@Eng_Aya111",
+      "joinedAt": "2026-09-27T07:46:32.586Z",
+      "lastActive": "2026-09-27T07:50:35.104Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 17,
+        "plan5": 1,
+        "search": 2,
+        "show_years": 4
+      }
+    },
+    {
+      "id": 6446337187,
+      "name": "Hesham Shaheen",
+      "username": "@heshamja",
+      "joinedAt": "2026-09-27T08:44:03.445Z",
+      "lastActive": "2026-09-27T08:44:03.445Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2
+      }
+    },
+    {
+      "id": 5514287428,
+      "name": "Yousef.A.l.amoudi",
+      "username": "",
+      "joinedAt": "2026-09-27T08:54:29.854Z",
+      "lastActive": "2026-10-03T13:45:10.712Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 10,
+        "search": 6
+      }
+    },
+    {
+      "id": 5521924723,
+      "name": "Sondos ♥️🫶",
+      "username": "@sondos_nahel",
+      "joinedAt": "2026-09-27T08:57:56.960Z",
+      "lastActive": "2026-09-27T08:58:26.500Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 7,
+        "show_years": 4
+      }
+    },
+    {
+      "id": 5418507965,
+      "name": "..",
+      "username": "",
+      "joinedAt": "2026-09-27T12:00:13.487Z",
+      "lastActive": "2026-09-27T12:01:21.145Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "search": 2,
+        "show_years": 2
+      }
+    },
+    {
+      "id": 5568599809,
+      "name": "Israa Hafez",
+      "username": "@Soso0042",
+      "joinedAt": "2026-09-27T13:27:05.133Z",
+      "lastActive": "2026-09-27T17:12:18.910Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 13,
+        "search": 8
+      }
+    },
+    {
+      "id": 1256007323,
+      "name": "Sãjã Yõüsëf😍",
+      "username": "@SajaYousef2002",
+      "joinedAt": "2026-09-27T14:00:24.174Z",
+      "lastActive": "2026-09-27T14:00:38.182Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 5,
+        "show_years": 5
+      }
+    },
+    {
+      "id": 5878244144,
+      "name": "Malak Mansour",
+      "username": "",
+      "joinedAt": "2026-09-27T14:48:17.150Z",
+      "lastActive": "2026-09-27T14:48:26.730Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 3
+      }
+    },
+    {
+      "id": 5290171799,
+      "name": "Dema",
+      "username": "",
+      "joinedAt": "2026-09-28T20:17:32.366Z",
+      "lastActive": "2026-09-29T06:31:56.728Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 13,
+        "search": 7,
+        "show_years": 2,
+        "ai_chat": 1
+      }
+    },
+    {
+      "id": 1716428132,
+      "name": "Mohammed Bushnaq",
+      "username": "@MohammedBushnaq",
+      "joinedAt": "2026-09-28T20:32:13.474Z",
+      "lastActive": "2026-09-28T20:32:27.516Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "show_years": 6
+      }
+    },
+    {
+      "id": 1981007083,
+      "name": "Omar Siyam",
+      "username": "@OmarASiyam",
+      "joinedAt": "2026-09-30T09:39:19.640Z",
+      "lastActive": "2026-09-30T10:39:03.660Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 18,
+        "past_papers": 5,
+        "search": 3,
+        "uni_reqs": 6
+      }
+    },
+    {
+      "id": 1837390282,
+      "name": "علي محمود",
+      "username": "",
+      "joinedAt": "2026-09-30T10:15:35.735Z",
+      "lastActive": "2026-09-30T10:16:20.788Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 7,
+        "show_years": 7
+      }
+    },
+    {
+      "id": 5496578177,
+      "name": "إبراهيم أحمد الفجم",
+      "username": "@s421249301",
+      "joinedAt": "2026-09-30T17:45:06.672Z",
+      "lastActive": "2026-09-30T17:46:55.237Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 8,
+        "show_years": 5,
+        "search": 1
+      }
+    },
+    {
+      "id": 1357521636,
+      "name": "Aya 🤍",
+      "username": "",
+      "joinedAt": "2026-10-01T08:20:20.783Z",
+      "lastActive": "2026-10-01T08:20:41.068Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2,
+        "lab_programs": 2
+      }
+    },
+    {
+      "id": 1270984882,
+      "name": "Mona Habil",
+      "username": "",
+      "joinedAt": "2026-10-01T08:23:33.292Z",
+      "lastActive": "2026-10-01T08:23:33.292Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 2
+      }
+    },
+    {
+      "id": 7601010936,
+      "name": "𝓗𝓪𝓼𝓼𝓪𝓷 🥷🏻",
+      "username": "",
+      "joinedAt": "2026-10-01T09:09:06.733Z",
+      "lastActive": "2026-10-01T14:50:30.485Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 6,
+        "search": 3,
+        "show_years": 1
+      }
+    },
+    {
+      "id": 6426064850,
+      "name": "Reem Ehab",
+      "username": "@reemafana2",
+      "joinedAt": "2026-10-01T11:13:17.633Z",
+      "lastActive": "2026-10-01T11:13:26.951Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "show_years": 4
+      }
+    },
+    {
+      "id": 1715802210,
+      "name": "Dimon Df",
+      "username": "",
+      "joinedAt": "2026-10-02T09:02:12.122Z",
+      "lastActive": "2026-10-02T09:06:25.639Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 8,
+        "search": 4,
+        "plan4": 1
+      }
+    },
+    {
+      "id": 5859561695,
+      "name": "Jack A",
+      "username": "",
+      "joinedAt": "2026-10-02T11:17:16.892Z",
+      "lastActive": "2026-10-03T18:04:47.285Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 34,
+        "plan4": 1,
+        "ai_chat": 27
+      }
+    },
+    {
+      "id": 6446707949,
+      "name": "FatMª",
+      "username": "",
+      "joinedAt": "2026-10-02T14:19:33.312Z",
+      "lastActive": "2026-10-02T14:40:13.839Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 7,
+        "lab_programs": 2,
+        "plan5": 1,
+        "search": 2
+      }
+    },
+    {
+      "id": 6052994440,
+      "name": "Besan Shaheen",
+      "username": "@nasebbesan",
+      "joinedAt": "2026-10-03T14:23:10.004Z",
+      "lastActive": "2026-10-03T19:13:02.818Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 17,
+        "search": 2,
+        "show_years": 8,
+        "marketplace": 1
+      }
+    },
+    {
+      "id": 6596907317,
+      "name": "Abdallah Sameer",
+      "username": "",
+      "joinedAt": "2026-10-04T11:57:09.367Z",
+      "lastActive": "2026-10-04T11:58:38.533Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "search": 2
+      }
+    },
+    {
+      "id": 2044682725,
+      "name": "Yousef Douhan _",
+      "username": "",
+      "joinedAt": "2026-10-04T12:38:42.508Z",
+      "lastActive": "2026-10-04T12:39:06.548Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "plan5": 1
+      }
+    },
+    {
+      "id": 5363767390,
+      "name": "marwa madhoun",
+      "username": "@marwa12318",
+      "joinedAt": "2026-10-04T12:44:48.099Z",
+      "lastActive": "2026-10-04T12:48:59.838Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 12,
+        "show_years": 10
+      }
+    },
+    {
+      "id": 5028579416,
+      "name": "بَتُـول",
+      "username": "@batoolalagha",
+      "joinedAt": "2026-10-04T13:10:30.898Z",
+      "lastActive": "2026-10-04T13:11:05.184Z",
+      "active": true,
+      "banned": false,
+      "featuresUsed": {
+        "active": 4,
+        "search": 1
       }
     }
   ],
   "polls": [
+    {
+      "id": "poll_1790529087580",
+      "question": "لما بدكم تبحثوا على مادة معينة اكتبوا اسمها مباشر او الكود الخاص فيها سواء على الخطة تبعت ال4 او ال5 سنوات\n\nمثلا بدي مادة نحو وصرف\nبكتب مباشرة (نحو وصرف)\nما تكتب (مساق نحو وصرف)\n\nوهكذا على باقي المواد مادة تفاضل وتكامل اكتب ( تفاضل وتكامل )\nما تكتب كالكولس او اشي اكتب باسم المادة سواء عربي",
+      "options": [
+        "تمام 👍🏼",
+        "تمام"
+      ],
+      "createdAt": "2026-09-27T17:11:27.580Z",
+      "active": false,
+      "votes": {
+        "972567013": {
+          "name": "HK",
+          "username": "Hahakh0",
+          "optionIndex": 0,
+          "timestamp": "2026-09-27T17:13:34.100Z"
+        },
+        "5568599809": {
+          "name": "Israa Hafez",
+          "username": "Soso0042",
+          "optionIndex": 0,
+          "timestamp": "2026-09-27T17:12:05.493Z"
+        }
+      },
+      "sentMessages": []
+    },
+    {
+      "id": "poll_1789897480679",
+      "question": "تم بحمد الله الانتهاء من التحديث الكامل للبوت وعاد الان الي العمل فحابب اعرف شو رايكم بالتحديث الجديد ؟",
+      "options": [
+        "كويس ومرتب",
+        "نرجع للترتيب القديم",
+        "اقترح تحسينات من خلال التواصل مع الادمن داخل ابوت"
+      ],
+      "createdAt": "2026-09-20T09:44:40.679Z",
+      "active": true,
+      "votes": {
+        "1198633911": {
+          "name": "Fawzi",
+          "username": "Fawzi46",
+          "optionIndex": 0,
+          "timestamp": "2026-09-20T18:08:46.597Z"
+        },
+        "1252664950": {
+          "name": "أنس عودة",
+          "username": "Anasmsowda",
+          "optionIndex": 0,
+          "timestamp": "2026-09-20T10:10:54.229Z"
+        },
+        "8936082180": {
+          "name": "M",
+          "username": "",
+          "optionIndex": 0,
+          "timestamp": "2026-09-20T09:50:35.207Z"
+        },
+        "8693544178": {
+          "name": "سُندُس 🤎.",
+          "username": "sondos_128",
+          "optionIndex": 0,
+          "timestamp": "2026-09-20T10:06:57.443Z"
+        },
+        "8068066458": {
+          "name": "Ezz eldeen Almjdalawi",
+          "username": "EzzEldeenAlmjdalawi",
+          "optionIndex": 0,
+          "timestamp": "2026-09-20T13:55:37.045Z"
+        }
+      },
+      "sentMessages": [
+        {
+          "chatId": 5687891184,
+          "messageId": 14637
+        },
+        {
+          "chatId": 8936082180,
+          "messageId": 14638
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 14639
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 14640
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 14641
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 14642
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 14643
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 14644
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 14645
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 14646
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 14647
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 14648
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 14649
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 14650
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 14651
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 14652
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 14653
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 14654
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 14655
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 14656
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 14657
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 14658
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 14659
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 14660
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 14661
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 14662
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 14663
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 14664
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 14665
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 14666
+        }
+      ]
+    },
     {
       "id": "poll_1789842770101",
       "question": "ما رأيكم في اختبار الهياكل؟",
@@ -26,7 +1257,7 @@
         "صعب"
       ],
       "createdAt": "2026-09-19T18:32:50.101Z",
-      "active": true,
+      "active": false,
       "votes": {
         "12345678": {
           "name": "أحمد",
@@ -45,7 +1276,7 @@
         "صعب"
       ],
       "createdAt": "2026-09-18T23:50:11.612Z",
-      "active": true,
+      "active": false,
       "votes": {
         "123456": {
           "name": "أحمد",
@@ -65,6 +1296,30 @@
   ],
   "marketplace": [
     {
+      "id": "item_1789901906064",
+      "userId": "5687891184",
+      "userName": "Musab Alaswed",
+      "userHandle": "@bestmusab",
+      "category": "books",
+      "title": "👍🏼👏🏼👏🏼",
+      "details": "تفاصيل الإعلان",
+      "priceOrType": "مجاناً / للبدل",
+      "contact": "@bestmusab",
+      "createdAt": "2026-09-20T10:58:26.064Z"
+    },
+    {
+      "id": "item_1789901858278",
+      "userId": "8936082180",
+      "userName": "M",
+      "userHandle": "",
+      "category": "books",
+      "title": "الي حابب يشارك كتب معه قديمة لناس جديدة تستفسد يبعت هان او يرد عشان الجميع يشوف",
+      "details": "تفاصيل الإعلان",
+      "priceOrType": "مجاناً / للبدل",
+      "contact": "عبر التليجرام",
+      "createdAt": "2026-09-20T10:57:38.278Z"
+    },
+    {
       "id": "item_1789842770103",
       "userId": "12345678",
       "userName": "أحمد",
@@ -79,20 +1334,2269 @@
   ],
   "broadcastHistory": [
     {
-      "id": "bc_1789775426347",
-      "timestamp": "2026-09-18T23:50:26.347Z",
-      "description": "إعلان تجريبي",
-      "totalSent": 1,
+      "id": "bc_1790323785331",
+      "timestamp": "2026-09-25T08:09:45.331Z",
+      "description": "إنَّ اللهَ سبحانه وتعالى بدأ بنفسه في الصلاة على نبيّه ﷺ، ثم",
+      "totalSent": 41,
       "sentMessages": [
         {
-          "chatId": 123,
-          "messageId": 456
+          "chatId": 8936082180,
+          "messageId": 15364
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 15365
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 15366
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 15367
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 15368
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 15369
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 15370
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 15371
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 15372
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 15373
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 15374
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 15375
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 15376
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 15377
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 15378
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 15379
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 15380
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 15381
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 15382
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 15383
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 15384
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 15385
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 15386
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 15387
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 15388
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 15389
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 15390
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 15391
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 15392
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 15393
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 15394
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 15395
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 15396
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 15397
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 15398
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 15399
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 15400
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 15401
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 15402
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 15403
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790328203326",
+      "timestamp": "2026-09-25T09:23:23.326Z",
+      "description": "إعلان وسائط",
+      "totalSent": 43,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 15429
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 15430
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 15431
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 15432
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 15433
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 15434
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 15435
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 15436
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 15437
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 15438
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 15439
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 15440
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 15441
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 15442
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 15443
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 15444
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 15445
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 15446
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 15447
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 15448
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 15449
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 15450
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 15451
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 15452
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 15453
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 15454
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 15455
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 15456
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 15457
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 15458
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 15459
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 15460
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 15461
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 15462
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 15463
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 15464
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 15465
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 15466
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 15467
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 15468
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 15469
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 15470
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790354046192",
+      "timestamp": "2026-09-25T16:34:06.193Z",
+      "description": "*نحنُ قومُ اختارنا الله لنحمِلَ اللواء ونبذُل الدماء*\n*اصبرو",
+      "totalSent": 43,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 15500
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 15501
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 15502
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 15503
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 15504
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 15505
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 15506
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 15507
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 15508
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 15509
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 15510
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 15511
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 15512
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 15513
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 15514
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 15515
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 15516
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 15517
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 15518
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 15519
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 15520
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 15521
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 15522
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 15523
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 15524
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 15525
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 15526
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 15527
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 15528
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 15529
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 15530
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 15531
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 15532
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 15533
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 15534
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 15535
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 15536
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 15537
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 15538
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 15539
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 15540
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 15541
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790354451224",
+      "timestamp": "2026-09-25T16:40:51.224Z",
+      "description": "مع بداية الفصل الدراسي الجديد.. بداية\n موفقة للجميع! 🎓\nزملا",
+      "totalSent": 43,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 15548
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 15549
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 15550
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 15551
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 15552
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 15553
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 15554
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 15555
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 15556
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 15557
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 15558
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 15559
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 15560
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 15561
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 15562
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 15563
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 15564
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 15565
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 15566
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 15567
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 15568
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 15569
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 15570
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 15571
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 15572
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 15573
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 15574
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 15575
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 15576
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 15577
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 15578
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 15579
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 15580
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 15581
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 15582
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 15583
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 15584
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 15585
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 15586
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 15587
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 15588
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 15589
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790515476137",
+      "timestamp": "2026-09-27T13:24:36.137Z",
+      "description": "إعلان وسائط",
+      "totalSent": 51,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 15953
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 15954
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 15955
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 15956
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 15957
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 15958
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 15959
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 15960
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 15961
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 15962
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 15963
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 15964
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 15965
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 15966
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 15967
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 15968
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 15969
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 15970
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 15971
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 15972
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 15973
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 15974
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 15975
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 15976
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 15977
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 15978
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 15979
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 15980
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 15981
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 15982
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 15983
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 15984
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 15985
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 15986
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 15987
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 15988
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 15989
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 15990
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 15991
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 15992
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 15993
+        },
+        {
+          "chatId": 5851058091,
+          "messageId": 15994
+        },
+        {
+          "chatId": 8066581524,
+          "messageId": 15995
+        },
+        {
+          "chatId": 5703028430,
+          "messageId": 15996
+        },
+        {
+          "chatId": 7905445798,
+          "messageId": 15997
+        },
+        {
+          "chatId": 8088982317,
+          "messageId": 15998
+        },
+        {
+          "chatId": 6446337187,
+          "messageId": 15999
+        },
+        {
+          "chatId": 5514287428,
+          "messageId": 16000
+        },
+        {
+          "chatId": 5521924723,
+          "messageId": 16001
+        },
+        {
+          "chatId": 5418507965,
+          "messageId": 16002
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790529827367",
+      "timestamp": "2026-09-27T17:23:47.367Z",
+      "description": "حابب انوه لبعض المشاكل الي بتحصل عند استخدام ايقونة البحث عن",
+      "totalSent": 54,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 16159
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 16160
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 16161
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 16162
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 16163
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 16164
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 16165
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 16166
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 16167
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 16168
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 16169
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 16170
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 16171
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 16172
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 16173
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 16174
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 16175
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 16176
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 16177
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 16178
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 16179
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 16180
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 16181
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 16182
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 16183
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 16184
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 16185
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 16186
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 16187
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 16188
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 16189
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 16190
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 16191
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 16192
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 16193
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 16194
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 16195
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 16196
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 16197
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 16198
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 16199
+        },
+        {
+          "chatId": 5851058091,
+          "messageId": 16200
+        },
+        {
+          "chatId": 8066581524,
+          "messageId": 16201
+        },
+        {
+          "chatId": 5703028430,
+          "messageId": 16202
+        },
+        {
+          "chatId": 7905445798,
+          "messageId": 16203
+        },
+        {
+          "chatId": 8088982317,
+          "messageId": 16204
+        },
+        {
+          "chatId": 6446337187,
+          "messageId": 16205
+        },
+        {
+          "chatId": 5514287428,
+          "messageId": 16206
+        },
+        {
+          "chatId": 5521924723,
+          "messageId": 16207
+        },
+        {
+          "chatId": 5418507965,
+          "messageId": 16208
+        },
+        {
+          "chatId": 5568599809,
+          "messageId": 16209
+        },
+        {
+          "chatId": 1256007323,
+          "messageId": 16210
+        },
+        {
+          "chatId": 5878244144,
+          "messageId": 16211
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790707913219",
+      "timestamp": "2026-09-29T18:51:53.219Z",
+      "description": "إعلان وسائط",
+      "totalSent": 57,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 16405
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 16406
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 16407
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 16408
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 16409
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 16410
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 16411
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 16412
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 16413
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 16414
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 16415
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 16416
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 16417
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 16418
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 16419
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 16420
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 16421
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 16422
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 16423
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 16424
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 16425
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 16426
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 16427
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 16428
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 16429
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 16430
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 16431
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 16432
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 16433
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 16434
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 16435
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 16436
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 16437
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 16438
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 16439
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 16440
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 16441
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 16442
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 16443
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 16444
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 16445
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 16446
+        },
+        {
+          "chatId": 5851058091,
+          "messageId": 16447
+        },
+        {
+          "chatId": 8066581524,
+          "messageId": 16448
+        },
+        {
+          "chatId": 5703028430,
+          "messageId": 16449
+        },
+        {
+          "chatId": 7905445798,
+          "messageId": 16450
+        },
+        {
+          "chatId": 8088982317,
+          "messageId": 16451
+        },
+        {
+          "chatId": 6446337187,
+          "messageId": 16452
+        },
+        {
+          "chatId": 5514287428,
+          "messageId": 16453
+        },
+        {
+          "chatId": 5521924723,
+          "messageId": 16454
+        },
+        {
+          "chatId": 5418507965,
+          "messageId": 16455
+        },
+        {
+          "chatId": 5568599809,
+          "messageId": 16456
+        },
+        {
+          "chatId": 1256007323,
+          "messageId": 16457
+        },
+        {
+          "chatId": 5878244144,
+          "messageId": 16458
+        },
+        {
+          "chatId": 5290171799,
+          "messageId": 16459
+        },
+        {
+          "chatId": 1716428132,
+          "messageId": 16460
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790939415287",
+      "timestamp": "2026-10-02T11:10:15.287Z",
+      "description": "إعلان وسائط",
+      "totalSent": 65,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 16717
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 16718
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 16719
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 16720
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 16721
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 16722
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 16723
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 16724
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 16725
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 16726
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 16727
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 16728
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 16729
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 16730
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 16731
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 16732
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 16733
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 16734
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 16735
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 16736
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 16737
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 16738
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 16739
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 16740
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 16741
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 16742
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 16743
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 16744
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 16745
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 16746
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 16747
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 16748
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 16749
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 16750
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 16751
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 16752
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 16753
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 16754
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 16755
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 16756
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 16757
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 16758
+        },
+        {
+          "chatId": 5851058091,
+          "messageId": 16759
+        },
+        {
+          "chatId": 8066581524,
+          "messageId": 16760
+        },
+        {
+          "chatId": 5703028430,
+          "messageId": 16761
+        },
+        {
+          "chatId": 7905445798,
+          "messageId": 16762
+        },
+        {
+          "chatId": 8088982317,
+          "messageId": 16763
+        },
+        {
+          "chatId": 6446337187,
+          "messageId": 16764
+        },
+        {
+          "chatId": 5514287428,
+          "messageId": 16765
+        },
+        {
+          "chatId": 5521924723,
+          "messageId": 16766
+        },
+        {
+          "chatId": 5418507965,
+          "messageId": 16767
+        },
+        {
+          "chatId": 5568599809,
+          "messageId": 16768
+        },
+        {
+          "chatId": 1256007323,
+          "messageId": 16769
+        },
+        {
+          "chatId": 5878244144,
+          "messageId": 16770
+        },
+        {
+          "chatId": 5290171799,
+          "messageId": 16771
+        },
+        {
+          "chatId": 1716428132,
+          "messageId": 16772
+        },
+        {
+          "chatId": 1981007083,
+          "messageId": 16773
+        },
+        {
+          "chatId": 1837390282,
+          "messageId": 16774
+        },
+        {
+          "chatId": 5496578177,
+          "messageId": 16775
+        },
+        {
+          "chatId": 1357521636,
+          "messageId": 16776
+        },
+        {
+          "chatId": 1270984882,
+          "messageId": 16777
+        },
+        {
+          "chatId": 7601010936,
+          "messageId": 16778
+        },
+        {
+          "chatId": 6426064850,
+          "messageId": 16779
+        },
+        {
+          "chatId": 1715802210,
+          "messageId": 16780
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1790956513159",
+      "timestamp": "2026-10-02T15:55:13.159Z",
+      "description": "إعلان وسائط",
+      "totalSent": 67,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 16828
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 16829
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 16830
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 16831
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 16832
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 16833
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 16834
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 16835
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 16836
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 16837
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 16838
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 16839
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 16840
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 16841
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 16842
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 16843
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 16844
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 16845
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 16846
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 16847
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 16848
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 16849
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 16850
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 16851
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 16852
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 16853
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 16854
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 16855
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 16856
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 16857
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 16858
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 16859
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 16860
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 16861
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 16862
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 16863
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 16864
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 16865
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 16866
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 16867
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 16868
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 16869
+        },
+        {
+          "chatId": 5851058091,
+          "messageId": 16870
+        },
+        {
+          "chatId": 8066581524,
+          "messageId": 16871
+        },
+        {
+          "chatId": 5703028430,
+          "messageId": 16872
+        },
+        {
+          "chatId": 7905445798,
+          "messageId": 16873
+        },
+        {
+          "chatId": 8088982317,
+          "messageId": 16874
+        },
+        {
+          "chatId": 6446337187,
+          "messageId": 16875
+        },
+        {
+          "chatId": 5514287428,
+          "messageId": 16876
+        },
+        {
+          "chatId": 5521924723,
+          "messageId": 16877
+        },
+        {
+          "chatId": 5418507965,
+          "messageId": 16878
+        },
+        {
+          "chatId": 5568599809,
+          "messageId": 16879
+        },
+        {
+          "chatId": 1256007323,
+          "messageId": 16880
+        },
+        {
+          "chatId": 5878244144,
+          "messageId": 16881
+        },
+        {
+          "chatId": 5290171799,
+          "messageId": 16882
+        },
+        {
+          "chatId": 1716428132,
+          "messageId": 16883
+        },
+        {
+          "chatId": 1981007083,
+          "messageId": 16884
+        },
+        {
+          "chatId": 1837390282,
+          "messageId": 16885
+        },
+        {
+          "chatId": 5496578177,
+          "messageId": 16886
+        },
+        {
+          "chatId": 1357521636,
+          "messageId": 16887
+        },
+        {
+          "chatId": 1270984882,
+          "messageId": 16888
+        },
+        {
+          "chatId": 7601010936,
+          "messageId": 16889
+        },
+        {
+          "chatId": 6426064850,
+          "messageId": 16890
+        },
+        {
+          "chatId": 1715802210,
+          "messageId": 16891
+        },
+        {
+          "chatId": 5859561695,
+          "messageId": 16892
+        },
+        {
+          "chatId": 6446707949,
+          "messageId": 16893
+        }
+      ],
+      "isDeleted": false
+    },
+    {
+      "id": "bc_1791063760867",
+      "timestamp": "2026-10-03T21:42:40.867Z",
+      "description": "إعلان وسائط",
+      "totalSent": 68,
+      "sentMessages": [
+        {
+          "chatId": 8936082180,
+          "messageId": 17041
+        },
+        {
+          "chatId": 8015484473,
+          "messageId": 17042
+        },
+        {
+          "chatId": 1337998820,
+          "messageId": 17043
+        },
+        {
+          "chatId": 7532258758,
+          "messageId": 17044
+        },
+        {
+          "chatId": 5752102001,
+          "messageId": 17045
+        },
+        {
+          "chatId": 6349922119,
+          "messageId": 17046
+        },
+        {
+          "chatId": 1348759786,
+          "messageId": 17047
+        },
+        {
+          "chatId": 7197341877,
+          "messageId": 17048
+        },
+        {
+          "chatId": 1198633911,
+          "messageId": 17049
+        },
+        {
+          "chatId": 1188721012,
+          "messageId": 17050
+        },
+        {
+          "chatId": 8442188437,
+          "messageId": 17051
+        },
+        {
+          "chatId": 7250281021,
+          "messageId": 17052
+        },
+        {
+          "chatId": 5991663444,
+          "messageId": 17053
+        },
+        {
+          "chatId": 5127961240,
+          "messageId": 17054
+        },
+        {
+          "chatId": 1400916024,
+          "messageId": 17055
+        },
+        {
+          "chatId": 8693544178,
+          "messageId": 17056
+        },
+        {
+          "chatId": 8289528261,
+          "messageId": 17057
+        },
+        {
+          "chatId": 1468908779,
+          "messageId": 17058
+        },
+        {
+          "chatId": 8375634735,
+          "messageId": 17059
+        },
+        {
+          "chatId": 8682420614,
+          "messageId": 17060
+        },
+        {
+          "chatId": 7827998053,
+          "messageId": 17061
+        },
+        {
+          "chatId": 7788103940,
+          "messageId": 17062
+        },
+        {
+          "chatId": 1966485376,
+          "messageId": 17063
+        },
+        {
+          "chatId": 1457376272,
+          "messageId": 17064
+        },
+        {
+          "chatId": 5770434377,
+          "messageId": 17065
+        },
+        {
+          "chatId": 1254753958,
+          "messageId": 17066
+        },
+        {
+          "chatId": 8068066458,
+          "messageId": 17067
+        },
+        {
+          "chatId": 1252664950,
+          "messageId": 17068
+        },
+        {
+          "chatId": 8156363466,
+          "messageId": 17069
+        },
+        {
+          "chatId": 8738091254,
+          "messageId": 17070
+        },
+        {
+          "chatId": 8468855317,
+          "messageId": 17071
+        },
+        {
+          "chatId": 8777397303,
+          "messageId": 17072
+        },
+        {
+          "chatId": 6893809789,
+          "messageId": 17073
+        },
+        {
+          "chatId": 1468832040,
+          "messageId": 17074
+        },
+        {
+          "chatId": 8315564300,
+          "messageId": 17075
+        },
+        {
+          "chatId": 6738472939,
+          "messageId": 17076
+        },
+        {
+          "chatId": 1357486285,
+          "messageId": 17077
+        },
+        {
+          "chatId": 972567013,
+          "messageId": 17078
+        },
+        {
+          "chatId": 7203837886,
+          "messageId": 17079
+        },
+        {
+          "chatId": 5226758808,
+          "messageId": 17080
+        },
+        {
+          "chatId": 8064558860,
+          "messageId": 17081
+        },
+        {
+          "chatId": 932036549,
+          "messageId": 17082
+        },
+        {
+          "chatId": 5851058091,
+          "messageId": 17083
+        },
+        {
+          "chatId": 8066581524,
+          "messageId": 17084
+        },
+        {
+          "chatId": 5703028430,
+          "messageId": 17085
+        },
+        {
+          "chatId": 7905445798,
+          "messageId": 17086
+        },
+        {
+          "chatId": 8088982317,
+          "messageId": 17087
+        },
+        {
+          "chatId": 6446337187,
+          "messageId": 17088
+        },
+        {
+          "chatId": 5514287428,
+          "messageId": 17089
+        },
+        {
+          "chatId": 5521924723,
+          "messageId": 17090
+        },
+        {
+          "chatId": 5418507965,
+          "messageId": 17091
+        },
+        {
+          "chatId": 5568599809,
+          "messageId": 17092
+        },
+        {
+          "chatId": 1256007323,
+          "messageId": 17093
+        },
+        {
+          "chatId": 5878244144,
+          "messageId": 17094
+        },
+        {
+          "chatId": 5290171799,
+          "messageId": 17095
+        },
+        {
+          "chatId": 1716428132,
+          "messageId": 17096
+        },
+        {
+          "chatId": 1981007083,
+          "messageId": 17097
+        },
+        {
+          "chatId": 1837390282,
+          "messageId": 17098
+        },
+        {
+          "chatId": 5496578177,
+          "messageId": 17099
+        },
+        {
+          "chatId": 1357521636,
+          "messageId": 17100
+        },
+        {
+          "chatId": 1270984882,
+          "messageId": 17101
+        },
+        {
+          "chatId": 7601010936,
+          "messageId": 17102
+        },
+        {
+          "chatId": 6426064850,
+          "messageId": 17103
+        },
+        {
+          "chatId": 1715802210,
+          "messageId": 17104
+        },
+        {
+          "chatId": 5859561695,
+          "messageId": 17105
+        },
+        {
+          "chatId": 6446707949,
+          "messageId": 17106
+        },
+        {
+          "chatId": 6052994440,
+          "messageId": 17107
         }
       ],
       "isDeleted": false
     }
   ],
-  "courseSearches": {},
+  "courseSearches": {
+    "1209": 1,
+    "1301": 1,
+    "4401": 1,
+    "ENGG 1209": 1,
+    "تصميم رقمي": 2,
+    "4 سنوات": 1,
+    "سعر الساعة بكم": 1,
+    "تفاضل": 1,
+    "بدي سليبس لمساق نظم تشغيل": 1,
+    "نظم تشغيل": 1,
+    "Calculus": 3,
+    "أساسيات البرمجة": 1,
+    "مساق نحو و صرف": 1,
+    "لغة عربية": 1,
+    "تصميم رقمي تجميعي": 1,
+    "برمجة الحاسوب 1": 1,
+    "برمجة حاسوب 1": 1,
+    "دوائر كهربائية 1": 1,
+    "نظرية احصاء": 1,
+    "نظرية احتمالات واحصاء": 1,
+    "تانية": 1,
+    "سنة ثانية": 1,
+    "سشسش": 1,
+    "برمجة": 2,
+    "engg 1301": 1,
+    "Calculus A": 1,
+    "ENGG 1206": 2,
+    "اساسيات الهندسة والبحث العلمي": 1,
+    "EELE 1301": 3,
+    "فيزياء عامة أ": 1,
+    "اريد بوت قسم الرياضيات": 1,
+    "هل تعرف جميع المتطلبات": 1,
+    "EELE1101": 1,
+    "MATHA 1301": 2,
+    "EELE 1101": 3,
+    "ENGG1007": 1,
+    "ENGG 1007": 1,
+    "QURN 1101": 1,
+    "معالجة الصور الرقمية": 1,
+    "تعلم عميق": 2,
+    "أمن حاسوب و شبكات": 1,
+    "ECOM 5401": 1,
+    "عمارة حاسبات متقدمة": 2,
+    "ECOM 5422": 1,
+    "اساسيات برمجه": 1,
+    "ENGG": 1,
+    "مساق نحو وصرف": 1,
+    "نحو وصرف": 1,
+    "لما بدكم تبحثوا على مادة معينة اكتبوا اسمها مباشر او الكود الخاص فيها سواء على الخطة تبعت ال4 او ال5 سنوات\n\nمثلا بدي مادة نحو وصرف\nبكتب مباشرة (نحو وصرف)\nما تكتب (مساق نحو وصرف)\n\nوهكذا على باقي المواد مادة تفاضل وتكامل اكتب ( تفاضل وتكامل )\nما تكتب كالكولس او اشي اكتب باسم المادة سواء عربي او انجليزي \n\nيفضل دائماً البحث بكود المساق والبحث عن طريق كود المساق متوفر حسب الخطتين سواء ال4 سنوات او ال5 سنوات لتفادي مشاكل او الأخطاء عند البحث بالاسم / تمام 👍🏼 / تمام": 1,
+    "كالكولاس ب": 1,
+    "MATH 2302": 1,
+    "بدرس هندسة حاسوب سنة رابعة الآن وفي عندي مساق من سنة ثانية بدي أسجله، مساق دوائر كهربائية ولكنه غير موجود في المساقات المتاحة بتوقع بسبب تغيير الخطة، فكيف ممكن اسجله": 1,
+    "اتصالات": 2,
+    "تعلم عميق لنظم الرؤية": 1,
+    "https://github.com/demaabukwaik-dev/ai-data-analyst": 1,
+    "MATH2341": 1,
+    "ELEE 1101": 1,
+    "ELEE 1103": 1,
+    "EELE 1103": 1,
+    "دوائر كهربائية(1)": 1,
+    "مؤيد المبيض": 1,
+    "برمجة 1": 1,
+    "جبر خطي": 1,
+    "تصميم رقمس": 1,
+    "تصميم رقمي 1": 1,
+    "النظم الإسلامية": 1,
+    "حقوق الإنسان في الشريعة والقانون": 1,
+    "SHAR 2208": 1,
+    "الكترونيات": 1,
+    "شابتر 1 برمجة": 1,
+    "السلام عليكم": 1,
+    "رياضيات متقطعة": 3,
+    "Syllabus": 1,
+    "تفاضل وتكامل ١": 1,
+    "MATHA1301": 1,
+    "Deap learning": 1,
+    "تصميم رقمي عملي": 1,
+    "مناقشة رياضيات متقطعة": 1,
+    "اريد ملخصات اسماعيل الاسطال لمادة جبر حديث 1": 1,
+    "MATH3415": 1,
+    "جبر حديث 1": 1,
+    "Discrete math": 1,
+    "شو عندك ل سنة رابعة": 1
+  },
   "examDates": {
     "semesterName": "الفصل الدراسي الحالي 2026",
     "midtermStart": "2026-10-25T09:00:00",

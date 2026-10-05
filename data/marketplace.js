@@ -231,9 +231,15 @@ function renderMyListings(chatId, bot) {
   });
 }
 
+function reloadMarketplaceCache() {
+  cachedListings = null;
+  return loadListings();
+}
+
 module.exports = {
   loadListings,
   saveListings,
+  reloadMarketplaceCache,
   addListing,
   deleteListing,
   renderMarketplaceMenu,

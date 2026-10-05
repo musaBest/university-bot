@@ -72,6 +72,17 @@ function saveMasterSnapshot() {
   return bundle;
 }
 
+// استيراد معالجات الذاكرة لإعادة التحميل التلقائي بعد الاستعادة
+function getDashboardModule() {
+  try { return require("./adminDashboard"); } catch (e) { return null; }
+}
+function getPollsModule() {
+  try { return require("./pollsManager"); } catch (e) { return null; }
+}
+function getMarketplaceModule() {
+  try { return require("./marketplace"); } catch (e) { return null; }
+}
+
 /**
  * دمج واستعادة الحزمة الشاملة بذكاء دون مسح أي بيانات سابقة
  */
@@ -82,40 +93,59 @@ function restoreDatabaseBundle(bundle) {
 
   const results = {
     usersAdded: 0,
+    usersUpdated: 0,
+    totalUsers: 0,
     pollsAdded: 0,
     marketAdded: 0
   };
 
-  // 1. استعادة المشتركين (Users)
-  if (Array.isArray(bundle.users)) {
-    const currentUsers = readJsonFile(DATA_FILES.users, []);
-    const userMap = new Map();
-    currentUsers.forEach(u => { if (u && u.id) userMap.set(Number(u.id), u); });
+  const adminMod = getDashboardModule();
+  const pollsMod = getPollsModule();
+  const marketMod = getMarketplaceModule();
 
-    bundle.users.forEach(imp => {
-      if (!imp || !imp.id) return;
-      const id = Number(imp.id);
-      if (!userMap.has(id)) {
-        userMap.set(id, imp);
-        results.usersAdded++;
-      } else {
-        const exist = userMap.get(id);
-        if (!exist.username && imp.username) exist.username = imp.username;
-        if ((!exist.name || exist.name === "طالب") && imp.name && imp.name !== "طالب") exist.name = imp.name;
-        if (imp.featuresUsed) {
-          if (!exist.featuresUsed) exist.featuresUsed = {};
-          for (const k in imp.featuresUsed) {
-            exist.featuresUsed[k] = Math.max(exist.featuresUsed[k] || 0, imp.featuresUsed[k] || 0);
+  // 1. استعادة ودمج المشتركين (Users) في القرص والذاكرة الحية (RAM)
+  if (Array.isArray(bundle.users)) {
+    if (adminMod && typeof adminMod.mergeUsersData === "function") {
+      const mergeRes = adminMod.mergeUsersData(bundle.users);
+      results.usersAdded = mergeRes.addedCount || 0;
+      results.usersUpdated = mergeRes.updatedCount || 0;
+      results.totalUsers = mergeRes.total || 0;
+    } else {
+      const currentUsers = readJsonFile(DATA_FILES.users, []);
+      const userMap = new Map();
+      currentUsers.forEach(u => { if (u && u.id) userMap.set(Number(u.id), u); });
+
+      bundle.users.forEach(imp => {
+        if (!imp || !imp.id) return;
+        const id = Number(imp.id);
+        if (!userMap.has(id)) {
+          userMap.set(id, imp);
+          results.usersAdded++;
+        } else {
+          const exist = userMap.get(id);
+          if (!exist.username && imp.username) exist.username = imp.username;
+          if ((!exist.name || exist.name === "طالب") && imp.name && imp.name !== "طالب") exist.name = imp.name;
+          if (imp.featuresUsed) {
+            if (!exist.featuresUsed) exist.featuresUsed = {};
+            for (const k in imp.featuresUsed) {
+              exist.featuresUsed[k] = Math.max(exist.featuresUsed[k] || 0, imp.featuresUsed[k] || 0);
+            }
           }
+          results.usersUpdated++;
         }
-      }
-    });
-    const mergedUsers = Array.from(userMap.values());
-    writeJsonFile(DATA_FILES.users, mergedUsers);
-    writeJsonFile(DATA_FILES.users_backup, mergedUsers);
+      });
+      const mergedUsers = Array.from(userMap.values());
+      writeJsonFile(DATA_FILES.users, mergedUsers);
+      writeJsonFile(DATA_FILES.users_backup, mergedUsers);
+      results.totalUsers = mergedUsers.length;
+    }
+
+    if (adminMod && typeof adminMod.reloadUsersCache === "function") {
+      adminMod.reloadUsersCache();
+    }
   }
 
-  // 2. استعادة الاستطلاعات (Polls)
+  // 2. استعادة الاستطلاعات (Polls) وتحديث ذاكرتها
   if (Array.isArray(bundle.polls)) {
     const currentPolls = readJsonFile(DATA_FILES.polls, []);
     const pollMap = new Map();
@@ -137,9 +167,12 @@ function restoreDatabaseBundle(bundle) {
       }
     });
     writeJsonFile(DATA_FILES.polls, Array.from(pollMap.values()));
+    if (pollsMod && typeof pollsMod.reloadPollsCache === "function") {
+      pollsMod.reloadPollsCache();
+    }
   }
 
-  // 3. استعادة سوق التبادل (Marketplace)
+  // 3. استعادة سوق التبادل (Marketplace) وتحديث ذاكرته
   if (Array.isArray(bundle.marketplace)) {
     const currentMarket = readJsonFile(DATA_FILES.marketplace, []);
     const marketMap = new Map();
@@ -153,6 +186,9 @@ function restoreDatabaseBundle(bundle) {
       }
     });
     writeJsonFile(DATA_FILES.marketplace, Array.from(marketMap.values()));
+    if (marketMod && typeof marketMod.reloadMarketplaceCache === "function") {
+      marketMod.reloadMarketplaceCache();
+    }
   }
 
   // 4. استعادة الإذاعة والبحث

@@ -37,8 +37,8 @@ const FEATURE_LABELS = {
 let cachedUsersMap = null;
 let saveDebounceTimer = null;
 
-function initUsersCache() {
-  if (cachedUsersMap !== null) return cachedUsersMap;
+function initUsersCache(forceReload = false) {
+  if (!forceReload && cachedUsersMap !== null) return cachedUsersMap;
   cachedUsersMap = new Map();
 
   function tryReadFile(filePath) {
@@ -665,10 +665,16 @@ function renderCourseSearchStats(chatId, botInstance) {
   });
 }
 
+function reloadUsersCache() {
+  cachedUsersMap = null;
+  return initUsersCache(true);
+}
+
 module.exports = {
   loadUsers,
   saveUsersList,
   mergeUsersData,
+  reloadUsersCache,
   isUserBanned,
   trackFeatureUse,
   trackCourseSearch,

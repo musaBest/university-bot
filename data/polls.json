@@ -1,5 +1,195 @@
 [
   {
+    "id": "poll_1790529087580",
+    "question": "لما بدكم تبحثوا على مادة معينة اكتبوا اسمها مباشر او الكود الخاص فيها سواء على الخطة تبعت ال4 او ال5 سنوات\n\nمثلا بدي مادة نحو وصرف\nبكتب مباشرة (نحو وصرف)\nما تكتب (مساق نحو وصرف)\n\nوهكذا على باقي المواد مادة تفاضل وتكامل اكتب ( تفاضل وتكامل )\nما تكتب كالكولس او اشي اكتب باسم المادة سواء عربي",
+    "options": [
+      "تمام 👍🏼",
+      "تمام"
+    ],
+    "createdAt": "2026-09-27T17:11:27.580Z",
+    "active": false,
+    "votes": {
+      "972567013": {
+        "name": "HK",
+        "username": "Hahakh0",
+        "optionIndex": 0,
+        "timestamp": "2026-09-27T17:13:34.100Z"
+      },
+      "5568599809": {
+        "name": "Israa Hafez",
+        "username": "Soso0042",
+        "optionIndex": 0,
+        "timestamp": "2026-09-27T17:12:05.493Z"
+      }
+    },
+    "sentMessages": []
+  },
+  {
+    "id": "poll_1789897480679",
+    "question": "تم بحمد الله الانتهاء من التحديث الكامل للبوت وعاد الان الي العمل فحابب اعرف شو رايكم بالتحديث الجديد ؟",
+    "options": [
+      "كويس ومرتب",
+      "نرجع للترتيب القديم",
+      "اقترح تحسينات من خلال التواصل مع الادمن داخل ابوت"
+    ],
+    "createdAt": "2026-09-20T09:44:40.679Z",
+    "active": true,
+    "votes": {
+      "1198633911": {
+        "name": "Fawzi",
+        "username": "Fawzi46",
+        "optionIndex": 0,
+        "timestamp": "2026-09-20T18:08:46.597Z"
+      },
+      "1252664950": {
+        "name": "أنس عودة",
+        "username": "Anasmsowda",
+        "optionIndex": 0,
+        "timestamp": "2026-09-20T10:10:54.229Z"
+      },
+      "8936082180": {
+        "name": "M",
+        "username": "",
+        "optionIndex": 0,
+        "timestamp": "2026-09-20T09:50:35.207Z"
+      },
+      "8693544178": {
+        "name": "سُندُس 🤎.",
+        "username": "sondos_128",
+        "optionIndex": 0,
+        "timestamp": "2026-09-20T10:06:57.443Z"
+      },
+      "8068066458": {
+        "name": "Ezz eldeen Almjdalawi",
+        "username": "EzzEldeenAlmjdalawi",
+        "optionIndex": 0,
+        "timestamp": "2026-09-20T13:55:37.045Z"
+      }
+    },
+    "sentMessages": [
+      {
+        "chatId": 5687891184,
+        "messageId": 14637
+      },
+      {
+        "chatId": 8936082180,
+        "messageId": 14638
+      },
+      {
+        "chatId": 8015484473,
+        "messageId": 14639
+      },
+      {
+        "chatId": 1337998820,
+        "messageId": 14640
+      },
+      {
+        "chatId": 7532258758,
+        "messageId": 14641
+      },
+      {
+        "chatId": 5752102001,
+        "messageId": 14642
+      },
+      {
+        "chatId": 6349922119,
+        "messageId": 14643
+      },
+      {
+        "chatId": 1348759786,
+        "messageId": 14644
+      },
+      {
+        "chatId": 7197341877,
+        "messageId": 14645
+      },
+      {
+        "chatId": 1198633911,
+        "messageId": 14646
+      },
+      {
+        "chatId": 1188721012,
+        "messageId": 14647
+      },
+      {
+        "chatId": 8442188437,
+        "messageId": 14648
+      },
+      {
+        "chatId": 7250281021,
+        "messageId": 14649
+      },
+      {
+        "chatId": 5991663444,
+        "messageId": 14650
+      },
+      {
+        "chatId": 5127961240,
+        "messageId": 14651
+      },
+      {
+        "chatId": 1400916024,
+        "messageId": 14652
+      },
+      {
+        "chatId": 8693544178,
+        "messageId": 14653
+      },
+      {
+        "chatId": 8289528261,
+        "messageId": 14654
+      },
+      {
+        "chatId": 1468908779,
+        "messageId": 14655
+      },
+      {
+        "chatId": 8375634735,
+        "messageId": 14656
+      },
+      {
+        "chatId": 8682420614,
+        "messageId": 14657
+      },
+      {
+        "chatId": 7827998053,
+        "messageId": 14658
+      },
+      {
+        "chatId": 7788103940,
+        "messageId": 14659
+      },
+      {
+        "chatId": 1966485376,
+        "messageId": 14660
+      },
+      {
+        "chatId": 1457376272,
+        "messageId": 14661
+      },
+      {
+        "chatId": 5770434377,
+        "messageId": 14662
+      },
+      {
+        "chatId": 1254753958,
+        "messageId": 14663
+      },
+      {
+        "chatId": 8068066458,
+        "messageId": 14664
+      },
+      {
+        "chatId": 1252664950,
+        "messageId": 14665
+      },
+      {
+        "chatId": 8156363466,
+        "messageId": 14666
+      }
+    ]
+  },
+  {
     "id": "poll_1789842770101",
     "question": "ما رأيكم في اختبار الهياكل؟",
     "options": [
@@ -8,7 +198,7 @@
       "صعب"
     ],
     "createdAt": "2026-09-19T18:32:50.101Z",
-    "active": true,
+    "active": false,
     "votes": {
       "12345678": {
         "name": "أحمد",
@@ -27,7 +217,7 @@
       "صعب"
     ],
     "createdAt": "2026-09-18T23:50:11.612Z",
-    "active": true,
+    "active": false,
     "votes": {
       "123456": {
         "name": "أحمد",

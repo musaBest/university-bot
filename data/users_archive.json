@@ -1,15 +1,1056 @@
 [
   {
     "id": 5687891184,
-    "name": "Admin",
-    "username": "@admin_test",
+    "name": "Musab Alaswed",
+    "username": "@bestmusab",
     "joinedAt": "2026-09-02T10:23:07.048Z",
-    "lastActive": "2026-09-10T06:55:45.845Z",
+    "lastActive": "2026-10-04T13:58:50.171Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 1363,
+      "show_years": 33,
+      "ai_chat": 61,
+      "contacts": 6,
+      "lab_programs": 8,
+      "marketplace": 29,
+      "search": 12,
+      "ai_quiz": 1,
+      "exam_planner": 1
+    }
+  },
+  {
+    "id": 12345678,
+    "name": "أحمد",
+    "username": "@ahmed_test",
+    "joinedAt": "2026-09-19T18:32:50.093Z",
+    "lastActive": "2026-09-19T18:32:50.093Z",
+    "active": false,
+    "banned": false,
+    "featuresUsed": {
+      "menu_academic": 1
+    }
+  },
+  {
+    "id": 8936082180,
+    "name": "M",
+    "username": "",
+    "joinedAt": "2026-09-10T17:01:19.862Z",
+    "lastActive": "2026-10-04T05:40:10.365Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 204,
+      "search": 9,
+      "ai_chat": 33,
+      "show_years": 18,
+      "contact_admin": 8,
+      "lab_programs": 2,
+      "gpa_file": 1,
+      "marketplace": 18,
+      "ai_quiz": 2,
+      "uni_reqs": 3
+    }
+  },
+  {
+    "id": 8015484473,
+    "name": "منة",
+    "username": "",
+    "joinedAt": "2026-09-11T12:43:52.076Z",
+    "lastActive": "2026-09-30T09:19:01.619Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 49,
+      "search": 8,
+      "gpa_file": 2,
+      "upload": 2,
+      "ai_chat": 6,
+      "show_years": 3,
+      "ai_quiz": 3,
+      "exam_planner": 6,
+      "marketplace": 2,
+      "lab_programs": 1
+    }
+  },
+  {
+    "id": 1337998820,
+    "name": "Aya",
+    "username": "@Aya_Habib8",
+    "joinedAt": "2026-09-11T15:41:19.836Z",
+    "lastActive": "2026-09-11T15:41:19.836Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 1
+    }
+  },
+  {
+    "id": 7532258758,
+    "name": "Bader Qudaih 2",
+    "username": "",
+    "joinedAt": "2026-09-11T17:10:07.631Z",
+    "lastActive": "2026-10-02T19:30:52.314Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 29,
+      "prerequisites": 1,
+      "plan5": 1,
+      "plan4": 1,
+      "uni_reqs": 4,
+      "search": 9,
+      "show_years": 9
+    }
+  },
+  {
+    "id": 5752102001,
+    "name": "هنا أبو يوسف",
+    "username": "@HN_PAL",
+    "joinedAt": "2026-09-11T21:16:48.198Z",
+    "lastActive": "2026-09-11T21:17:06.887Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2
+    }
+  },
+  {
+    "id": 6349922119,
+    "name": "𝚀𝚞𝚜𝚊𝚒 𝙼.𝙻",
+    "username": "",
+    "joinedAt": "2026-09-12T02:33:47.520Z",
+    "lastActive": "2026-09-12T02:34:04.327Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2,
+      "plan4": 1
+    }
+  },
+  {
+    "id": 1348759786,
+    "name": "أحمد أبو صبحة",
+    "username": "@abumusab583",
+    "joinedAt": "2026-09-12T11:03:26.579Z",
+    "lastActive": "2026-09-13T15:11:52.859Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 7,
+      "ai_chat": 1,
+      "show_years": 5
+    }
+  },
+  {
+    "id": 7197341877,
+    "name": "أبو عمر",
+    "username": "@Eyad_kh_Ayesh",
+    "joinedAt": "2026-09-12T13:56:36.561Z",
+    "lastActive": "2026-09-12T13:58:10.433Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 17,
+      "show_years": 15
+    }
+  },
+  {
+    "id": 1198633911,
+    "name": "Fawzi",
+    "username": "@Fawzi46",
+    "joinedAt": "2026-09-12T14:45:36.701Z",
+    "lastActive": "2026-09-26T16:48:05.819Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 21,
+      "lab_programs": 3,
+      "search": 7,
+      "show_years": 2,
+      "contact_admin": 4
+    }
+  },
+  {
+    "id": 1188721012,
+    "name": "💗",
+    "username": "",
+    "joinedAt": "2026-09-12T18:30:42.239Z",
+    "lastActive": "2026-10-03T07:09:24.077Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 13,
+      "show_years": 9,
+      "search": 1
+    }
+  },
+  {
+    "id": 8442188437,
+    "name": ". .",
+    "username": "",
+    "joinedAt": "2026-09-12T20:20:25.703Z",
+    "lastActive": "2026-09-26T14:13:47.187Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 39,
+      "show_years": 31
+    }
+  },
+  {
+    "id": 7250281021,
+    "name": "Eng.Bara B Dagga",
+    "username": "",
+    "joinedAt": "2026-09-13T10:04:35.082Z",
+    "lastActive": "2026-09-13T10:04:58.201Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "search": 2
+    }
+  },
+  {
+    "id": -1003844529585,
+    "name": "Yousef Douhan _",
+    "username": "@KamalRaedAnan",
+    "joinedAt": "2026-09-13T12:01:19.160Z",
+    "lastActive": "2026-10-04T12:38:25.721Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 10
+    }
+  },
+  {
+    "id": 5991663444,
+    "name": "Sja Miqdad.",
+    "username": "@allsja04",
+    "joinedAt": "2026-09-13T15:08:47.205Z",
+    "lastActive": "2026-09-13T15:09:09.633Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 5,
+      "show_years": 4
+    }
+  },
+  {
+    "id": 5127961240,
+    "name": "Reem💜",
+    "username": "",
+    "joinedAt": "2026-09-13T17:47:36.120Z",
+    "lastActive": "2026-09-19T08:47:23.753Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 14,
+      "ai_chat": 1,
+      "search": 1,
+      "plan5": 1,
+      "show_years": 8
+    }
+  },
+  {
+    "id": 1400916024,
+    "name": "Adham Matar",
+    "username": "@Adhammatar",
+    "joinedAt": "2026-09-13T22:14:24.102Z",
+    "lastActive": "2026-09-27T20:12:38.544Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "search": 6
+    }
+  },
+  {
+    "id": 8693544178,
+    "name": "سُندُس 🤎.",
+    "username": "@sondos_128",
+    "joinedAt": "2026-09-14T12:57:05.529Z",
+    "lastActive": "2026-09-20T10:06:57.443Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "search": 4,
+      "show_years": 1
+    }
+  },
+  {
+    "id": 8289528261,
+    "name": "Mohammed",
+    "username": "@yioolhhhuiiii",
+    "joinedAt": "2026-09-14T14:22:18.880Z",
+    "lastActive": "2026-09-30T14:04:29.468Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 25,
+      "plan4": 2,
+      "show_years": 20
+    }
+  },
+  {
+    "id": 1468908779,
+    "name": "shahd alhoor",
+    "username": "@Shh25_8",
+    "joinedAt": "2026-09-14T14:31:40.563Z",
+    "lastActive": "2026-09-14T14:33:58.484Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "show_years": 4
+    }
+  },
+  {
+    "id": 8375634735,
+    "name": "𝑇𝑎𝑠𝑛𝑒𝑒𝑚",
+    "username": "",
+    "joinedAt": "2026-09-15T15:31:37.132Z",
+    "lastActive": "2026-10-01T14:46:41.133Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 15,
+      "search": 8,
+      "show_years": 4
+    }
+  },
+  {
+    "id": 8682420614,
+    "name": "Eng.Doha",
+    "username": "",
+    "joinedAt": "2026-09-15T15:32:53.880Z",
+    "lastActive": "2026-09-29T12:07:35.711Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 3,
+      "search": 3
+    }
+  },
+  {
+    "id": 7827998053,
+    "name": ".",
+    "username": "",
+    "joinedAt": "2026-09-16T14:53:59.085Z",
+    "lastActive": "2026-09-16T15:27:04.269Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 7,
+      "show_years": 2,
+      "plan5": 1
+    }
+  },
+  {
+    "id": 7788103940,
+    "name": "سجا عماد",
+    "username": "",
+    "joinedAt": "2026-09-17T11:44:00.238Z",
+    "lastActive": "2026-09-17T11:44:24.646Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "ai_chat": 1,
+      "gpa_file": 1
+    }
+  },
+  {
+    "id": 1966485376,
+    "name": "البراء حامد",
+    "username": "@abyazmaslama",
+    "joinedAt": "2026-09-17T20:23:38.019Z",
+    "lastActive": "2026-09-17T20:26:11.199Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 15,
+      "prerequisites": 1,
+      "uni_reqs": 1,
+      "show_years": 10,
+      "plan4": 1
+    }
+  },
+  {
+    "id": 1457376272,
+    "name": "Mohamed □□",
+    "username": "@Mohamed_j22",
+    "joinedAt": "2026-09-18T15:43:14.093Z",
+    "lastActive": "2026-09-18T15:46:45.107Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "search": 2,
+      "show_years": 2
+    }
+  },
+  {
+    "id": 5770434377,
+    "name": "M.77 ..",
+    "username": "@Mohaned2712",
+    "joinedAt": "2026-09-18T15:47:10.194Z",
+    "lastActive": "2026-10-02T21:25:53.955Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 12,
+      "search": 7,
+      "show_years": 2
+    }
+  },
+  {
+    "id": 1254753958,
+    "name": "فاطِمةْ أبوسويرح 💜",
+    "username": "@fatima_swerih",
+    "joinedAt": "2026-09-18T20:18:51.415Z",
+    "lastActive": "2026-10-02T21:53:01.833Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 28,
+      "show_years": 21,
+      "plan5": 1
+    }
+  },
+  {
+    "id": 8068066458,
+    "name": "Ezz eldeen Almjdalawi",
+    "username": "@EzzEldeenAlmjdalawi",
+    "joinedAt": "2026-09-19T09:16:55.519Z",
+    "lastActive": "2026-09-23T03:07:37.291Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 29,
+      "marketplace": 2,
+      "code_debugger": 1,
+      "ai_quiz": 4,
+      "ai_chat": 2,
+      "plan4": 1,
+      "contacts": 4
+    }
+  },
+  {
+    "id": 1252664950,
+    "name": "أنس عودة",
+    "username": "@Anasmsowda",
+    "joinedAt": "2026-09-19T13:47:22.537Z",
+    "lastActive": "2026-10-03T08:11:20.255Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 40,
+      "exam_planner": 1,
+      "marketplace": 3,
+      "ai_chat": 9,
+      "plan4": 1,
+      "search": 3,
+      "contacts": 2,
+      "past_papers": 2
+    }
+  },
+  {
+    "id": 8156363466,
+    "name": "ahmad.Z.mortaja",
+    "username": "@Ahmad2272006",
+    "joinedAt": "2026-09-19T14:18:23.770Z",
+    "lastActive": "2026-09-27T20:06:15.424Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 23,
+      "search": 5,
+      "ai_chat": 15
+    }
+  },
+  {
+    "id": 8738091254,
+    "name": "Ahmad Younis",
+    "username": "",
+    "joinedAt": "2026-09-20T16:40:49.286Z",
+    "lastActive": "2026-09-27T15:28:01.962Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 39,
+      "show_years": 35,
+      "search": 3
+    }
+  },
+  {
+    "id": 8468855317,
+    "name": "يحيى الاطرش",
+    "username": "",
+    "joinedAt": "2026-09-20T16:48:30.750Z",
+    "lastActive": "2026-09-30T13:12:21.932Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 15,
+      "show_years": 7,
+      "search": 2
+    }
+  },
+  {
+    "id": 8777397303,
+    "name": "a",
+    "username": "@ahmeds3l",
+    "joinedAt": "2026-09-20T18:36:41.698Z",
+    "lastActive": "2026-09-20T18:37:08.903Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 5,
+      "contacts": 2
+    }
+  },
+  {
+    "id": 6893809789,
+    "name": "No Name",
+    "username": "@NoName_20071",
+    "joinedAt": "2026-09-22T09:38:32.258Z",
+    "lastActive": "2026-09-22T09:38:37.907Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2,
+      "contacts": 2
+    }
+  },
+  {
+    "id": 1468832040,
+    "name": "Seraj",
+    "username": "",
+    "joinedAt": "2026-09-23T06:46:04.825Z",
+    "lastActive": "2026-09-23T06:46:04.825Z",
     "active": true,
     "banned": false,
     "featuresUsed": {
       "active": 1,
+      "contacts": 1
+    }
+  },
+  {
+    "id": 8315564300,
+    "name": "Hafez Arafat AlAmodi",
+    "username": "",
+    "joinedAt": "2026-09-23T07:48:46.917Z",
+    "lastActive": "2026-09-29T15:21:07.767Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 26,
+      "plan4": 1,
+      "search": 18,
+      "show_years": 3
+    }
+  },
+  {
+    "id": 6738472939,
+    "name": "𝓡𝓐𝓦𝓐𝓝🜌",
+    "username": "@do_22_w",
+    "joinedAt": "2026-09-23T10:12:02.868Z",
+    "lastActive": "2026-09-23T10:56:41.121Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 12,
+      "search": 3,
+      "show_years": 1,
+      "ai_chat": 4
+    }
+  },
+  {
+    "id": 1357486285,
+    "name": "3laa Alhaloul",
+    "username": "@s120200531",
+    "joinedAt": "2026-09-23T12:11:24.522Z",
+    "lastActive": "2026-09-23T12:32:03.651Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 9,
+      "show_years": 6
+    }
+  },
+  {
+    "id": 972567013,
+    "name": "HK",
+    "username": "@Hahakh0",
+    "joinedAt": "2026-09-24T09:57:30.299Z",
+    "lastActive": "2026-09-27T17:13:34.100Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 61,
+      "prerequisites": 2,
+      "past_papers": 1,
+      "ai_chat": 3,
+      "code_debugger": 5,
+      "ai_quiz": 4,
+      "show_years": 5,
+      "uni_reqs": 1,
+      "search": 1,
+      "plan4": 1,
+      "marketplace": 3
+    }
+  },
+  {
+    "id": 7203837886,
+    "name": "ألاء جمعة",
+    "username": "",
+    "joinedAt": "2026-09-24T15:24:02.593Z",
+    "lastActive": "2026-09-24T15:27:09.463Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 9,
+      "show_years": 7
+    }
+  },
+  {
+    "id": 5226758808,
+    "name": "عبدالرحمن سليمان",
+    "username": "",
+    "joinedAt": "2026-09-24T16:43:38.026Z",
+    "lastActive": "2026-09-24T16:43:46.454Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2,
+      "prerequisites": 1
+    }
+  },
+  {
+    "id": 8064558860,
+    "name": "ميسرة اهل",
+    "username": "",
+    "joinedAt": "2026-09-25T08:42:28.826Z",
+    "lastActive": "2026-09-25T15:43:17.853Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "show_years": 6
+    }
+  },
+  {
+    "id": 932036549,
+    "name": "kareem ammar",
+    "username": "@kareemsuhail",
+    "joinedAt": "2026-09-25T08:49:29.682Z",
+    "lastActive": "2026-09-25T08:53:08.965Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2,
       "show_years": 2
+    }
+  },
+  {
+    "id": 5851058091,
+    "name": "Doaa M. Elmasri",
+    "username": "",
+    "joinedAt": "2026-09-26T06:45:15.773Z",
+    "lastActive": "2026-09-26T08:24:51.611Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 29,
+      "show_years": 21,
+      "search": 2,
+      "plan5": 1,
+      "prerequisites": 1
+    }
+  },
+  {
+    "id": 8066581524,
+    "name": "Ghp",
+    "username": "",
+    "joinedAt": "2026-09-26T12:13:42.530Z",
+    "lastActive": "2026-10-02T06:12:13.644Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 37,
+      "show_years": 24,
+      "plan4": 1
+    }
+  },
+  {
+    "id": 5703028430,
+    "name": "Farah Dou",
+    "username": "@Farah_dou",
+    "joinedAt": "2026-09-26T16:37:43.571Z",
+    "lastActive": "2026-09-26T16:43:25.232Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 13,
+      "ai_chat": 3,
+      "ai_quiz": 1,
+      "upload": 1,
+      "prerequisites": 1
+    }
+  },
+  {
+    "id": 7905445798,
+    "name": "Abed Isa",
+    "username": "",
+    "joinedAt": "2026-09-26T17:30:01.649Z",
+    "lastActive": "2026-09-26T17:37:22.789Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 9,
+      "plan4": 1,
+      "uni_reqs": 1,
+      "search": 5,
+      "show_years": 1
+    }
+  },
+  {
+    "id": 8088982317,
+    "name": "Aya",
+    "username": "@Eng_Aya111",
+    "joinedAt": "2026-09-27T07:46:32.586Z",
+    "lastActive": "2026-09-27T07:50:35.104Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 17,
+      "plan5": 1,
+      "search": 2,
+      "show_years": 4
+    }
+  },
+  {
+    "id": 6446337187,
+    "name": "Hesham Shaheen",
+    "username": "@heshamja",
+    "joinedAt": "2026-09-27T08:44:03.445Z",
+    "lastActive": "2026-09-27T08:44:03.445Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2
+    }
+  },
+  {
+    "id": 5514287428,
+    "name": "Yousef.A.l.amoudi",
+    "username": "",
+    "joinedAt": "2026-09-27T08:54:29.854Z",
+    "lastActive": "2026-10-03T13:45:10.712Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 10,
+      "search": 6
+    }
+  },
+  {
+    "id": 5521924723,
+    "name": "Sondos ♥️🫶",
+    "username": "@sondos_nahel",
+    "joinedAt": "2026-09-27T08:57:56.960Z",
+    "lastActive": "2026-09-27T08:58:26.500Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 7,
+      "show_years": 4
+    }
+  },
+  {
+    "id": 5418507965,
+    "name": "..",
+    "username": "",
+    "joinedAt": "2026-09-27T12:00:13.487Z",
+    "lastActive": "2026-09-27T12:01:21.145Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "search": 2,
+      "show_years": 2
+    }
+  },
+  {
+    "id": 5568599809,
+    "name": "Israa Hafez",
+    "username": "@Soso0042",
+    "joinedAt": "2026-09-27T13:27:05.133Z",
+    "lastActive": "2026-09-27T17:12:18.910Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 13,
+      "search": 8
+    }
+  },
+  {
+    "id": 1256007323,
+    "name": "Sãjã Yõüsëf😍",
+    "username": "@SajaYousef2002",
+    "joinedAt": "2026-09-27T14:00:24.174Z",
+    "lastActive": "2026-09-27T14:00:38.182Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 5,
+      "show_years": 5
+    }
+  },
+  {
+    "id": 5878244144,
+    "name": "Malak Mansour",
+    "username": "",
+    "joinedAt": "2026-09-27T14:48:17.150Z",
+    "lastActive": "2026-09-27T14:48:26.730Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 3
+    }
+  },
+  {
+    "id": 5290171799,
+    "name": "Dema",
+    "username": "",
+    "joinedAt": "2026-09-28T20:17:32.366Z",
+    "lastActive": "2026-09-29T06:31:56.728Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 13,
+      "search": 7,
+      "show_years": 2,
+      "ai_chat": 1
+    }
+  },
+  {
+    "id": 1716428132,
+    "name": "Mohammed Bushnaq",
+    "username": "@MohammedBushnaq",
+    "joinedAt": "2026-09-28T20:32:13.474Z",
+    "lastActive": "2026-09-28T20:32:27.516Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "show_years": 6
+    }
+  },
+  {
+    "id": 1981007083,
+    "name": "Omar Siyam",
+    "username": "@OmarASiyam",
+    "joinedAt": "2026-09-30T09:39:19.640Z",
+    "lastActive": "2026-09-30T10:39:03.660Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 18,
+      "past_papers": 5,
+      "search": 3,
+      "uni_reqs": 6
+    }
+  },
+  {
+    "id": 1837390282,
+    "name": "علي محمود",
+    "username": "",
+    "joinedAt": "2026-09-30T10:15:35.735Z",
+    "lastActive": "2026-09-30T10:16:20.788Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 7,
+      "show_years": 7
+    }
+  },
+  {
+    "id": 5496578177,
+    "name": "إبراهيم أحمد الفجم",
+    "username": "@s421249301",
+    "joinedAt": "2026-09-30T17:45:06.672Z",
+    "lastActive": "2026-09-30T17:46:55.237Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 8,
+      "show_years": 5,
+      "search": 1
+    }
+  },
+  {
+    "id": 1357521636,
+    "name": "Aya 🤍",
+    "username": "",
+    "joinedAt": "2026-10-01T08:20:20.783Z",
+    "lastActive": "2026-10-01T08:20:41.068Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2,
+      "lab_programs": 2
+    }
+  },
+  {
+    "id": 1270984882,
+    "name": "Mona Habil",
+    "username": "",
+    "joinedAt": "2026-10-01T08:23:33.292Z",
+    "lastActive": "2026-10-01T08:23:33.292Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 2
+    }
+  },
+  {
+    "id": 7601010936,
+    "name": "𝓗𝓪𝓼𝓼𝓪𝓷 🥷🏻",
+    "username": "",
+    "joinedAt": "2026-10-01T09:09:06.733Z",
+    "lastActive": "2026-10-01T14:50:30.485Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 6,
+      "search": 3,
+      "show_years": 1
+    }
+  },
+  {
+    "id": 6426064850,
+    "name": "Reem Ehab",
+    "username": "@reemafana2",
+    "joinedAt": "2026-10-01T11:13:17.633Z",
+    "lastActive": "2026-10-01T11:13:26.951Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "show_years": 4
+    }
+  },
+  {
+    "id": 1715802210,
+    "name": "Dimon Df",
+    "username": "",
+    "joinedAt": "2026-10-02T09:02:12.122Z",
+    "lastActive": "2026-10-02T09:06:25.639Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 8,
+      "search": 4,
+      "plan4": 1
+    }
+  },
+  {
+    "id": 5859561695,
+    "name": "Jack A",
+    "username": "",
+    "joinedAt": "2026-10-02T11:17:16.892Z",
+    "lastActive": "2026-10-03T18:04:47.285Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 34,
+      "plan4": 1,
+      "ai_chat": 27
+    }
+  },
+  {
+    "id": 6446707949,
+    "name": "FatMª",
+    "username": "",
+    "joinedAt": "2026-10-02T14:19:33.312Z",
+    "lastActive": "2026-10-02T14:40:13.839Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 7,
+      "lab_programs": 2,
+      "plan5": 1,
+      "search": 2
+    }
+  },
+  {
+    "id": 6052994440,
+    "name": "Besan Shaheen",
+    "username": "@nasebbesan",
+    "joinedAt": "2026-10-03T14:23:10.004Z",
+    "lastActive": "2026-10-03T19:13:02.818Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 17,
+      "search": 2,
+      "show_years": 8,
+      "marketplace": 1
+    }
+  },
+  {
+    "id": 6596907317,
+    "name": "Abdallah Sameer",
+    "username": "",
+    "joinedAt": "2026-10-04T11:57:09.367Z",
+    "lastActive": "2026-10-04T11:58:38.533Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "search": 2
+    }
+  },
+  {
+    "id": 2044682725,
+    "name": "Yousef Douhan _",
+    "username": "",
+    "joinedAt": "2026-10-04T12:38:42.508Z",
+    "lastActive": "2026-10-04T12:39:06.548Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "plan5": 1
+    }
+  },
+  {
+    "id": 5363767390,
+    "name": "marwa madhoun",
+    "username": "@marwa12318",
+    "joinedAt": "2026-10-04T12:44:48.099Z",
+    "lastActive": "2026-10-04T12:48:59.838Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 12,
+      "show_years": 10
+    }
+  },
+  {
+    "id": 5028579416,
+    "name": "بَتُـول",
+    "username": "@batoolalagha",
+    "joinedAt": "2026-10-04T13:10:30.898Z",
+    "lastActive": "2026-10-04T13:11:05.184Z",
+    "active": true,
+    "banned": false,
+    "featuresUsed": {
+      "active": 4,
+      "search": 1
     }
   }
 ]

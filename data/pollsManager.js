@@ -238,11 +238,17 @@ function renderAdminPollsList(chatId, bot) {
   });
 }
 
+function reloadPollsCache() {
+  cachedPolls = null;
+  return loadPolls();
+}
+
 module.exports = {
   createPoll,
   getPoll,
   loadPolls,
   savePolls,
+  reloadPollsCache,
   recordVote,
   togglePollStatus,
   unsendPollFromStudents,

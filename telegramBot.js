@@ -3221,14 +3221,18 @@ bot.on("message", async (msg) => {
         const parsed = JSON.parse(jsonText);
         if (parsed && typeof parsed === "object" && !Array.isArray(parsed) && (parsed.users || parsed.polls || parsed.marketplace || parsed.version)) {
           const res = restoreDatabaseBundle(parsed);
+          const totalUsers = res.results?.totalUsers || (parsed.users ? parsed.users.length : 0);
+          const pollsCount = parsed.polls ? parsed.polls.length : 0;
+          const marketCount = parsed.marketplace ? parsed.marketplace.length : 0;
           safeSend(
             bot,
             chatId,
-            `✅ *تم استعادة ودمج النسخة الشاملة بنجاح!* 🚀\n━━━━━━━━━━━━━━━━━━━━\n👥 *المشتركين:* تمت استعادة وتحديث سجلاتهم.\n🗳️ *الاستطلاعات:* تمت استعادة الاستطلاعات وتصويت الطلاب.\n🔄 *سوق التبادل:* تمت استعادة كافة الإعلانات.\n\nجميع البيانات تعمل الآن بنجاح وبأعلى دقة!`,
+            `✅ *تم استعادة ودمج النسخة الشاملة بنجاح!* 🚀\n━━━━━━━━━━━━━━━━━━━━\n👥 *إجمالي المشتركين:* \`${totalUsers}\` طالب مسجل\n🗳️ *الاستطلاعات المحفوظة:* \`${pollsCount}\` استطلاع مع الأصوات\n🔄 *سوق التبادل:* \`${marketCount}\` إعلان نشط\n📢 *سجل الإذاعة والبحث:* محدث بالكامل\n\nتم تحديث قاعدة البيانات والذاكرة الحية فوراً! 🎯`,
             {
               reply_markup: {
                 inline_keyboard: [
                   [{ text: "🎛️ لوحة التحكم", callback_data: "admin_dashboard" }],
+                  [{ text: "👥 قائمة الطلاب المسجلين", callback_data: "admin_list_users" }],
                   [{ text: "🗳️ استطلاعات الرأي", callback_data: "admin_polls_menu" }]
                 ]
               }
