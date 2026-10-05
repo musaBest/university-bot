@@ -104,8 +104,21 @@ const labPrograms = {
   "Image Processing ": {
     text: "🖼️ برنامج Octave",
     link: "https://ftpmirror.gnu.org/octave/windows/octave-10.1.0-w64-installer.exe"
+  },
+
+  "Deep Learning_Lab": {
+    text: "🐍 برنامج وبيئة Anaconda (Jupyter Notebook) للتعلم العميق",
+    links: [
+      { name: "📁 ملف شرح خطوات التنزيل (Drive)", url: "https://drive.google.com/drive/folders/1w_QbaMu3x1mm2VnBEKZGymdbfIc5c1pP" },
+      { name: "🌐 تنزيل البرنامج (الموقع الرسمي)", url: "https://www.anaconda.com/download" },
+      { name: "🎬 فيديو شرح التثبيت (YouTube)", url: "https://www.youtube.com/watch?v=5mDYijMfSzs" }
+    ]
+  },
+
+  "Network Security_Lab": {
+    text: "🐧 شرح تثبيت Ubuntu (نظام وهمي)",
+    link: "https://www.youtube.com/watch?v=-1S5qisIx8I"
   }
 };
-
 
 module.exports = { labPrograms };
