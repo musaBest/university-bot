@@ -899,6 +899,25 @@ const metaMap = {
         codes: ["EELE 5426"],
         ar: "معالجة صور رقمية",
         aliases: ["EELE 5426", "EELE5426", "معالجة الصور الرقمية", "معالجة صور", "ايمج بروسيسنج", "image processing", "digital image processing"]
+      },
+      "Deep Learning Lab": {
+        code: "",
+        ar: "معمل تعلم عميق",
+        aliases: ["معمل تعلم عميق", "ديب ليرنينج لاب", "deep learning lab", "معمل ديب ليرنينج"]
+      },
+      "Advanced Computer Architectures": {
+        code5: "ECOM 5422",
+        code: "ECOM 5422",
+        codes: ["ECOM 5422"],
+        ar: "عمارة حاسبات متقدمة",
+        aliases: ["ECOM 5422", "ECOM5422", "عمارة حاسبات متقدمة", "عماره حاسبات متقدمه", "حاسبات متقدمة", "advanced computer architectures", "advanced architecture"]
+      },
+      "Graduation Project 1": {
+        code5: "ECOM 5301",
+        code: "ECOM 5301",
+        codes: ["ECOM 5301"],
+        ar: "مشروع تخرج (1)",
+        aliases: ["ECOM 5301", "ECOM5301", "مشروع تخرج 1", "مشروع تخرج (1)", "مشروع 1", "graduation project 1", "senior project 1"]
       }
     },
     semester2: {
@@ -927,6 +946,13 @@ const metaMap = {
         codes: ["ESMA 4106"],
         ar: "أنظمة الطاقة المتجددة (عملي)",
         aliases: ["ESMA 4106", "ESMA4106", "أنظمة الطاقة المتجددة", "انظمة الطاقة المتجددة", "معمل طاقة متجددة", "طاقة متجددة", "renewable energy"]
+      },
+      "Graduation Project 2": {
+        code5: "ECOM 5302",
+        code: "ECOM 5302",
+        codes: ["ECOM 5302"],
+        ar: "مشروع تخرج (2)",
+        aliases: ["ECOM 5302", "ECOM5302", "مشروع تخرج 2", "مشروع تخرج (2)", "مشروع 2", "graduation project 2", "senior project 2"]
       }
     }
   }

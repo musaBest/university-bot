@@ -951,10 +951,26 @@ year5: {
     "Network Security Lab": {
       "Lab": "https://drive.google.com/drive/folders/1yQ9o4l_PAR9pOt1CZy6FFbDuTktn8cMR",
       "Recorded Videos":{ 
+      "Eng. Yasser Hegazy ":"https://youtu.be/vBGYZR08lhQ?si=DX5gNq4-TzKn-fWA",
       "Eng. Mohammed Habboub":"https://youtube.com/playlist?list=PLq6tvdQqyXAVf_BIAJsgv71k0aFogQeLn&si=C_X1qXFuhz07nkmG",
       "Eng. Mohammed ALMadhoun":"https://www.youtube.com/playlist?list=PLq5FW85cJhv4Gm0ycivqhaVKCbXi5w_UV",
      },
       "Tips": "طبق كل ما تعلمته ي غالي"
+    },
+    "Deep Learning Lab": {
+      "Lab": "https://drive.google.com/drive/folders/1_sI2igOduDHjFSsE8UNk4FqZEb8ukEFm",
+      "Recorded Videos": "https://youtu.be/m01QAamci7Y?si=et2KbRpByAa4_VR-",
+      "Tips": "طبق كل اشي عملي بعد كل محاضرة"
+    },
+    "Advanced Computer Architectures": {
+      "Lab": "https://drive.google.com/drive/folders/17YCbd8EfhIDafzPclXpdX0b_F4Apu18N",
+      "Recorded Videos": "https://youtube.com/playlist?list=PLOV-kML4TcKI&si=2otACd5zQSUq3HIY",
+      "Tips": "المادة تحتاج فهم جيد لمادة عمارة الحاسبات"
+    },
+    "Graduation Project 1": {
+      "Lab": "https://drive.google.com/drive/folders/1QgwoODHp7o4DUu5Q-zmtU63yZoSfgIGd",
+      "Lectures": "https://drive.google.com/drive/folders/1QgwoODHp7o4DUu5Q-zmtU63yZoSfgIGd",
+      "Tips": "ابدأ بتحديد فكرة المشروع واختيار فريق عمل مناسب"
     },
     "Digital Image Processing": {
       "Slides": "https://drive.google.com/drive/folders/1bWY2mZCjMMwSoLNqbJUvKfZamPENIMwU",
@@ -1005,6 +1021,12 @@ year5: {
      },
       "Recorded Videos": "https://youtube.com/playlist?list=PLg9pU3bzWXtCqvO3YDttQgP-6-ooLkZMK&si=PCk5jUXkX7LvaVml",
       "Tips": "معمل بسيط عبارة عن شرح للخلايا الشمسية والطاقات المتجددة"
+    },
+
+    "Graduation Project 2": {
+      "Lab": "https://drive.google.com/drive/folders/1N1M8liUZ2VTPct2el8IbQkw7AISy-5i0",
+      "Lectures": "https://drive.google.com/drive/folders/1N1M8liUZ2VTPct2el8IbQkw7AISy-5i0",
+      "Tips": "اكمل مشروعك وحضر العرض النهائي بشكل ممتاز"
     }
 
 }
