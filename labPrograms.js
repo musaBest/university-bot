@@ -5,6 +5,15 @@ const labPrograms = {
     link: "https://play.google.com/store/apps/details?id=ru.iiec.pydroid3"
   },
 
+  "Engineering Drawing_Lab": {
+    text: "📐 برنامج AutoCAD للرسم الهندسي",
+    links: [
+      { name: "💻 تحميل AutoCAD 2022 (كمبيوتر)", url: "https://www.mediafire.com/file/0qqinohbwwegp4e/Autodesk_AutoCAD_2022.7z.rar/file" },
+      { name: "🎬 فيديو شرح طريقة التنزيل", url: "https://youtu.be/iknmUIE0VIs?feature=shared" },
+      { name: "📱 تحميل AutoCAD للجوال (Android)", url: "https://play.google.com/store/apps/details?id=com.autodesk.autocadws" }
+    ]
+  },
+
   "Computer programing 1&2_Lab": {
     text: "💻 نزل IDE للـ Java (مثل NetBeans)",
     link: "https://youtu.be/_8nw6Tnu67E?si=YZydmjdSpcjLN3Ms"

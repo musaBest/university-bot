@@ -12,7 +12,12 @@ const courses = {
         "Tips": "الدراسة من السلايد كافية مع حل النماذج"
       },
       "Engineering Drawing": {
-        "Lab": "https://drive.google.com/drive/folders/1YB1cel9cPP4S7uTk3LT9eYOLMrHwIq17",
+        "Lab": {
+          "ملفات ومجلد المعمل (Drive)": "https://drive.google.com/drive/folders/1YB1cel9cPP4S7uTk3LT9eYOLMrHwIq17",
+          "تحميل AutoCAD 2022 (كمبيوتر)": "https://www.mediafire.com/file/0qqinohbwwegp4e/Autodesk_AutoCAD_2022.7z.rar/file",
+          "فيديو شرح طريقة التنزيل والتثبيت": "https://youtu.be/iknmUIE0VIs?feature=shared",
+          "تحميل تطبيق AutoCAD للجوال": "https://play.google.com/store/apps/details?id=com.autodesk.autocadws"
+        },
         "Recorded Videos": "https://drive.google.com/drive/folders/12LWdtyHsIi0lGayQMoW5H2nFq4DhSENd",
         "Tips": "مادة لا حول ولا قوة الا بالله ملكاش الا الدعاء"
       },
@@ -347,7 +352,10 @@ const courses = {
        },
        
       "Book & Solutions": "https://drive.google.com/drive/folders/17WQHao4oqHj7zqLv7LNNHCDeO8UHmkBj",
-      "Lectures": "https://www.youtube.com/watch?v=nA0ZTc2jDqE&list=PLGRuZWjFqi70wKe0KPaU0zXVNbBRbxeNE",  
+      "Lectures": {
+        "د. أشرف أبو مغصيب": "https://youtube.com/playlist?list=PLMlhz2VBPWzU&si=4JOKHMRgxem4XeRT",
+        "شروحات ومحاضرات أخرى": "https://www.youtube.com/watch?v=nA0ZTc2jDqE&list=PLGRuZWjFqi70wKe0KPaU0zXVNbBRbxeNE"
+      },  
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/17jq3wgYFMNbRBtTCY1BdvWrBiuJWe_v6",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/17bhCjglZDL2UJTKvA6E8KpmiMXipyUdD",
       "Tips":"حل نماذج والفهم الجيد لجميع الشباتر"
@@ -501,7 +509,8 @@ const courses = {
 
       "Book & Solutions": "https://drive.google.com/drive/folders/1E812CItKxtYU_LkAQV2dwoOQb4Lhae1C",
       "Lectures": {
-      "Dr.Mohammed Al-Hanjouri ":"https://youtube.com/playlist?list=PL9fwy3NUQKwZhC2eomQhHTffLApa8bETi&feature=shared",
+        "Dr.Mohammed Al-Hanjouri ": "https://youtube.com/playlist?list=PL9fwy3NUQKwZhC2eomQhHTffLApa8bETi&feature=shared",
+        "د. أشرف أبو مغصيب": "https://youtube.com/playlist?list=PLTFr3Ib0XCYbvbxdKRPly7Co0UV_z9BN6&si=8d3mMP-842kPwmpI"
       },
       "Discussion & Problems & Problems solution": "https://drive.google.com/drive/folders/1I1kSt_SjfJfBLh0_Qz0uNEGRWMWfd-mc",
       "Quiz & Exams & Homework": "https://drive.google.com/drive/folders/1KH0rGtKF6F1Fg_rpveo1D3B3uJhU_kvM",

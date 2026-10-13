@@ -8,16 +8,31 @@ const { generateAIResponse } = require("./aiService");
 
 const EXAM_DATES_FILE = path.join(__dirname, "examDates.json");
 
-// المواعيد الافتراضية للفصل الدراسي
+// المواعيد الافتراضية للفصل الدراسي الأول 2026/2027
 const DEFAULT_EXAM_DATES = {
-  semesterName: "الفصل الدراسي الحالي 2026",
-  midtermStart: "2026-10-25T09:00:00",
-  midtermEnd: "2026-11-05T14:00:00",
-  finalStart: "2026-12-20T09:00:00",
-  finalEnd: "2027-01-05T14:00:00",
+  semesterName: "الفصل الدراسي الأول للعام الجامعي 2026/2027",
+  registrationStart: "2026-08-22T00:00:00",
+  registrationEnd: "2026-09-25T23:59:59",
+  studyStart: "2026-09-26T08:00:00",
+  addStart: "2026-09-26T08:00:00",
+  addEnd: "2026-10-07T23:59:59",
+  dropEnd: "2026-10-14T23:59:59",
+  midtermStart: "2026-11-14T09:00:00",
+  midtermEnd: "2026-11-19T14:00:00",
+  withdrawEnd: "2026-12-30T23:59:59",
+  studyEnd: "2027-01-07T14:00:00",
+  finalStart: "2027-01-09T09:00:00",
+  finalEnd: "2027-01-21T14:00:00",
   customEvents: [
-    { title: "📌 بداية الامتحانات النصفية", date: "2026-10-25T09:00:00" },
-    { title: "🏁 بداية الامتحانات النهائية", date: "2026-12-20T09:00:00" }
+    { title: "🟢 بداية الفصل والدراسة", date: "2026-09-26T08:00:00" },
+    { title: "⏳ نهاية فترة الإضافة", date: "2026-10-07T23:59:59" },
+    { title: "⏳ نهاية فترة السحب", date: "2026-10-14T23:59:59" },
+    { title: "📌 بداية الامتحانات النصفية", date: "2026-11-14T09:00:00" },
+    { title: "🏁 نهاية الامتحانات النصفية", date: "2026-11-19T14:00:00" },
+    { title: "🚫 نهاية فترة الانسحاب من المساقات", date: "2026-12-30T23:59:59" },
+    { title: "📚 نهاية الدراسة والمحاضرات", date: "2027-01-07T14:00:00" },
+    { title: "🏁 بداية الامتحانات النهائية", date: "2027-01-09T09:00:00" },
+    { title: "🎉 نهاية الامتحانات النهائية وختام الفصل", date: "2027-01-21T14:00:00" }
   ]
 };
 
@@ -67,26 +82,63 @@ function calculateCountdown(targetDateStr) {
 }
 
 /**
- * عرض شاشة العداد التنازلي للامتحانات
+ * عرض شاشة الأجندة الفصلية والعداد التنازلي للامتحانات
  */
 function renderExamCountdown(chatId, bot) {
   const dates = loadExamDates();
+  const now = new Date();
+  const semesterEndDate = new Date(dates.finalEnd || "2027-01-21T23:59:59");
+
+  // إذا انتهى الفصل بالكامل
+  if (now > semesterEndDate) {
+    const closedText = `🎓 *الأجندة الأكاديمية ومواعيد الامتحانات*
+━━━━━━━━━━━━━━━━━━━━
+🎉 *انتهى الفصل الدراسي الحالي بالكامل!*
+نتمنى لجميع طلبتنا الأعزاء دوام التوفيق والنجاح بأعلى الدرجات والتقديرات 🌟
+
+_سيتم تحديث الأجندة تلقائياً مع بداية الفصل الدراسي القادم إن شاء الله._`;
+
+    const keyboard = [
+      [
+        { text: "🔙 رجوع لبنك الامتحانات والمختبرات", callback_data: "menu_exams_labs" },
+        { text: "🏠 القائمة الرئيسية", callback_data: "main_menu" }
+      ]
+    ];
+
+    bot.sendMessage(chatId, closedText, {
+      parse_mode: "Markdown",
+      reply_markup: { inline_keyboard: keyboard }
+    });
+    return;
+  }
+
   const midtermCount = calculateCountdown(dates.midtermStart);
   const finalCount = calculateCountdown(dates.finalStart);
 
-  const text = `⏳ *عداد ومخطط الامتحانات (Exam Countdown & Planner)*
+  let text = `📅 *الأجندة الفصلية والعداد التنازلي*
 ━━━━━━━━━━━━━━━━━━━━
 🎓 *${dates.semesterName}*
 
-📊 *العداد التنازلي للمواعيد الرسمية:*
-
+⏱️ *العداد التنازلي للامتحانات:*
 📝 *الامتحانات النصفية (Midterm):*
-• الموعد: \`${dates.midtermStart.split("T")[0]}\`
-• المتبقي: ⏱️ ${midtermCount}
+• الموعد: \`${dates.midtermStart.split("T")[0]}\` إلى \`${dates.midtermEnd.split("T")[0]}\`
+• المتبقي: ⏳ ${midtermCount}
 
 🏁 *الامتحانات النهائية (Final):*
-• الموعد: \`${dates.finalStart.split("T")[0]}\`
-• المتبقي: ⏱️ ${finalCount}
+• الموعد: \`${dates.finalStart.split("T")[0]}\` إلى \`${dates.finalEnd.split("T")[0]}\`
+• المتبقي: ⏳ ${finalCount}
+
+━━━━━━━━━━━━━━━━━━━━
+📋 *جدول المواعيد الهامة للفصل:*
+• 🟢 بداية الدراسة: \`26/09/2026\`
+• ⏳ نهاية فترة الإضافة: \`07/10/2026\`
+• ⏳ نهاية فترة السحب: \`14/10/2026\`
+• 📝 بدء الامتحانات النصفية: \`14/11/2026\`
+• 📝 نهاية الامتحانات النصفية: \`19/11/2026\`
+• 🚫 نهاية فترة الانسحاب: \`30/12/2026\`
+• 📚 نهاية الدراسة: \`07/01/2027\`
+• 🏁 بدء الامتحانات النهائية: \`09/01/2027\`
+• 🎉 نهاية الامتحانات والختام: \`21/01/2027\`
 
 ━━━━━━━━━━━━━━━━━━━━
 💡 *أدوات مساعدة إضافية:*
