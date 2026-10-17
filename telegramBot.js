@@ -2899,33 +2899,55 @@ bot.on("callback_query", async (query) => {
   // جهات الاتصال
   if (data === "show_contacts") {
     trackFeatureUse(chatId, "contacts", query.from);
-    const buttons = Object.keys(contacts).map((c) => [
-      { text: c, callback_data: "contact_" + c }
+    const categoryKeys = Object.keys(contacts);
+    const buttons = categoryKeys.map((c, idx) => [
+      { text: c, callback_data: "contactIdx_" + idx }
     ]);
     buttons.push(
       [{ text: "🔙 رجوع لبوابة الخدمات", callback_data: "menu_services" }],
       [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
     );
 
-    bot.sendMessage(chatId, "اختر الجهة:", {
+    bot.sendMessage(chatId, "📞 اختر الجهة أو القسم للتواصل:", {
       reply_markup: { inline_keyboard: buttons }
     });
     return;
   }
 
-  // تفاصيل جهة الاتصال
-  if (data.startsWith("contact_")) {
+  // تفاصيل جهة الاتصال (يدعم المفتاح المباشر أو الـ Index)
+  if (data.startsWith("contactIdx_") || data.startsWith("contact_")) {
     trackFeatureUse(chatId, "contacts", query.from);
-    const name = data.replace("contact_", "");
-    const buttons = contacts[name].map((c) => [
-      { text: c.name, url: "https://wa.me/" + c.phone.replace(/\D/g, "") }
+    const categoryKeys = Object.keys(contacts);
+    let categoryName = "";
+
+    if (data.startsWith("contactIdx_")) {
+      const idx = parseInt(data.replace("contactIdx_", ""), 10);
+      categoryName = categoryKeys[idx] || "";
+    } else {
+      categoryName = data.replace("contact_", "");
+    }
+
+    const contactList = contacts[categoryName];
+    if (!contactList) {
+      bot.sendMessage(chatId, "❌ حدث خطأ، القسم غير موجود.", {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🔙 رجوع لجهات الاتصال", callback_data: "show_contacts" }]
+          ]
+        }
+      });
+      return;
+    }
+
+    const buttons = contactList.map((c) => [
+      { text: `💬 ${c.name}`, url: "https://wa.me/" + c.phone.replace(/\D/g, "") }
     ]);
     buttons.push(
       [{ text: "🔙 رجوع لجهات الاتصال", callback_data: "show_contacts" }],
       [{ text: "🏠 الصفحة الرئيسية", callback_data: "main_menu" }]
     );
 
-    const noteText = `📞 *${name}*\n━━━━━━━━━━━━━━━━━━━━\n⚠️ *تنبيه عند التواصل:* يرجى ذكر:\n📛 الاسم الثلاثي + 🎓 الرقم الجامعي + 🏗️ القسم\n⏰ *أوقات الرد:* السبت - الخميس\n\nاضغط على أي اسم أدناه لبدء محادثة واتساب مباشرة:`;
+    const noteText = `📞 *${categoryName}*\n━━━━━━━━━━━━━━━━━━━━\n⚠️ *تنبيه عند التواصل:* يرجى ذكر:\n📛 الاسم الثلاثي + 🎓 الرقم الجامعي + 🏗️ القسم\n⏰ *أوقات الرد:* السبت - الخميس\n\nاضغط على أي اسم أدناه لبدء محادثة واتساب مباشرة:`;
     bot.sendMessage(chatId, noteText, {
       parse_mode: "Markdown",
       reply_markup: { inline_keyboard: buttons }
