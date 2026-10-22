@@ -22,6 +22,15 @@ const {
   saveMasterSnapshot
 } = require("./data/cloudSync");
 
+// معالجات أخطاء عامة لمنع أي كراش أو توقف مفاجئ للسيرفر
+process.on("uncaughtException", (err) => {
+  console.error("[CRITICAL SHIELD] Uncaught Exception caught safely:", err?.message || err);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[CRITICAL SHIELD] Unhandled Rejection caught safely:", reason?.message || reason);
+});
+
 // خادم صحة بسيط (Health Check & Keep-Alive) لربط البوت بالاستضافات السحابية وضمان عمله 24/7
 const PORT = process.env.PORT || 3000;
 const server = http.createServer((req, res) => {
@@ -1357,7 +1366,7 @@ function showAiToolsMenu(chatId) {
   const keyboard = [
     [{ text: "💬 المساعد الأكاديمي الذكي (AI Chatbot)" + (hasHistory ? " (جلسة نشطة 🟢)" : ""), callback_data: "start_ai_chat" }],
     [{ text: "🐞 مصحح ومفسر الأكواد الذكي (Code Debugger)", callback_data: "start_code_debugger" }],
-    [{ text: "📝 مولّد الكويزات الذكي (AI Quiz Generator)", callback_data: "start_ai_quiz" }],
+    [{ text: "📝 بنك الكويزات والأسئلة (Drive • تفاعلي)", callback_data: "start_ai_quiz" }],
     [{ text: "🔙 رجوع للقائمة الرئيسية", callback_data: "main_menu" }]
   ];
 
@@ -1367,7 +1376,7 @@ function showAiToolsMenu(chatId) {
 
 • 💬 *المساعد الأكاديمي الذكي:* حل وشرح المسائل، تلخيص السلايدات والملفات، الإجابة على استفسارات المواد وتزويدك بالروابط.
 • 🐞 *مصحح ومفسر الأكواد:* فحص الأكواد وتصحيح الأخطاء، شرح الدوال والخوارزميات، وتوليد حالات اختبار.
-• 📝 *مولد الكويزات الذكي:* تدرب واختبر مستواك بأسئلة تفاعلية غير محدودة في أي مساق تخصصي.`;
+• 📝 *بنك الكويزات والأسئلة:* روابط مجلدات درايف لنماذج كويزات كل مادة، مع كويز تفاعلي ذكي آمن.`;
 
   safeSend(bot, chatId, text, {
     reply_markup: { inline_keyboard: keyboard }

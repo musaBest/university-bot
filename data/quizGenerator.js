@@ -277,29 +277,37 @@ const SUBJECT_FALLBACK_BANKS = {
 };
 
 /**
- * عرض قائمة اختيار المادة للكويز
+ * عرض قائمة اختيار المادة للكويز وبنك أسئلة الدرايف
  */
 function renderQuizSubjectMenu(chatId, bot) {
-  const text = `📝 *مولّد الكويزات التفاعلي الذكي (Endless AI Quiz)*
+  const text = `📝 *بنك الكويزات والأسئلة (Quizzes & Exam Bank)*
 ━━━━━━━━━━━━━━━━━━━━
 
-أهلاً بك! يولد هذا النظام أسئلة تدريبية واختبارية متخصصة ومبتكرة 100% لكل مادة بدون تكرار، ويستمر بالاختبار سؤالاً تلو الآخر حتى تقرر بنفسك إنهاء الكويز! 🎯🚀
+اختر كيف تود التمرن والمراجعة:
 
-👇 *اختر المادة للبدء فوراً، أو اكتب موضوعاً مخصصاً:*`;
+📂 *1. مجلدات كويزات وامتحانات الدرايف:* تصفح وحمّل نماذج الكويزات والامتحانات والواجبات الرسمية المحلولة الخاصة بكل مادة.
+🤖 *2. الكويز التفاعلي الذكي:* تدرب سؤالاً بسؤال مع تصحيح وشرح فوري.
 
-  const keyboard = [];
+👇 *اختر القسم المطلوب:*`;
+
+  const keyboard = [
+    [
+      { text: "📂 مجلدات كويزات المواد السابقة (Drive)", callback_data: "open_past_papers" }
+    ]
+  ];
+
   for (let i = 0; i < POPULAR_QUIZ_COURSES.length; i += 2) {
     const row = [
-      { text: POPULAR_QUIZ_COURSES[i].name, callback_data: `quiz_subject_${i}` }
+      { text: `⚡ ${POPULAR_QUIZ_COURSES[i].name}`, callback_data: `quiz_subject_${i}` }
     ];
     if (POPULAR_QUIZ_COURSES[i + 1]) {
-      row.push({ text: POPULAR_QUIZ_COURSES[i + 1].name, callback_data: `quiz_subject_${i + 1}` });
+      row.push({ text: `⚡ ${POPULAR_QUIZ_COURSES[i + 1].name}`, callback_data: `quiz_subject_${i + 1}` });
     }
     keyboard.push(row);
   }
 
   keyboard.push([
-    { text: "✍️ كتابة موضوع أو مادة مخصصة", callback_data: "quiz_custom_subject_prompt" }
+    { text: "✍️ كتابة موضوع أو مادة مخصصة للكويز", callback_data: "quiz_custom_subject_prompt" }
   ]);
   keyboard.push([
     { text: "🔙 رجوع لبوابة الذكاء الاصطناعي", callback_data: "menu_ai_tools" },
@@ -564,10 +572,21 @@ ${q.question}
     ]
   ];
 
-  await bot.sendMessage(chatId, text, {
-    parse_mode: "Markdown",
-    reply_markup: { inline_keyboard: keyboard }
-  });
+  try {
+    await bot.sendMessage(chatId, text, {
+      parse_mode: "Markdown",
+      reply_markup: { inline_keyboard: keyboard }
+    });
+  } catch (sendErr) {
+    // محاولة إرسال بدون Markdown في حال احتوى السؤال على رموز خاصة
+    try {
+      await bot.sendMessage(chatId, text.replace(/[*_`]/g, ""), {
+        reply_markup: { inline_keyboard: keyboard }
+      });
+    } catch (e) {
+      console.error("[Quiz] Error sending question:", e.message);
+    }
+  }
 }
 
 /**
@@ -609,10 +628,20 @@ async function handleQuizAnswer(chatId, bot, selectedIndex, userState) {
     ]
   ];
 
-  await bot.sendMessage(chatId, feedback, {
-    parse_mode: "Markdown",
-    reply_markup: { inline_keyboard: actionKeyboard }
-  });
+  try {
+    await bot.sendMessage(chatId, feedback, {
+      parse_mode: "Markdown",
+      reply_markup: { inline_keyboard: actionKeyboard }
+    });
+  } catch (fbErr) {
+    try {
+      await bot.sendMessage(chatId, feedback.replace(/[*_`]/g, ""), {
+        reply_markup: { inline_keyboard: actionKeyboard }
+      });
+    } catch (e) {
+      console.error("[Quiz] Error sending feedback:", e.message);
+    }
+  }
 }
 
 /**
